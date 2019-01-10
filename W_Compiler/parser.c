@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+//#include "parserUtility.h"
 
 int InitParse(char*);
 
@@ -25,6 +26,11 @@ int main(int argc, char *argv[])
   return InitParse(file_name);
 }
 
+
+/*
+  InitParse:
+    Initalizes the parsing and scanning process
+*/
 int InitParse(char *file_name)
 {
   FILE *fp;
@@ -35,11 +41,11 @@ int InitParse(char *file_name)
     printf("Couldn't open file\n");
     return -1;
   }
-  char c = fgetc(fp);
-  while (c != EOF)
+  char * strLine = fgets(str, 60, fp);
+  while (strLine != NULL)
   {
-      printf ("%c", c);
-      c = fgetc(fp);
+      printf("%s", strLine);
+      strLine = fgets(str, 60, fp);
   }
   fclose(fp);
 
