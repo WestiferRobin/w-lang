@@ -1,8 +1,9 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
-//#include "parserUtility.h"
+#include "frontEndUtility.h"
 
-int InitParse(char*);
+int Initalize(char*);
 
 int main(int argc, char *argv[])
 {
@@ -23,31 +24,34 @@ int main(int argc, char *argv[])
     return -1;
   }
 
-  return InitParse(file_name);
+  return Initalize(file_name);
 }
 
 
 /*
-  InitParse:
+  Initalize:
     Initalizes the parsing and scanning process
 */
-int InitParse(char *file_name)
+int Initalize(char *file_name)
 {
-  FILE *fp;
-  char str[60];
-  fp = fopen(file_name, "r");
-  if (fp == NULL)
+  FILE *fp=fopen(file_name, "rb");
+  fseek(fp, 0, SEEK_END);
+  int size = ftell(fp);
+  fseek(fp, 0, SEEK_SET);
+  char file_string[size];
+  int i = 0;
+  char c;
+  while((c = fgetc(fp)) != EOF)
   {
-    printf("Couldn't open file\n");
-    return -1;
+    if (c != '\n' && c != ' ')
+    {
+      file_string[i++] = c;
+    }
   }
-  char * strLine = fgets(str, 60, fp);
-  while (strLine != NULL)
-  {
-      printf("%s", strLine);
-      strLine = fgets(str, 60, fp);
-  }
+  file_string[i] = '\0';
   fclose(fp);
+
+  DoFrontEnd(file_string);
 
   return 0;
 }

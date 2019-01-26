@@ -1,11 +1,11 @@
-program: main.o parserUtility.o
-	gcc -o main.o parserUtility.o
+go_chicken: main.o frontEndUtility.o
+	gcc main.o frontEndUtility.o -o go_chicken
 
-main.o: parser.c parserUtility.h
-	gcc -c parser.c parserUtility.h
+frontEndUtility.o: frontEndUtility.c frontEndUtility.h lexingUtility.h parserUtility.h
+	gcc -c frontEndUtility.c -o frontEndUtility.o
 
-parserUtility.o: parserUtility.c parserUtility.h
-	gcc -c parserUtility.c parserUtility.h
+main.o: main.c
+	gcc -c main.c frontEndUtility.h -o main.o
 
 clean:
 	rm *.o

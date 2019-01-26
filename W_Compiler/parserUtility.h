@@ -1,9 +1,4 @@
-#ifndef PARSERUTILITY_H_
-#define PARSERUTILITY_H_
-#include <stdio.h>
-#include <string.h>
-
-
-void ParserCodeLine(char[]);
+#ifndef PARSERUTILITY_H
+#define PARSERUTILITY_H
 
 #endif

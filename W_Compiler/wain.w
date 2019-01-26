@@ -1,11 +1,11 @@
 woid wain()
 {
  wint wans = 1 + 1;
- if (wans == 2)
+ wif (wans == 2)
  {
   wans = 3;
  }
- else
+ welse
  {
   wans = -1;
  }
