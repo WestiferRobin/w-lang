@@ -5,6 +5,8 @@
 
 int Initalize(char*);
 
+
+
 int main(int argc, char *argv[])
 {
   // BREAK IF NO ARGUMENTS
@@ -51,7 +53,7 @@ int Initalize(char *file_name)
   file_string[i] = '\0';
   fclose(fp);
 
-  DoFrontEnd(file_string);
+  DoFrontEnd(file_string, ++i);
 
   return 0;
 }
