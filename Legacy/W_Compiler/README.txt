@@ -4,6 +4,16 @@
 
 // PHASE 3 - Implement object oriented and libraries to compiler
 
+
+main.c -> Front End : Parses the whole fuckn text into keywords, variables, important symbols, and some other important shit
+                      Construct and ABT Lexial Analysis
+
+          Optimize: flags and shit
+
+          Low End: Make assmebly from ABT -> a.out
+
+
+
 -------------------------------------------------------------------------------
 PHASE 1 - Grammar (IGNORE SPACES)
 eps == epsilon
