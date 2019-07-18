@@ -7,7 +7,16 @@ using namespace std;
 class Converter
 {
 public:
-  static int decTo8_bit(int);
+  static int decToHex(string);
 };
+
+class Interpreter
+{
+public:
+  static bool isValidALUOp(string);
+  static bool isValidJumpOp(string);
+  static bool isValidAuxOp(string);
+};
+
 
 #endif

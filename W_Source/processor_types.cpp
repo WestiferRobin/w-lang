@@ -1,5 +1,31 @@
 #include "processor_types.hpp"
 
+REGISTER,
+    IMMEDIATE,
+    MEMORY,
+    HALT,
+    HYBRID,
+
+Entry::Entry(string raw)
+{  
+    switch (raw.at(0))
+    {
+        case '0':
+            control_type = REGISTER;
+            break;
+        case '1':
+            control_type = IMMEDIATE;
+            break;
+        default:
+            control_type = M;
+            break;
+    }
+    for (int i = 0; i < 4; i++)
+    {
+        org_line[i] = raw.substr(2 * i, 2);
+    }
+}
+
 string Entry::getOppCode(void)
 {
     return org_line[0];

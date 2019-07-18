@@ -7,10 +7,11 @@ using namespace std;
 // using capital letters cause 'register' is a keyword
 enum EntryType
 {
-    R,
-    I,
-    M,
-    H,
+    REGISTER,
+    IMMEDIATE,
+    MEMORY,
+    HALT,
+    HYBRID,
 };
 
 class Entry
@@ -19,7 +20,8 @@ private:
     string org_line[4];
     EntryType control_type;
 public:
-    Entry(string raw, EntryType type) : control_type(type) 
+    Entry(string raw);
+    Entry(string raw, EntryType et) : control_type(et)
     {  
         for (int i = 0; i < 4; i++)
         {
