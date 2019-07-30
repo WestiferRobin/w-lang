@@ -14,61 +14,82 @@ void Processor::orgAssembly(string * raw)
   assembly.insert(pair<unsigned int, Entry>(count, entry));
 }
 
+void Processor::init()
+{
+  string hexChar = "0123456789ABCDEF";
+  for (int i = 0; i < hexChar.length(); i++)
+  {
+    for (int j = 0; j < hexChar.length(); j++)
+    {
+      string key = string() + hexChar[i] + hexChar[j];
+      registers.insert(pair<string, short> (key, 0));
+    }
+  }
+}
+
 void Processor::run()
 {
+  init();
   unsigned int i = 0;
   while (i < UINT_MAX)
   {
     try
     {
-      switch (assembly.at(i).getType())
+      Entry * instance = &assembly.at(i);
+      switch (instance->getType())
       {
         case HALT:
           cout << "End of Program." << endl;
+          /*for (auto i = registers.begin(); i != registers.end(); i++)
+          {
+            cout << i->first << " = " << i->second << endl;
+          }*/
           return;
         case REGISTER:
-          cout << "R type " << Converter::decToHex(assembly.at(i).getRegister()) << " " << Converter::decToHex(assembly.at(i).getRemaining()) << endl;
-          if (Interpreter::isValidALUOp(assembly.at(i).getOppCode()))
+          if (Interpreter::isValidALUOp(instance->getOppCode()))
           {
             cout << "ITS AN REGISTER ALU OP" << endl;
+            Interpreter::calculate(&registers, instance);
           }
-          else if (Interpreter::isValidAuxOp(assembly.at(i).getOppCode()))
+          else if (Interpreter::isValidAuxOp(instance->getOppCode()))
           {
             cout << "ITS AN REGISTER AUX OP" << endl;
+            Interpreter::auxExec(&registers, instance);
           }
           else
           {
-            //throw 1;
+            throw 2;
           }
           break;
         case IMMEDIATE:
-          cout << "I type " << Converter::decToHex(assembly.at(i).getRegister()) << " " << Converter::decToHex(assembly.at(i).getRemaining()) << endl;
-          if (Interpreter::isValidJumpOp(assembly.at(i).getOppCode()))
+          if (Interpreter::isValidJumpOp(instance->getOppCode()))
           {
             cout << "ITS AN IMMEDIATE JUMP" << endl;
           }
           else
           {
-            //throw 1;
+            throw 3;
           }
           break;
         case MEMORY:
           cout << "Memory type" << endl;
           break;
         case HYBRID:
-          cout << "HYBRID type " << endl;
-          if (Interpreter::isValidALUOp(assembly.at(i).getOppCode()))
+          if (Interpreter::isValidALUOp(instance->getOppCode()))
           {
-            cout << "ITS AN Hybrid ALU OP" << endl;
+            cout << "ITS a Hybrid ALU OP" << endl;
+            Interpreter::calculate(&registers, instance);
           }
-          else if (Interpreter::isValidAuxOp(assembly.at(i).getOppCode()))
+          else if (Interpreter::isValidAuxOp(instance->getOppCode()))
           {
-            cout << "ITS AN Hybrid AUX OP" << endl;
+            cout << "ITS a Hybrid AUX OP" << endl;
+            Interpreter::auxExec(&registers, instance);
           }
           else
           {
-            //throw 1;
+            throw 4;
           }
+          break;
         default:
           throw 1;
           return;

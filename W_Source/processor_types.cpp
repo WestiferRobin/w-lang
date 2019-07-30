@@ -1,10 +1,14 @@
 #include "processor_types.hpp"
 
+/*
+REFERENCE FOR ENUM TYPES
+
 REGISTER,
-    IMMEDIATE,
-    MEMORY,
-    HALT,
-    HYBRID,
+IMMEDIATE,
+MEMORY,
+HALT,
+HYBRID,
+*/
 
 Entry::Entry(string raw)
 {  
@@ -14,10 +18,10 @@ Entry::Entry(string raw)
             control_type = REGISTER;
             break;
         case '1':
-            control_type = IMMEDIATE;
+            control_type = raw.at(1) == 'F' ? IMMEDIATE : HYBRID;
             break;
         default:
-            control_type = M;
+            control_type = MEMORY;
             break;
     }
     for (int i = 0; i < 4; i++)
@@ -40,9 +44,10 @@ string Entry::getRemaining(void)
 {
     switch (control_type)
     {
-        case R:
+        case REGISTER:
             return org_line[2];
-        case I:
+        case IMMEDIATE:
+        case HYBRID:
             return org_line[2] + org_line[3];
         default:
             return "";   

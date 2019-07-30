@@ -12,7 +12,10 @@ class Processor
 {
 private:
   map<unsigned int, Entry> assembly;
+  map<string, short> registers;
+  map<string, short> data_mem;
   void orgAssembly(string[]);
+  void init();
 public:
   Processor(string newCode[]) { orgAssembly(newCode); }
   ~Processor() {}

@@ -43,14 +43,22 @@ int start(int argc, char * argv[])
   compiler->parse(file_name);
 
   /*
-  TODO: GET YOUR SET ARCH DOWN!
+  TODO: 
+  1. GET YOUR SET ARCH DOWN!
+  2. Create Excpetion reader
+  3. Add line counter for jumps system
+    ex.) L1: load r1, 234
+             add r1, 1
+             print r1
+  4. Add memory system for loading and storing
   */
   string assembly[] = {
-    "11010001",
-    "11020001",
-    "01010200",
-    "1F000000",
+    "11010004",
+    "11020002",
+    "02010200",
+    "13010001",
     "20010000",
+    "10010000",
     "00000000"
   };
   processor = new Processor(assembly);
