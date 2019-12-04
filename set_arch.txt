@@ -1,0 +1,62 @@
+THIS IS THE SET ARCHETECTURE!
+
+32 BIT RISC with 256 registers
+
+0000 0000 --- 1111 1111 aka 00 --- FF registers
+00 --- FF
+
+values 
+0 --- 65536 
+-32768 --- 32767
+
+----------- signed numbers ----------- 
+0000 0000 00 halt 
+0000 0001 01 load r1 r2 AUX
+
+0000 0010 02 add r1 r2 ALU
+0000 0011 03 sub r1 r2 ALU
+0000 0100 04 multi r1 r2 ALU
+0000 0101 05 div r1 r2 ALU
+0000 0110 06 and r1 r2 ALU
+0000 0111 07 or r1 r2 ALU
+0000 1000 08 eq r1 r2 ALU
+0000 1001 09 neq r1 r2 ALU
+0000 1010 0A lt r1 r2 ALU
+0000 1011 0B gt r1 r2 ALU
+0000 1100 0C lte r1 r2 ALU
+0000 1101 0D gte r1 r2 ALU
+
+0000 1110 0E not r1 r2 ALU
+
+0000 1111 0F shiftR r1 r2 ALU
+
+0001 0000 10 print r1 # AUX
+0001 0001 11 load r1 # AUX
+
+0001 0010 12 add r1 # ALU
+0001 0011 13 sub r1 # ALU
+0001 0100 14 multi r1 # ALU
+0001 0101 15 div r1 # ALU
+0001 0110 16 and r1 # ALU
+0001 0111 17 or r1 # ALU
+0001 1000 18 eq # JUMP
+0001 1001 19 neq # JUMP
+0001 1010 1A lt # JUMP
+0001 1011 1B gt # JUMP
+0001 1100 1C lte # JUMP
+0001 1101 1D gte # JUMP
+
+0001 1110 1E jmp # JUMP
+
+0001 1111 1F shiftL r1 r2 ALU
+
+////////////////////////////////////////////////
+
+
+0010 0000 ---- 1111 1111 is memory locations 224
+
+template 
+xxx1 xxxx load into memory
+xxx0 xxxx get from memory
+
+

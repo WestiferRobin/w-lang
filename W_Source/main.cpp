@@ -1,14 +1,15 @@
 #include <iostream>
 #include <fstream>
-#include <map>
-#include "compiler.hpp"
-#include "processor.hpp"
+#include "./Compiler/compiler.hpp"
+#include "./Processor/processor.hpp"
+#include "general_types.hpp"
 
 using namespace std;
 
 // global variables for the application
 Compiler * compiler;
 Processor * processor;
+const string debugFlag = "-d";
 
 int start(int argc, char * argv[])
 {
@@ -21,6 +22,7 @@ int start(int argc, char * argv[])
   // get the file name and length of the string
   string file_name = argv[1];
   unsigned long length = file_name.length();
+  bool isDisplayingAssembly = false;
 
   // DO VALIDATION FOR EXTENSION BEING CORRECT
   if (file_name[length-2] != '.' || file_name[length-1] != 'w')
@@ -28,44 +30,32 @@ int start(int argc, char * argv[])
     cout << "Error: there is no matching extensions." << endl;
     return -1;
   }
+  
+  if (argc == 3)
+  {
+    isDisplayingAssembly = argv[2] == debugFlag;
+  }
 
-  /*
-  TODO: Have compiler working for the following parts individually completed.
-  1. expression
-  2. assign
-  3. if statements
-  4. while loops
-  5. for loops
-  6. functions
-  7. classes
-  */
+  // Do the compiler
   compiler = new Compiler();
   compiler->parse(file_name);
+  vector<AssemblyEntry> assembly = compiler->getAssembly();
 
-  /*
-  TODO: 
-  1. GET YOUR SET ARCH DOWN!
-  2. Create Excpetion reader
-  3. Add line counter for jumps system
-    ex.) L1: load r1, 234
-             add r1, 1
-             print r1
-  4. Add memory system for loading and storing
-  */
-  string assembly[] = {
-    "11010004",
-    "11020002",
-    "02010200",
-    "13010001",
-    "20010000",
-    "10010000",
-    "00000000"
-  };
+  if (isDisplayingAssembly)
+  {
+    cout << "----- RUNNING ASSMEBLY -----" << endl;
+    for (AssemblyEntry asdf : assembly)
+    {
+      cout << asdf.toString() << endl;
+    }
+    cout << "----------------------------" << endl;
+  }
+
   processor = new Processor(assembly);
   processor->run();
 
-  delete compiler;
   delete processor;
+  delete compiler;
 
   return 0;
 }

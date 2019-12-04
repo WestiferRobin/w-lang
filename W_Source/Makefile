@@ -1,26 +1,45 @@
-default: main.o frontend.o processor.o processor_types.o processor_comp.o
-	g++ main.o frontend.o processor.o processor_types.o processor_comp.o
+default: main.o frontend.o backend.o processor.o ll_init.o ll_expression.o ll_stmtlist.o general_util.o
+	g++ -std=c++17 *.o -o wlang
 
-processor_types.o: processor_types.hpp processor_types.cpp
-	g++ -c processor_types.cpp
+general_util.o: general_util.hpp
+	g++ -std=c++17 -c general_util.cpp
 
-processor_comp.o: processor_comp.hpp
-	g++ -c processor_comp.cpp
+processor.o: Processor/processor.hpp general_types.hpp general_util.hpp
+	g++ -std=c++17 -c Processor/processor.cpp
 
-processor.o: processor_comp.hpp processor_types.hpp processor.hpp processor.cpp
-	g++ -c processor.cpp
+backend.o: Compiler/compiler_comp.hpp Compiler/token_types.hpp Compiler/ast_types.hpp general_types.hpp general_util.hpp
+	g++ -std=c++17 -c Compiler/backend.cpp
 
-frontend.o: compiler.hpp compiler_comp.hpp
-	g++ -c frontend.cpp
+frontend.o: Compiler/compiler_comp.hpp Compiler/token_types.hpp Compiler/ast_types.hpp
+	g++ -std=c++17 -c Compiler/frontend.cpp
+
+ll_init.o: Compiler/compiler_comp.hpp Compiler/token_types.hpp Compiler/ast_types.hpp
+	g++ -std=c++17 -c Compiler/ll_init.cpp
+
+ll_expression.o: Compiler/compiler_comp.hpp Compiler/token_types.hpp Compiler/ast_types.hpp
+	g++ -std=c++17 -c Compiler/ll_expression.cpp
+
+ll_stmtlist.o: Compiler/compiler_comp.hpp Compiler/token_types.hpp Compiler/ast_types.hpp
+	g++ -std=c++17 -c Compiler/ll_stmtlist.cpp
 
 main.o: main.cpp
-	g++ -c main.cpp
+	clear
+	g++ -std=c++17 -c main.cpp
 
-testExp:
-	./a.out exp.w
+test:
+	clear
+	./wlang test_space.w
 
-test1:
-	./a.out wain_1.w
+testD:
+	clear
+	./wlang test_space.w -d
 
 clean:
-	rm *.o
+	clear
+	rm *.o wlang
+
+rebuild:
+	clear
+	rm *.o wlang
+	make
+	./wlang test_space.w -d
