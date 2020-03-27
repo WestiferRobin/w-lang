@@ -49,21 +49,46 @@ Finished:
     - global variables
     - Write function support
         - with return working
+    - refactor majority of code base for redudanceies from array implementation.
+        - still awaiting for major features to be implemented in order to get a pure cleanup.
+    - fixed return value error for a value in a function
+    - array, strings, and chars
+        - Finished chars.
+        - finished array and string delecarations and with inital data.
+        - finished by index access.
+        - finished array and strings as parameters.
+        - added and finished a delete operation.
+        - finished returning array and strings as a return values.
+        - finished equal values in assigning two arrays. 
+        - bug was found for declaring size of array which was solved.
 
 In Progress:
-    - array, strings, and chars
-
-TODO:
-    - Write default libary
+    - Write default libary called std
         - integrate with current print statement
-    - Write cross file communication
-        - use private and public access 
-    - Clean up the double load registers
-    - Clean up char and strings having '\' to work
-    - Fix Switch bug with able to have multiple cases and sometimes no breaks and some times no defaults
-    - Fix Function calls to be integrated with ALUing its return value
-    - Finalize errors after all is well said and done.
+        - add a scanner library
+        - add a math library
+        - string manipulation library
+        - standard constants currently in test_space.w and climits
+TODO:
+    - Write cross file communication as classes
+        - Add function overloading/overriding
+        - Its C inspired so no classes. 
+        - Able to compile other files when specified and use the dot 
+            - ex.) import file => file.w gets frontended and added to AST => DO_SOME_FUNCTION() => "Hello, I'm from FileA" AND PRINT(value, pintn); => 123 
+    - Do a clean from big feature.
+        - organize all of the general functions into seperate cpp files.
+        - Implement HUGE ammount of functions into other classes.
+        - pull out functions used in both Processor and Compiler in W_Source folder.
+        - Have a new folder to do build of the object files in the Makefile
+        - write actual errors and have a better working error system. DOES NOT HAVE TO BE PERFECT BUT IT HAS TO MAKE SENSE!
+    - BUGS!!!!
+        - Clean up the double load registers
+        - Clean up char and strings having '\' to work
+        - Fix Switch bug with able to have multiple cases and sometimes no breaks and some times no defaults
+        - Fix multiline comment when there is a multiplier opperator
+        - Fix spaces with chars and strings being allowed
     - CLEAN AND DOCUMENT!
+        - Document you want it to work as a practical compiler with specific archetecutre, suport OOP, list arrays, and multi arrays
     - Make builds for Linux, macos, and Window versions
         - Final step and publish on github
         - toy with making it be a real compiler aka work for nasm ld and launch

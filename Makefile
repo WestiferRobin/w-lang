@@ -1,4 +1,4 @@
-default: main.o frontend.o backend.o processor.o ll_init.o ll_expression.o ll_stmtlist.o general_util.o
+default: main.o frontend.o backend.o processor.o ll_init.o ll_expression.o ll_stmtlist.o general_util.o stdinit.o
 	g++ -std=c++17 *.o -o wlang
 
 general_util.o: general_util.hpp
@@ -21,6 +21,9 @@ ll_expression.o: Compiler/compiler_comp.hpp Compiler/token_types.hpp Compiler/as
 
 ll_stmtlist.o: Compiler/compiler_comp.hpp Compiler/token_types.hpp Compiler/ast_types.hpp
 	g++ -std=c++17 -c Compiler/ll_stmtlist.cpp
+
+stdinit.o: Compiler/compiler_comp.hpp Compiler/token_types.hpp Compiler/ast_types.hpp general_types.hpp general_util.hpp
+	g++ -std=c++17 -c Compiler/stdinit.cpp
 
 main.o: main.cpp
 	clear

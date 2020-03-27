@@ -51,6 +51,8 @@ int start(int argc, char * argv[])
     cout << "----------------------------" << endl;
   }
 
+  //cout << "Before the processor" << endl;
+
   processor = new Processor(assembly);
   processor->run();
 

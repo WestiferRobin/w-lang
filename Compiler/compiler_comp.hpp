@@ -16,6 +16,25 @@
 
 using namespace std;
 
+class StdInit
+{
+private:
+  vector<AssemblyEntry> stdInitAssembly;
+  unsigned long long programCounter;
+  void initStdConsts();
+  void initStdFuncs();
+public:
+  vector<AssemblyEntry> getAssembly() {return stdInitAssembly;}
+  unsigned long long getCounter() { return programCounter; }
+  StdInit(unsigned long long currCount) : programCounter(currCount) 
+  { 
+    initStdConsts();
+    initStdFuncs();
+  }
+  ~StdInit() { }
+};
+
+//TODO: divide up the SHIT TON of private functions
 class LLParser
 {
 private:
@@ -23,6 +42,7 @@ private:
   TokenEntry * currToken;
   map<string, bool> symbol_table;
   map<string, bool> global_symbol_table;
+  set<string> arr_table;
   set<string> case_set;
   set<string> function_table;
 
@@ -31,18 +51,22 @@ private:
   ASTNode * createASTNode(ASTType,ASTNode*,ASTNode*);
   ASTNode * createASTNumberNode(TokenEntry);
   ASTNode * createASTVariableNode(TokenEntry);
+  ASTNode * createASTArrayNode(TokenEntry);
   ASTNode * createASTNullNode();
   ASTNode * createASTCharNode(TokenEntry);
+  ASTNode * createASTWholeArrayNode(TokenEntry);
   
   ASTNode * Start();
   void Dependencies(ASTNode *);
   ASTNode * Main();
 
+  ASTNode * ImportFile();
   ASTNode * ReturnCall();
   ASTNode * Function();
   ASTNode * FunctionCall();
   bool IsValidFunction();
   ASTNode * Print();
+  ASTNode * DeleteStatement();
 
   void StmtList(ASTNode*);
   ASTNode * Assignment(void);
@@ -69,7 +93,9 @@ private:
 
 public:
   ASTNode * initGrammar(TokenEntry * );
-  map<string, bool> getSymbolTable() { return symbol_table;}
+  map<string, bool> getSymbolTable() { return symbol_table; } 
+  LLParser() {}
+  ~LLParser() {}
 };
 
 class FrontEnd
@@ -121,6 +147,7 @@ private:
   vector<AssemblyEntry> assembly;
   void createAssembly(ASTNode*);
   void loadDependentLocals(ASTNode*);
+  void initStandardLib();
 public:
   BackEnd() { }
   ~BackEnd() { }

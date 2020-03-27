@@ -282,10 +282,31 @@ ASTNode * LLParser::Factor()
             return tmp;
         case T_VARIABLE:
             if (symbol_table.find(currToken->entry) == symbol_table.end() &&
-                global_symbol_table.find(currToken->entry) == global_symbol_table.end()
+                global_symbol_table.find(currToken->entry) == global_symbol_table.end() &&
+                arr_table.find(currToken->entry) == arr_table.end()
             ) {throw ERROR_VAR_UNKNOWN;}
             tmp = createASTVariableNode(*currToken);
             currToken++;
+            if (currToken->entry == "[")
+            {
+                validToken(T_SYMBOL, "[");
+                if (symbol_table.find(currToken->entry) != symbol_table.end() || 
+                global_symbol_table.find(currToken->entry) != global_symbol_table.end()
+                )
+                {
+                    tmp->key += "[" + currToken->entry + "]";
+                }
+                else if (stoi(currToken->entry) >= 0)
+                {
+                    tmp->key += "[" + currToken->entry + "]";
+                }
+                else
+                {
+                    throw ERROR_VAR_UNKNOWN;
+                }
+                currToken++;
+                validToken(T_SYMBOL, "]");
+            }
             return tmp;
         case T_SYMBOL:
             switch (currToken->entry[0])

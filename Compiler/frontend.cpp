@@ -32,10 +32,11 @@ void FrontEnd::run(string file_text)
     }
     // do private operations for front end.
     FrontEnd::scanner();
-    for (auto i = tokens.begin(); i != tokens.end(); i++)
-    {
-      cout << i->entry << " " << i->tType << endl;
-    }
+
+    // for (auto i = tokens.begin(); i != tokens.end(); i++)
+    // {
+    //   cout << i->entry << " " << i->tType << endl;
+    // }
     FrontEnd::parse();
 
     // close file after operations
@@ -65,6 +66,7 @@ void FrontEnd::assignVariables()
     "switch",
     "case",
     "break",
+    "delete"
   };
 
   // assign the ast to be null
@@ -143,17 +145,25 @@ void FrontEnd::scanner(void)
           temp = new TokenEntry(T_SYMBOL, hold);
           tokens.push_back(*temp);
           break;
-        case '\'':
         case '\"':
-          startIndex = i + 1;
-
-          while (the_code[startIndex] != the_code[i]) {hold += the_code[startIndex]; startIndex++;}
-          hold += the_code[startIndex];
-
-          temp = new TokenEntry(the_code[i] == '\'' ? T_CHAR : T_STRING, hold);
+          hold += the_code[i];
+          temp = new TokenEntry(T_SYMBOL, "\"");
           tokens.push_back(*temp);
-          
+          startIndex = i + 1;
+          while (the_code[startIndex] != the_code[i]) 
+          {
+            temp = new TokenEntry(T_CHAR, to_string(the_code[startIndex++]));
+            tokens.push_back(*temp);
+          }
           i = startIndex;
+          temp = new TokenEntry(T_SYMBOL, "\"");
+          tokens.push_back(*temp);
+          hold = "";
+          break;
+        case '\'':
+          temp = new TokenEntry(T_CHAR, to_string(the_code[++i]));
+          tokens.push_back(*temp);
+          i++;
           hold = "";
           break;
         case '+':

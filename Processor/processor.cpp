@@ -8,6 +8,7 @@ void Processor::init()
     registers.insert({"r" + to_string(i), 0});
   }
   registers.insert({"CMPR", 0});
+  registers.insert({"RET_V", 0});
   
   // setups the labels needed for the program
   for (int i = 0; i < assembly.size(); i++)
@@ -32,7 +33,12 @@ void Processor::run()
         case JUMP_LABEL:
           break;
         case JUMP_OPP:
-          if (instance.operatorLabel == "jc")
+          if (jump_labels.find(instance.firstOp) == jump_labels.end() && instance.firstOp != "RET_A")
+          {
+            cout << instance.firstOp << " IS NOT A VALID JUMP!!!!!!!!!" << endl;
+            throw ERROR_INVALID_SYMBOL;
+          }
+          else if (instance.operatorLabel == "jc")
           {
             programCounter = registers["CMPR"] > 0 ? jump_labels[instance.firstOp] : programCounter;
           }
@@ -67,25 +73,63 @@ void Processor::readALUop(AssemblyEntry assemblyLine)
   if (assemblyLine.operatorLabel == "load")
   {
     if (isGettingGlobal) { global_vars.insert({assemblyLine.firstOp, stoi(assemblyLine.secondOp)}); return;}
-    if (this->isRegister(assemblyLine.firstOp))
+    if (this->isLoadValid(assemblyLine.firstOp))
     {
-      registers[assemblyLine.firstOp] = this->getValue(assemblyLine.secondOp);
+      this->setValue(assemblyLine.firstOp, this->getValue(assemblyLine.secondOp));
     }
-    else if (this->isDataMem(assemblyLine.firstOp))
-    {
-      data_mem[assemblyLine.firstOp] = this->getValue(assemblyLine.secondOp);
-    }
-    else if (this->isGlobal(assemblyLine.firstOp))
-    {
-      global_vars[assemblyLine.firstOp] = this->getValue(assemblyLine.secondOp);
-    }
-    else if (data_mem.find(assemblyLine.firstOp) == data_mem.end()) 
+    else if (data_mem.find(assemblyLine.firstOp) == data_mem.end() && this->isArrayInst(assemblyLine.firstOp) == false) 
     {
       data_mem.insert({assemblyLine.firstOp, this->getValue(assemblyLine.secondOp)});
     }
     else
     {
       throw ERROR_INVALID_LOAD;
+    }
+  }
+  else if (assemblyLine.operatorLabel == "arrL")
+  {
+    if (array_table.find(assemblyLine.firstOp) != array_table.end())
+    {
+      array_table.erase(assemblyLine.firstOp);
+    }
+    if (array_table.find(assemblyLine.firstOp) == array_table.end() && array_table.find(assemblyLine.secondOp) != array_table.end())
+    {
+      array_table[assemblyLine.firstOp] = array_table[assemblyLine.secondOp];
+    }
+    else if (assemblyLine.secondOp == "PARAM_ARR")
+    {
+      array_table.insert({assemblyLine.firstOp, params_array.front()});
+      params_array.pop();
+    }
+    else
+    {
+      if (assemblyLine.firstOp == "RET_V" || assemblyLine.secondOp == "RET_V")
+      {
+        if (array_table.find("RET_V") == array_table.end())
+        {
+          array_table.insert({assemblyLine.firstOp, vector<int>()});
+        }
+        array_table[assemblyLine.firstOp] = array_table[assemblyLine.secondOp];
+      }
+      else if (this->getValue(assemblyLine.secondOp) == 0)
+      {
+        array_table.insert({assemblyLine.firstOp, vector<int>()});
+      }
+      else
+      {
+        array_table.insert({assemblyLine.firstOp, vector<int>(this->getValue(assemblyLine.secondOp))});
+      }
+    }
+  }
+  else if (assemblyLine.operatorLabel == "arrE")
+  {
+    if (array_table.find(assemblyLine.firstOp) != array_table.end())
+    {
+      array_table[assemblyLine.firstOp].push_back(this->getValue(assemblyLine.secondOp));
+    }
+    else
+    {
+      throw ERROR_VAR_UNKNOWN;
     }
   }
   else if (assemblyLine.operatorLabel == "push")
@@ -97,6 +141,10 @@ void Processor::readALUop(AssemblyEntry assemblyLine)
     else if (assemblyLine.firstOp == "PARAM")
     {
       params.push(this->getValue(assemblyLine.secondOp));
+    }
+    else if (assemblyLine.firstOp == "PARAM_ARR")
+    {
+      params_array.push(array_table[assemblyLine.secondOp]);
     }
   }
   else if (assemblyLine.operatorLabel == "pop")
@@ -184,6 +232,10 @@ void Processor::readALUop(AssemblyEntry assemblyLine)
   }
   else if (assemblyLine.operatorLabel == "print")
   {
+    if (!this->isArrayVariable(assemblyLine.firstOp) || assemblyLine.firstOp == "RET_V")
+    {
+      left = this->getValue(assemblyLine.firstOp);
+    }
     left = this->getValue(assemblyLine.firstOp);
     right = this->getValue(assemblyLine.secondOp);
     char tmp = (char) left;
@@ -201,9 +253,20 @@ void Processor::readALUop(AssemblyEntry assemblyLine)
       case 3:
         cout << tmp;
         break;
+      case 4:
+        cout << this->printArray(array_table[assemblyLine.firstOp]) << endl;
+        break;
+      case 5:
+        cout << this->printArray(array_table[assemblyLine.firstOp]) << endl;
+        break;
+      case 6:
+        cout << this->printString(array_table[assemblyLine.firstOp]);
+        break;
+      case 7:
+        cout << this->printString(array_table[assemblyLine.firstOp]) << endl;
+        break;
       default:
         throw ERROR_INVALID_OP_CODE;
-        break;
     }
   }
   else if (assemblyLine.operatorLabel == "eq")
@@ -242,6 +305,29 @@ void Processor::readALUop(AssemblyEntry assemblyLine)
     right = getValue(assemblyLine.secondOp);
     registers["CMPR"] = left >= right;
   }
+  else if (assemblyLine.operatorLabel == "delete")
+  {
+    if (this->isArrayVariable(assemblyLine.firstOp))
+    {
+      array_table.erase(assemblyLine.firstOp);
+    }
+    else if (this->isDataMem(assemblyLine.firstOp))
+    {
+      data_mem.erase(assemblyLine.firstOp);
+    }
+    else
+    {
+      throw ERROR_VAR_UNKNOWN;
+    }
+  }
+}
+
+bool Processor::isLoadValid(string target)
+{
+  return (this->isRegister(target) ||
+        this->isDataMem(target) ||
+        this->isGlobal(target) ||
+        this->isArrayInst(target));
 }
 
 bool Processor::isNumber(string target)
@@ -266,7 +352,6 @@ bool Processor::isRegister(string target)
 
 bool Processor::isDataMem(string target)
 {
-  string ans;
   for (auto i=data_mem.begin(); i != data_mem.end(); i++)
   {
     if (i->first == target)
@@ -279,7 +364,6 @@ bool Processor::isDataMem(string target)
 
 bool Processor::isGlobal(string target)
 {
-  string ans;
   for (auto i=global_vars.begin(); i != global_vars.end(); i++)
   {
     if (i->first == target)
@@ -288,6 +372,48 @@ bool Processor::isGlobal(string target)
     }
   }
   return false;
+}
+
+bool Processor::isArrayInst(string target)
+{
+  if (target.find('[') == string::npos || target.find(']') == string::npos) return false;
+  string tmpTarg = target.substr(0, target.find("["));
+  for (auto i=array_table.begin(); i != array_table.end(); i++)
+  {
+    if (i->first == tmpTarg)
+    {
+      return true;
+    }
+  }
+  return false;
+}
+
+bool Processor::isArrayVariable(string target)
+{
+  return array_table.find(target) != array_table.end();
+}
+
+string Processor::printArray(vector<int> targ_array)
+{
+  string ans = "[";
+  for (int i = 0; i < targ_array.size() - 1; i++)
+  {
+    ans += to_string(targ_array[i]) + ", ";
+  }
+  ans += to_string(targ_array[targ_array.size() - 1]);
+  ans += "]";
+  return ans;
+}
+
+string Processor::printString(vector<int> targ_string)
+{
+  string ans = "";
+  for (auto i = targ_string.begin(); i != targ_string.end(); i++)
+  {
+    char inst = (char) *i;
+    ans += inst;
+  }
+  return ans;
 }
 
 int Processor::getValue(string target)
@@ -309,6 +435,17 @@ int Processor::getValue(string target)
   {
     ans = global_vars[target];
   }
+  else if (this->isArrayInst(target))
+  {
+    string array_label = target.substr(0, target.find("["));
+    int index = this->getValue(target.substr(target.find("[") + 1, target.find("]") - target.find("[") - 1));
+    if (array_table[array_label].size() <= index || index < 0) { throw ERROR_VAR_UNKNOWN; }
+    ans = array_table[array_label][index];
+  }
+  else if (this->isArrayVariable(target))
+  {
+    // do nothing
+  }
   else if (target == "PARAM")
   {
     ans = params.front();
@@ -316,7 +453,7 @@ int Processor::getValue(string target)
   }
   else
   {
-    cout << target << " isn\'t working. " << endl;
+    cout << target << " isn\'t working. 457" << endl;
     throw ERROR_INVALID_ARITH_OP;
   }
   return ans;
@@ -324,7 +461,14 @@ int Processor::getValue(string target)
 
 void Processor::setValue(string target, int value)
 {
-  if (this->isDataMem(target))
+  if (this->isArrayInst(target))
+  {
+    string array_label = target.substr(0, target.find("["));
+    int index = this->getValue(target.substr(target.find("[") + 1, target.find("]") - target.find("[") - 1));
+    if (array_table[array_label].size() <= index || index < 0) { throw ERROR_VAR_UNKNOWN; }
+    array_table[array_label][index] = value;
+  }
+  else if (this->isDataMem(target))
   {
     data_mem[target] = value;
   }
@@ -338,7 +482,7 @@ void Processor::setValue(string target, int value)
   }
   else
   {
-    cout << target << " isn\'t working. " << endl;
+    cout << target << " isn\'t working. 462" << endl;
     throw ERROR_INVALID_ARITH_OP;
   }
 }

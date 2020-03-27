@@ -20,6 +20,7 @@ ASTNode * LLParser::createASTNullNode()
     ans->left = NULL;
     ans->right = NULL;
     ans->value = INT_MIN;
+    ans->key = "0";
     return ans;
 }
 
@@ -71,9 +72,27 @@ ASTNode * LLParser::createASTNode(ASTType type, ASTNode* left, ASTNode* right)
 ASTNode * LLParser::createASTCharNode(TokenEntry entry)
 {
     ASTNode * ans = new ASTNode();
-    ans->value = (int) (entry.entry == "\'\'" ? ' ' : entry.entry[1]);
+    ans->value = (int) (entry.entry == "\' \'" ? ' ' : stoi(entry.entry));
     ans->type = CHAR;
     ans->key = to_string(ans->value);
+    return ans;
+}
+
+ASTNode * LLParser::createASTWholeArrayNode(TokenEntry entry)
+{
+    ASTNode * ans = new ASTNode();
+    ans->value = 0;
+    ans->type = ARRAY_WHOLE;
+    ans->key = entry.entry;
+    return ans;
+}
+
+ASTNode * LLParser::createASTArrayNode(TokenEntry entry)
+{
+    ASTNode * ans = new ASTNode();
+    ans->value = -1;
+    ans->type = ARRAY_ACCESS;
+    ans->key = entry.entry;
     return ans;
 }
 
@@ -119,7 +138,6 @@ ASTNode * LLParser::Main()
     StmtList(mainNode);
     symbol_table.clear();
     validToken(T_SYMBOL, "}");
-    
     return mainNode;
 }
 
@@ -164,7 +182,32 @@ void LLParser::Dependencies(ASTNode * root)
             globalNode->right = createASTNode(DEPENDENCY, GlobalAssignment(), NULL);
             globalNode = globalNode->right;
         }
+        else if (currToken->entry == "import")
+        {
+            currToken++;
+
+            ASTNode * importLib;
+            if (currToken->entry == "std")
+            {
+                importLib = createASTVariableNode(*currToken);
+            }
+            else
+            {
+                importLib = ImportFile();
+            }
+            
+            currToken++;
+
+            validToken(T_SYMBOL, ";");
+            
+            globalNode->right = createASTNode(IMPORT, importLib, NULL);
+        }
     }
+}
+
+ASTNode * LLParser::ImportFile()
+{
+    return NULL;
 }
 
 ASTNode * LLParser::Function()
@@ -172,6 +215,9 @@ ASTNode * LLParser::Function()
     ASTNode * functionInner = createASTNode(FUNCTION, NULL, createASTNode(UNKNOWN, NULL, NULL));
     ASTNode * stmtList = functionInner->right;
     map<string, bool> placeholder_symbol_table = symbol_table;
+    set<string> placeholder_array_table = arr_table;
+    arr_table.clear();
+    symbol_table.clear();
     validToken(T_KEYWORD, "function");
     if (IsValidFunction() == false) {throw ERROR_INVALID_SYMBOL;}
     functionInner->key = currToken->entry;
@@ -183,8 +229,21 @@ ASTNode * LLParser::Function()
         if (currToken->entry != ",")
         {
             validToken(T_KEYWORD, "let");
-            symbol_table.insert({currToken->entry, false});
-            stmtList->left = createASTNode(PARAM_INST, NULL, createASTVariableNode(*currToken));
+            ASTType ast_type;
+            ASTNode * parameterName = createASTVariableNode(*currToken);
+            if ((currToken + 1)->entry == "[")
+            {
+                arr_table.insert(currToken->entry);
+                ast_type = PARAM_ARRAY_INST;
+                currToken++;
+                currToken++;
+            }
+            else
+            {
+                symbol_table.insert({currToken->entry, false});
+                ast_type = PARAM_INST;
+            }
+            stmtList->left = createASTNode(ast_type, NULL, parameterName);
             stmtList = stmtList->left;
         }
         currToken++;
@@ -192,8 +251,8 @@ ASTNode * LLParser::Function()
     validToken(T_SYMBOL, ")");
     validToken(T_SYMBOL, "{");
     StmtList(functionInner->right);
-    symbol_table.clear();
     symbol_table = placeholder_symbol_table;
+    arr_table = placeholder_array_table;
     validToken(T_SYMBOL, "}");
     return functionInner;
 }

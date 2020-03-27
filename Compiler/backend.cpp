@@ -158,10 +158,49 @@ void BackEnd::createAssembly(ASTNode * root)
   
     createAssembly(root->right);
 
+    ASTNode * elementPtr;
     switch (root->type)
     {
+        case IMPORT:
+            if (root->left->key == "std")
+            {
+                initStandardLib();
+            }
+            return;
+        case ARRAY_INIT_SIZE:
+        case ARRAY_EXCH:
+            entry = new AssemblyEntry(ALU_OPP, programCounter++, "", "arrL", root->left->key, root->right->key);
+            assembly.push_back(*entry);
+            break;
+        case ARRAY_INIT:
+            if (root->right->type == ARRAY_INIT_PRE_ELM)
+            {
+                entry = new AssemblyEntry(ALU_OPP, programCounter++, "", "arrL", root->left->key, root->right->left->key);
+                assembly.push_back(*entry);
+                elementPtr = root->right->right->right;
+                while(elementPtr)
+                {
+                    entry = new AssemblyEntry(ALU_OPP, programCounter++, "", "arrE", root->left->key, elementPtr->key);
+                    assembly.push_back(*entry);
+                    elementPtr = elementPtr->right;
+                }
+            }
+            else
+            {
+                entry = new AssemblyEntry(ALU_OPP, programCounter++, "", "arrL", root->left->key, root->right->key);
+                assembly.push_back(*entry);
+            }
+            break;
+        case PARAM_ARRAY_INST:
+            entry = new AssemblyEntry(ALU_OPP, programCounter++, "", "arrL", root->right->key, "PARAM_ARR");
+            assembly.push_back(*entry);
+            break;
         case PARAM_INST:
             entry = new AssemblyEntry(ALU_OPP, programCounter++, "", "load", root->right->key, "PARAM");
+            assembly.push_back(*entry);
+            break;
+        case PARAM_ARRAY_CALL:
+            entry = new AssemblyEntry(ALU_OPP, programCounter++, "", "push", "PARAM_ARR", root->left->key);
             assembly.push_back(*entry);
             break;
         case PARAM_CALL:
@@ -204,13 +243,16 @@ void BackEnd::createAssembly(ASTNode * root)
             entry = new AssemblyEntry(JUMP_OPP, programCounter++, "", "jmp", assemblyLabel, "");
             assembly.push_back(*entry);
             break;
+        case DELETE:
+            entry = new AssemblyEntry(ALU_OPP, programCounter++, "", "delete", root->left->key, "");
+            assembly.push_back(*entry);
+            break;
+        case RETURN_ARR:
         case RETURN:
-            if (root->left->type != UNKNOWN)
-            {
-                entry = new AssemblyEntry(ALU_OPP, programCounter++, "", "load", "RET_V", root->left->key);
-                assembly.push_back(*entry);
-                root->key = "RET_V";
-            }
+            entry = new AssemblyEntry(ALU_OPP, programCounter++, "", root->type == RETURN ? "load" : "arrL", "RET_V", root->left->key);
+            assembly.push_back(*entry);
+            root->key = "RET_V";
+            break;
         case FUNCTION:
             assemblyLabel = "RET_A";
             entry = new AssemblyEntry(JUMP_OPP, programCounter++, "", "jmp", assemblyLabel, "");
@@ -321,6 +363,8 @@ void BackEnd::createAssembly(ASTNode * root)
             assembly.push_back(*entry);
             root->key = root->left->key;
             break;
+        case ASSIGN_NONE:
+            root->right->key = "0";
         case ASSIGN:
             entry = new AssemblyEntry(ALU_OPP, programCounter++, "", "load", root->left->key, root->right->key);
             assembly.push_back(*entry);
@@ -383,6 +427,17 @@ void BackEnd::createAssembly(ASTNode * root)
             return;
     }
     delete entry;
+}
+
+void BackEnd::initStandardLib()
+{
+    StdInit stdInit(programCounter);
+    vector<AssemblyEntry> ans = stdInit.getAssembly();
+    programCounter = stdInit.getCounter();
+    for (auto i = ans.begin(); i != ans.end(); i++)
+    {
+        assembly.push_back(*i);
+    }
 }
 
 
