@@ -33,10 +33,6 @@ void FrontEnd::run(string file_text)
     // do private operations for front end.
     FrontEnd::scanner();
 
-    // for (auto i = tokens.begin(); i != tokens.end(); i++)
-    // {
-    //   cout << i->entry << " " << i->tType << endl;
-    // }
     FrontEnd::parse();
 
     // close file after operations
@@ -56,6 +52,10 @@ void FrontEnd::assignVariables()
     "const",
     "function",
     "PRINT",
+    "SCAN",
+    "COPY",
+    "LENGTH",
+    "EQUAL",
     "let",
     "for",
     "while",

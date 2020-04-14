@@ -9,6 +9,7 @@ void BackEnd::run(ASTNode* ast)
 {
     if (ast != NULL)
     {
+        initStandardLib();
         createAssembly(ast);
     }
 }
@@ -162,10 +163,6 @@ void BackEnd::createAssembly(ASTNode * root)
     switch (root->type)
     {
         case IMPORT:
-            if (root->left->key == "std")
-            {
-                initStandardLib();
-            }
             return;
         case ARRAY_INIT_SIZE:
         case ARRAY_EXCH:
@@ -378,6 +375,28 @@ void BackEnd::createAssembly(ASTNode * root)
             break;
         case PRINT:
             entry = new AssemblyEntry(ALU_OPP, programCounter++, "", "print", root->left->key, root->right->key);
+            assembly.push_back(*entry);
+            root->key = root->left->key;
+            break;
+        case SCAN:
+            entry = new AssemblyEntry(ALU_OPP, programCounter++, "", "scan", root->left->key, "");
+            assembly.push_back(*entry);
+            root->key = root->left->key;
+            break;
+        case LENGTH:
+            entry = new AssemblyEntry(ALU_OPP, programCounter++, "", "len", root->left->key, root->right->key);
+            assembly.push_back(*entry);
+            root->key = root->left->key;
+            break;
+        case EQUAL_FUNC:
+            entry = new AssemblyEntry(ALU_OPP, programCounter++, "", "eqf", root->right->left->key, root->right->right->key);
+            assembly.push_back(*entry);
+            entry = new AssemblyEntry(ALU_OPP, programCounter++, "", "load", root->left->key, "CMPR");
+            assembly.push_back(*entry);
+            root->key = root->left->key;
+            break;
+        case COPY:
+            entry = new AssemblyEntry(ALU_OPP, programCounter++, "", "copy", root->left->key, root->right->key);
             assembly.push_back(*entry);
             root->key = root->left->key;
             break;

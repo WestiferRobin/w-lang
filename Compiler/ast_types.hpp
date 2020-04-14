@@ -97,6 +97,10 @@ enum ASTType
    RETURN_ARR,
 
    PRINT,
+   SCAN,
+   COPY,
+   LENGTH,
+   EQUAL_FUNC,
    DELETE,
 
    UNKNOWN

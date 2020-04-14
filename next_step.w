@@ -1,7 +1,7 @@
+const helloMessage = "HelloWorld!";
+let manVar = 25;
 
-const whatValue = "Start of something Great!";
-
-function P_WHERE_AM_I()
+function P_MESSAGE()
 {
-    PRINT("You are here. In the next steps.", pstrn);
+    PRINT(helloMessage, pstrn);
 }

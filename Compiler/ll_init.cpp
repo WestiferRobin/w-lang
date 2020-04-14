@@ -6,10 +6,12 @@ void LLParser::validToken(TokenType param1, string param2)
     currToken++;
 }
 
-
 ASTNode * LLParser::initGrammar(TokenEntry * token_instance) 
 {
     currToken = token_instance;
+    StdInit * std = new StdInit();
+    std->addSymbolsToTable(global_symbol_table);
+    delete std;
     return Start();
 }
 
@@ -184,20 +186,10 @@ void LLParser::Dependencies(ASTNode * root)
         }
         else if (currToken->entry == "import")
         {
-            currToken++;
+            validToken(T_KEYWORD, currToken->entry);
 
-            ASTNode * importLib;
-            if (currToken->entry == "std")
-            {
-                importLib = createASTVariableNode(*currToken);
-            }
-            else
-            {
-                importLib = ImportFile();
-            }
+            ASTNode * importLib = ImportFile();
             
-            currToken++;
-
             validToken(T_SYMBOL, ";");
             
             globalNode->right = createASTNode(IMPORT, importLib, NULL);
@@ -207,7 +199,12 @@ void LLParser::Dependencies(ASTNode * root)
 
 ASTNode * LLParser::ImportFile()
 {
-    return NULL;
+    FrontEnd * importFrontEnd = new FrontEnd();
+    importFrontEnd->run(currToken->entry + ".w");
+    ASTNode * results = importFrontEnd->getAST();
+    delete importFrontEnd;
+    currToken++;
+    return results;
 }
 
 ASTNode * LLParser::Function()

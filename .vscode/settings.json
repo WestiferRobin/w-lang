@@ -3,6 +3,10 @@
         "iostream": "cpp",
         "string": "cpp",
         "iosfwd": "cpp",
-        "vector": "cpp"
+        "vector": "cpp",
+        "tuple": "cpp",
+        "__split_buffer": "cpp",
+        "ostream": "cpp",
+        "ios": "cpp"
     }
 }

@@ -61,27 +61,32 @@ Finished:
         - finished returning array and strings as a return values.
         - finished equal values in assigning two arrays. 
         - bug was found for declaring size of array which was solved.
+    - Write default libary in assembly
+        - add special constants (done)
+        - add limits (done)
+        - add a IO library
+            - SCAN (done)
+            - PRINT (done)
+        - string/array manipulation library
+            - COPY (done)
+            - LENGTH (done)
+            - EQUAL (done)
 
 In Progress:
-    - Write default libary called std
-        - integrate with current print statement
-        - add a scanner library
-        - add a math library
-        - string manipulation library
-        - standard constants currently in test_space.w and climits
-TODO:
+    - Writing Draft of Git README.md
     - Write cross file communication as classes
-        - Add function overloading/overriding
-        - Its C inspired so no classes. 
         - Able to compile other files when specified and use the dot 
             - ex.) import file => file.w gets frontended and added to AST => DO_SOME_FUNCTION() => "Hello, I'm from FileA" AND PRINT(value, pintn); => 123 
-    - Do a clean from big feature.
+
+TODO:
+    - Clean up draft.
         - organize all of the general functions into seperate cpp files.
         - Implement HUGE ammount of functions into other classes.
         - pull out functions used in both Processor and Compiler in W_Source folder.
         - Have a new folder to do build of the object files in the Makefile
         - write actual errors and have a better working error system. DOES NOT HAVE TO BE PERFECT BUT IT HAS TO MAKE SENSE!
     - BUGS!!!!
+        - Add REVERSE string/array builtin function
         - Clean up the double load registers
         - Clean up char and strings having '\' to work
         - Fix Switch bug with able to have multiple cases and sometimes no breaks and some times no defaults

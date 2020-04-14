@@ -230,6 +230,59 @@ void Processor::readALUop(AssemblyEntry assemblyLine)
     left = getValue(assemblyLine.firstOp);
     this->setValue(assemblyLine.firstOp, !left);
   }
+  else if (assemblyLine.operatorLabel == "copy")
+  {
+    if (array_table.find(assemblyLine.firstOp) != array_table.end() &&
+      array_table.find(assemblyLine.secondOp) != array_table.end()
+    ) 
+    {
+      array_table[assemblyLine.firstOp] = array_table[assemblyLine.secondOp];
+    }
+    else
+    {
+      throw ERROR_INVALID_OP_CODE;
+    }
+  }
+  else if (assemblyLine.operatorLabel == "len")
+  {
+    if (array_table.find(assemblyLine.secondOp) != array_table.end() &&
+      (data_mem.find(assemblyLine.firstOp) != data_mem.end() || global_vars.find(assemblyLine.firstOp) != global_vars.end())
+    )
+    {
+      this->setValue(assemblyLine.firstOp, array_table[assemblyLine.secondOp].size());
+    }
+    else
+    {
+      throw ERROR_INVALID_OP_CODE;
+    }
+  }
+  else if (assemblyLine.operatorLabel == "eqf")
+  {
+    if (array_table.find(assemblyLine.secondOp) != array_table.end() && array_table.find(assemblyLine.firstOp) != array_table.end())
+    {
+      registers["CMPR"] = array_table[assemblyLine.firstOp] == array_table[assemblyLine.secondOp];
+    }
+    else
+    {
+      throw ERROR_INVALID_OP_CODE;
+    }
+  }
+  else if (assemblyLine.operatorLabel == "scan")
+  {
+    string target;
+    getline(cin, target);
+    if (atoi(target.c_str()))
+      this->setValue(assemblyLine.firstOp, stoi(target));
+    else
+    {
+      vector<int> param;
+      for (int i = 0; i < target.size(); i++)
+      {
+        param.push_back((int)target[i]);
+      }
+      array_table[assemblyLine.firstOp] = param;
+    }
+  }
   else if (assemblyLine.operatorLabel == "print")
   {
     if (!this->isArrayVariable(assemblyLine.firstOp) || assemblyLine.firstOp == "RET_V")

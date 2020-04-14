@@ -31,6 +31,22 @@ void LLParser::StmtList(ASTNode * root)
         {
             stmt = Print();
         }
+        else if (currToken->entry == "SCAN" && currToken->tType == T_KEYWORD)
+        {
+            stmt = Scan();
+        }
+        else if (currToken->entry == "COPY" && currToken->tType == T_KEYWORD)
+        {
+            stmt = Copy();
+        }
+        else if (currToken->entry == "LENGTH" && currToken->tType == T_KEYWORD)
+        {
+            stmt = Length();
+        }
+        else if (currToken->entry == "EQUAL" && currToken->tType == T_KEYWORD)
+        {
+            stmt = Equal();
+        }
         else if (currToken->entry == "switch" && currToken->tType == T_KEYWORD)
         {
             stmt = SwitchStatement();
@@ -160,7 +176,7 @@ ASTNode * LLParser::Print()
             printMode = createASTNumberNode(*currToken);
             break; 
         default:
-            cout << "line 140" << endl;
+            cout << "line 163" << endl;
             throw ERROR_INVALID_SYMBOL;
     }
     currToken++;
@@ -168,6 +184,95 @@ ASTNode * LLParser::Print()
     validToken(T_SYMBOL, ";");
 
     return createASTNode(PRINT, printContent, printMode);
+}
+
+ASTNode * LLParser::Scan()
+{
+    ASTNode * inputVariable;
+    validToken(T_SYMBOL, "SCAN");
+    validToken(T_SYMBOL, "(");
+    if (currToken->tType == T_VARIABLE && symbol_table.find(currToken->entry) != symbol_table.end())
+    {
+        inputVariable = createASTVariableNode(*currToken++);
+    }
+    else
+    {
+        cout << "line 184" << endl;
+        throw ERROR_INVALID_SYMBOL;
+    }
+    validToken(T_SYMBOL, ")");
+    validToken(T_SYMBOL, ";");
+
+    return createASTNode(SCAN, inputVariable, NULL);
+}
+
+ASTNode * LLParser::Copy()
+{
+    ASTNode * copyTarget;
+    ASTNode * copySource;
+    validToken(T_SYMBOL, "COPY");
+    validToken(T_SYMBOL, "(");
+    if (currToken->tType == T_VARIABLE && arr_table.find(currToken->entry) != arr_table.end())
+    {
+        copyTarget = createASTWholeArrayNode(*currToken++);
+    }
+    validToken(T_SYMBOL, ",");
+    if (currToken->tType == T_VARIABLE && arr_table.find(currToken->entry) != arr_table.end())
+    {
+        copySource = createASTWholeArrayNode(*currToken++);
+    }
+    validToken(T_SYMBOL, ")");
+    validToken(T_SYMBOL, ";");
+
+    return createASTNode(COPY, copyTarget, copySource);
+}
+
+ASTNode * LLParser::Length()
+{
+    ASTNode * lenTarg;
+    ASTNode * lenSource;
+    validToken(T_SYMBOL, "LENGTH");
+    validToken(T_SYMBOL, "(");
+    if (currToken->tType == T_VARIABLE && symbol_table.find(currToken->entry) != symbol_table.end())
+    {
+        lenTarg = createASTVariableNode(*currToken++);
+    }
+    validToken(T_SYMBOL, ",");
+    if (currToken->tType == T_VARIABLE && arr_table.find(currToken->entry) != arr_table.end())
+    {
+        lenSource = createASTWholeArrayNode(*currToken++);
+    }
+    validToken(T_SYMBOL, ")");
+    validToken(T_SYMBOL, ";");
+
+    return createASTNode(LENGTH, lenTarg, lenSource);
+}
+
+ASTNode * LLParser::Equal()
+{
+    ASTNode * result;
+    ASTNode * leftSide;
+    ASTNode * rightSide;
+    validToken(T_SYMBOL, "EQUAL");
+    validToken(T_SYMBOL, "(");
+    if (currToken->tType == T_VARIABLE && symbol_table.find(currToken->entry) != symbol_table.end())
+    {
+        result = createASTVariableNode(*currToken++);
+    }
+    validToken(T_SYMBOL, ",");
+    if (currToken->tType == T_VARIABLE && arr_table.find(currToken->entry) != arr_table.end())
+    {
+        leftSide = createASTWholeArrayNode(*currToken++);
+    }
+    validToken(T_SYMBOL, ",");
+    if (currToken->tType == T_VARIABLE && arr_table.find(currToken->entry) != arr_table.end())
+    {
+        rightSide = createASTWholeArrayNode(*currToken++);
+    }
+    validToken(T_SYMBOL, ")");
+    validToken(T_SYMBOL, ";");
+
+    return createASTNode(EQUAL_FUNC, result, createASTNode(UNKNOWN, leftSide, rightSide));
 }
 
 ASTNode * LLParser::DeleteStatement()
@@ -269,8 +374,8 @@ ASTNode * LLParser::Assignment(bool isUsingSemi)
             if (currToken->entry != "let" && currToken->entry != "const") {throw ERROR_INVALID_KEYWORD;}
             isConstant = currToken->entry == "const";
             currToken++;
-            if ((symbol_table.find(currToken->entry) != symbol_table.end() &&
-                global_symbol_table.find(currToken->entry) != global_symbol_table.end()) || 
+            if (symbol_table.find(currToken->entry) != symbol_table.end() ||
+                global_symbol_table.find(currToken->entry) != global_symbol_table.end() || 
                 arr_table.find(currToken->entry) != arr_table.end()
             ) {throw ERROR_VAR_UNKNOWN;}
             else if (currToken->tType != T_VARIABLE) { cout << "line 243" << endl; throw ERROR_INVALID_SYMBOL; } 

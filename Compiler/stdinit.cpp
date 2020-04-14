@@ -1,19 +1,54 @@
 #include "compiler_comp.hpp"
 
+StdInit::StdInit(unsigned long long currCount) : programCounter(currCount) 
+{ 
+    initStd(); 
+}
+
+StdInit::StdInit() : programCounter(0)
+{
+    initStd();
+}
+
+void StdInit::initStd()
+{
+    initLimits();
+    initStdConsts();
+    initStdFuncs();
+}
+
+void StdInit::initLimits()
+{
+    limit_sym.push_back({"pintn", "0"});
+    limit_sym.push_back({"pint", "1"});
+    limit_sym.push_back({"pcharn", "2"});
+    limit_sym.push_back({"pchar", "3"});
+    limit_sym.push_back({"parr", "4"});
+    limit_sym.push_back({"parrn", "5"});
+    limit_sym.push_back({"pstr", "6"});
+    limit_sym.push_back({"pstrn", "7"});
+    limit_sym.push_back({"schar", "97"});
+    limit_sym.push_back({"echar", "122"});
+    limit_sym.push_back({"scchar", "65"});
+    limit_sym.push_back({"ecchar", "90"});
+    limit_sym.push_back({"mini", "-2147483648"});
+    limit_sym.push_back({"maxi", "2147483647"});
+}
+
+void StdInit::addSymbolsToTable(map<string, bool> &global_sy)
+{
+    for (auto it = limit_sym.begin(); it != limit_sym.end(); it++)
+    {
+        global_sy.insert({get<0>(*it), true});
+    }
+}
+
 void StdInit::initStdConsts()
 {
-    stdInitAssembly.push_back(*(new AssemblyEntry(ALU_OPP, programCounter++, "", "load", "pintn", "0")));
-    stdInitAssembly.push_back(*(new AssemblyEntry(ALU_OPP, programCounter++, "", "load", "pint", "1")));
-    stdInitAssembly.push_back(*(new AssemblyEntry(ALU_OPP, programCounter++, "", "load", "pcharn", "2")));
-    stdInitAssembly.push_back(*(new AssemblyEntry(ALU_OPP, programCounter++, "", "load", "pchar", "3")));
-    stdInitAssembly.push_back(*(new AssemblyEntry(ALU_OPP, programCounter++, "", "load", "parr", "4")));
-    stdInitAssembly.push_back(*(new AssemblyEntry(ALU_OPP, programCounter++, "", "load", "parrn", "5")));
-    stdInitAssembly.push_back(*(new AssemblyEntry(ALU_OPP, programCounter++, "", "load", "pstr", "6")));
-    stdInitAssembly.push_back(*(new AssemblyEntry(ALU_OPP, programCounter++, "", "load", "pstrn", "7")));
-    stdInitAssembly.push_back(*(new AssemblyEntry(ALU_OPP, programCounter++, "", "load", "schar", "97")));
-    stdInitAssembly.push_back(*(new AssemblyEntry(ALU_OPP, programCounter++, "", "load", "echar", "122")));
-    stdInitAssembly.push_back(*(new AssemblyEntry(ALU_OPP, programCounter++, "", "load", "scchar", "65")));
-    stdInitAssembly.push_back(*(new AssemblyEntry(ALU_OPP, programCounter++, "", "load", "ecchar", "90")));
+    for (auto it = limit_sym.begin(); it != limit_sym.end(); it++)
+    {
+        stdInitAssembly.push_back(*(new AssemblyEntry(ALU_OPP, programCounter++, "", "load", get<0>(*it), get<1>(*it))));
+    }
 }
 
 void StdInit::initStdFuncs()

@@ -19,18 +19,19 @@ using namespace std;
 class StdInit
 {
 private:
+  vector<tuple<string, string>> limit_sym;
   vector<AssemblyEntry> stdInitAssembly;
   unsigned long long programCounter;
   void initStdConsts();
   void initStdFuncs();
+  void initLimits();
+  void initStd();
 public:
+  void addSymbolsToTable(map<string, bool>&);
   vector<AssemblyEntry> getAssembly() {return stdInitAssembly;}
   unsigned long long getCounter() { return programCounter; }
-  StdInit(unsigned long long currCount) : programCounter(currCount) 
-  { 
-    initStdConsts();
-    initStdFuncs();
-  }
+  StdInit(unsigned long long currCount);
+  StdInit();
   ~StdInit() { }
 };
 
@@ -66,6 +67,10 @@ private:
   ASTNode * FunctionCall();
   bool IsValidFunction();
   ASTNode * Print();
+  ASTNode * Scan();
+  ASTNode * Copy();
+  ASTNode * Length();
+  ASTNode * Equal();
   ASTNode * DeleteStatement();
 
   void StmtList(ASTNode*);
