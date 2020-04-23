@@ -6,18 +6,22 @@
 
 class Compiler
 {
-  FrontEnd fe;
-  BackEnd be;
+  FrontEnd * fe;
+  BackEnd * be;
 public:
-  Compiler() { }
-  ~Compiler() { }
+  Compiler() 
+  { 
+    fe = new FrontEnd(); 
+    be = new BackEnd();
+  }
+  ~Compiler() { delete fe; delete be;}
   void parse(string file_name)
   {
-    fe.run(file_name); 
-    be.addSymbolTable(fe.getSymbolTable());
-    be.run(fe.getAST());
+    fe->run(file_name); 
+    be->addSymbolTable(fe->getSymbolTable());
+    be->run(fe->getAST());
   }
-  vector<AssemblyEntry> getAssembly() { return be.getAssembly(); }
+  vector<AssemblyEntry*> getAssembly() { return be->getAssembly(); }
 };
 
 #endif

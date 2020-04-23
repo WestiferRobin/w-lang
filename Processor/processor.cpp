@@ -13,9 +13,9 @@ void Processor::init()
   // setups the labels needed for the program
   for (int i = 0; i < assembly.size(); i++)
   {
-    if (assembly[i].type == JUMP_LABEL)
+    if (assembly[i]->type == JUMP_LABEL)
     {
-      jump_labels.insert({assembly[i].label, assembly[i].counter});
+      jump_labels.insert({assembly[i]->label, assembly[i]->counter});
     }
   }
 }
@@ -27,28 +27,28 @@ void Processor::run()
     init();
     while (programCounter < assembly.size())
     {
-      AssemblyEntry instance = assembly[programCounter];
-      switch (instance.type)
+      AssemblyEntry * instance = assembly[programCounter];
+      switch (instance->type)
       {
         case JUMP_LABEL:
           break;
         case JUMP_OPP:
-          if (jump_labels.find(instance.firstOp) == jump_labels.end() && instance.firstOp != "RET_A")
+          if (jump_labels.find(instance->firstOp) == jump_labels.end() && instance->firstOp != "RET_A")
           {
-            cout << instance.firstOp << " IS NOT A VALID JUMP!!!!!!!!!" << endl;
+            cout << instance->firstOp << " IS NOT A VALID JUMP!!!!!!!!!" << endl;
             throw ERROR_INVALID_SYMBOL;
           }
-          else if (instance.operatorLabel == "jc")
+          else if (instance->operatorLabel == "jc")
           {
-            programCounter = registers["CMPR"] > 0 ? jump_labels[instance.firstOp] : programCounter;
+            programCounter = registers["CMPR"] > 0 ? jump_labels[instance->firstOp] : programCounter;
           }
-          else if (instance.operatorLabel == "jmp")
+          else if (instance->operatorLabel == "jmp")
           {
-            if (instance.firstOp == "MAIN")
+            if (instance->firstOp == "MAIN")
             {
               isGettingGlobal = false;
             }
-            programCounter = instance.firstOp == "RET_A" ? return_addresses.top() : jump_labels[instance.firstOp];
+            programCounter = instance->firstOp == "RET_A" ? return_addresses.top() : jump_labels[instance->firstOp];
           }
           break;
         case ALU_OPP:
@@ -66,213 +66,213 @@ void Processor::run()
   }
 }
 
-void Processor::readALUop(AssemblyEntry assemblyLine)
+void Processor::readALUop(AssemblyEntry * assemblyLine)
 {
   int left = 0;
   int right = 0;
-  if (assemblyLine.operatorLabel == "load")
+  if (assemblyLine->operatorLabel == "load")
   {
-    if (isGettingGlobal) { global_vars.insert({assemblyLine.firstOp, stoi(assemblyLine.secondOp)}); return;}
-    if (this->isLoadValid(assemblyLine.firstOp))
+    if (isGettingGlobal) { global_vars.insert({assemblyLine->firstOp, stoi(assemblyLine->secondOp)}); return;}
+    if (this->isLoadValid(assemblyLine->firstOp))
     {
-      this->setValue(assemblyLine.firstOp, this->getValue(assemblyLine.secondOp));
+      this->setValue(assemblyLine->firstOp, this->getValue(assemblyLine->secondOp));
     }
-    else if (data_mem.find(assemblyLine.firstOp) == data_mem.end() && this->isArrayInst(assemblyLine.firstOp) == false) 
+    else if (data_mem.find(assemblyLine->firstOp) == data_mem.end() && this->isArrayInst(assemblyLine->firstOp) == false) 
     {
-      data_mem.insert({assemblyLine.firstOp, this->getValue(assemblyLine.secondOp)});
+      data_mem.insert({assemblyLine->firstOp, this->getValue(assemblyLine->secondOp)});
     }
     else
     {
       throw ERROR_INVALID_LOAD;
     }
   }
-  else if (assemblyLine.operatorLabel == "arrL")
+  else if (assemblyLine->operatorLabel == "arrL")
   {
-    if (array_table.find(assemblyLine.firstOp) != array_table.end())
+    if (array_table.find(assemblyLine->firstOp) != array_table.end())
     {
-      array_table.erase(assemblyLine.firstOp);
+      array_table.erase(assemblyLine->firstOp);
     }
-    if (array_table.find(assemblyLine.firstOp) == array_table.end() && array_table.find(assemblyLine.secondOp) != array_table.end())
+    if (array_table.find(assemblyLine->firstOp) == array_table.end() && array_table.find(assemblyLine->secondOp) != array_table.end())
     {
-      array_table[assemblyLine.firstOp] = array_table[assemblyLine.secondOp];
+      array_table[assemblyLine->firstOp] = array_table[assemblyLine->secondOp];
     }
-    else if (assemblyLine.secondOp == "PARAM_ARR")
+    else if (assemblyLine->secondOp == "PARAM_ARR")
     {
-      array_table.insert({assemblyLine.firstOp, params_array.front()});
+      array_table.insert({assemblyLine->firstOp, params_array.front()});
       params_array.pop();
     }
     else
     {
-      if (assemblyLine.firstOp == "RET_V" || assemblyLine.secondOp == "RET_V")
+      if (assemblyLine->firstOp == "RET_V" || assemblyLine->secondOp == "RET_V")
       {
         if (array_table.find("RET_V") == array_table.end())
         {
-          array_table.insert({assemblyLine.firstOp, vector<int>()});
+          array_table.insert({assemblyLine->firstOp, vector<int>()});
         }
-        array_table[assemblyLine.firstOp] = array_table[assemblyLine.secondOp];
+        array_table[assemblyLine->firstOp] = array_table[assemblyLine->secondOp];
       }
-      else if (this->getValue(assemblyLine.secondOp) == 0)
+      else if (this->getValue(assemblyLine->secondOp) == 0)
       {
-        array_table.insert({assemblyLine.firstOp, vector<int>()});
+        array_table.insert({assemblyLine->firstOp, vector<int>()});
       }
       else
       {
-        array_table.insert({assemblyLine.firstOp, vector<int>(this->getValue(assemblyLine.secondOp))});
+        array_table.insert({assemblyLine->firstOp, vector<int>(this->getValue(assemblyLine->secondOp))});
       }
     }
   }
-  else if (assemblyLine.operatorLabel == "arrE")
+  else if (assemblyLine->operatorLabel == "arrE")
   {
-    if (array_table.find(assemblyLine.firstOp) != array_table.end())
+    if (array_table.find(assemblyLine->firstOp) != array_table.end())
     {
-      array_table[assemblyLine.firstOp].push_back(this->getValue(assemblyLine.secondOp));
+      array_table[assemblyLine->firstOp].push_back(this->getValue(assemblyLine->secondOp));
     }
     else
     {
       throw ERROR_VAR_UNKNOWN;
     }
   }
-  else if (assemblyLine.operatorLabel == "push")
+  else if (assemblyLine->operatorLabel == "push")
   {
-    if (assemblyLine.firstOp == "RET_A")
+    if (assemblyLine->firstOp == "RET_A")
     {
-      return_addresses.push(stoi(assemblyLine.secondOp));
+      return_addresses.push(stoi(assemblyLine->secondOp));
     }
-    else if (assemblyLine.firstOp == "PARAM")
+    else if (assemblyLine->firstOp == "PARAM")
     {
-      params.push(this->getValue(assemblyLine.secondOp));
+      params.push(this->getValue(assemblyLine->secondOp));
     }
-    else if (assemblyLine.firstOp == "PARAM_ARR")
+    else if (assemblyLine->firstOp == "PARAM_ARR")
     {
-      params_array.push(array_table[assemblyLine.secondOp]);
+      params_array.push(array_table[assemblyLine->secondOp]);
     }
   }
-  else if (assemblyLine.operatorLabel == "pop")
+  else if (assemblyLine->operatorLabel == "pop")
   {
     return_addresses.pop();
   }
-  else if (assemblyLine.operatorLabel == "and")
+  else if (assemblyLine->operatorLabel == "and")
   {
-    left = getValue(assemblyLine.firstOp);
-    right = getValue(assemblyLine.secondOp);
-    this->setValue(assemblyLine.firstOp, left && right);
+    left = getValue(assemblyLine->firstOp);
+    right = getValue(assemblyLine->secondOp);
+    this->setValue(assemblyLine->firstOp, left && right);
     registers["CMPR"] = left && right;
   }
-  else if (assemblyLine.operatorLabel == "or")
+  else if (assemblyLine->operatorLabel == "or")
   {
-    left = getValue(assemblyLine.firstOp);
-    right = getValue(assemblyLine.secondOp);
-    this->setValue(assemblyLine.firstOp, left || right);
+    left = getValue(assemblyLine->firstOp);
+    right = getValue(assemblyLine->secondOp);
+    this->setValue(assemblyLine->firstOp, left || right);
     registers["CMPR"] = left || right;
   }
-  else if (assemblyLine.operatorLabel == "b_and")
+  else if (assemblyLine->operatorLabel == "b_and")
   {
-    left = getValue(assemblyLine.firstOp);
-    right = getValue(assemblyLine.secondOp);
-    this->setValue(assemblyLine.firstOp, left & right);
+    left = getValue(assemblyLine->firstOp);
+    right = getValue(assemblyLine->secondOp);
+    this->setValue(assemblyLine->firstOp, left & right);
   }
-  else if (assemblyLine.operatorLabel == "b_or")
+  else if (assemblyLine->operatorLabel == "b_or")
   {
-    left = getValue(assemblyLine.firstOp);
-    right = getValue(assemblyLine.secondOp);
-    this->setValue(assemblyLine.firstOp, left | right);
+    left = getValue(assemblyLine->firstOp);
+    right = getValue(assemblyLine->secondOp);
+    this->setValue(assemblyLine->firstOp, left | right);
   }
-  else if (assemblyLine.operatorLabel == "xor")
+  else if (assemblyLine->operatorLabel == "xor")
   {
-    left = getValue(assemblyLine.firstOp);
-    right = getValue(assemblyLine.secondOp);
-    this->setValue(assemblyLine.firstOp, left ^ right);
+    left = getValue(assemblyLine->firstOp);
+    right = getValue(assemblyLine->secondOp);
+    this->setValue(assemblyLine->firstOp, left ^ right);
   }
-  else if (assemblyLine.operatorLabel == "sh_left")
+  else if (assemblyLine->operatorLabel == "sh_left")
   {
-    left = getValue(assemblyLine.firstOp);
-    right = getValue(assemblyLine.secondOp);
-    this->setValue(assemblyLine.firstOp, left << right);
+    left = getValue(assemblyLine->firstOp);
+    right = getValue(assemblyLine->secondOp);
+    this->setValue(assemblyLine->firstOp, left << right);
   }
-  else if (assemblyLine.operatorLabel == "sh_right")
+  else if (assemblyLine->operatorLabel == "sh_right")
   {
-    left = getValue(assemblyLine.firstOp);
-    right = getValue(assemblyLine.secondOp);
-    this->setValue(assemblyLine.firstOp, left >> right);
+    left = getValue(assemblyLine->firstOp);
+    right = getValue(assemblyLine->secondOp);
+    this->setValue(assemblyLine->firstOp, left >> right);
   }
-  else if (assemblyLine.operatorLabel == "add")
+  else if (assemblyLine->operatorLabel == "add")
   {
-    left = getValue(assemblyLine.firstOp);
-    right = getValue(assemblyLine.secondOp);
-    this->setValue(assemblyLine.firstOp, left + right);
+    left = getValue(assemblyLine->firstOp);
+    right = getValue(assemblyLine->secondOp);
+    this->setValue(assemblyLine->firstOp, left + right);
   }
-  else if (assemblyLine.operatorLabel == "sub")
+  else if (assemblyLine->operatorLabel == "sub")
   {
-    left = getValue(assemblyLine.firstOp);
-    right = getValue(assemblyLine.secondOp);
-    this->setValue(assemblyLine.firstOp, left - right);
+    left = getValue(assemblyLine->firstOp);
+    right = getValue(assemblyLine->secondOp);
+    this->setValue(assemblyLine->firstOp, left - right);
   }
-  else if (assemblyLine.operatorLabel == "mod")
+  else if (assemblyLine->operatorLabel == "mod")
   {
-    left = getValue(assemblyLine.firstOp);
-    right = getValue(assemblyLine.secondOp);
-    this->setValue(assemblyLine.firstOp, left % right);
+    left = getValue(assemblyLine->firstOp);
+    right = getValue(assemblyLine->secondOp);
+    this->setValue(assemblyLine->firstOp, left % right);
   }
-  else if (assemblyLine.operatorLabel == "div")
+  else if (assemblyLine->operatorLabel == "div")
   {
-    left = getValue(assemblyLine.firstOp);
-    right = getValue(assemblyLine.secondOp);
-    this->setValue(assemblyLine.firstOp, left / right);
+    left = getValue(assemblyLine->firstOp);
+    right = getValue(assemblyLine->secondOp);
+    this->setValue(assemblyLine->firstOp, left / right);
   }
-  else if (assemblyLine.operatorLabel == "multi")
+  else if (assemblyLine->operatorLabel == "multi")
   {
-    left = getValue(assemblyLine.firstOp);
-    right = getValue(assemblyLine.secondOp);
-    this->setValue(assemblyLine.firstOp, left * right);
+    left = getValue(assemblyLine->firstOp);
+    right = getValue(assemblyLine->secondOp);
+    this->setValue(assemblyLine->firstOp, left * right);
   }
-  else if (assemblyLine.operatorLabel == "not")
+  else if (assemblyLine->operatorLabel == "not")
   {
-    left = getValue(assemblyLine.firstOp);
-    this->setValue(assemblyLine.firstOp, !left);
+    left = getValue(assemblyLine->firstOp);
+    this->setValue(assemblyLine->firstOp, !left);
   }
-  else if (assemblyLine.operatorLabel == "copy")
+  else if (assemblyLine->operatorLabel == "copy")
   {
-    if (array_table.find(assemblyLine.firstOp) != array_table.end() &&
-      array_table.find(assemblyLine.secondOp) != array_table.end()
+    if (array_table.find(assemblyLine->firstOp) != array_table.end() &&
+      array_table.find(assemblyLine->secondOp) != array_table.end()
     ) 
     {
-      array_table[assemblyLine.firstOp] = array_table[assemblyLine.secondOp];
+      array_table[assemblyLine->firstOp] = array_table[assemblyLine->secondOp];
     }
     else
     {
       throw ERROR_INVALID_OP_CODE;
     }
   }
-  else if (assemblyLine.operatorLabel == "len")
+  else if (assemblyLine->operatorLabel == "len")
   {
-    if (array_table.find(assemblyLine.secondOp) != array_table.end() &&
-      (data_mem.find(assemblyLine.firstOp) != data_mem.end() || global_vars.find(assemblyLine.firstOp) != global_vars.end())
+    if (array_table.find(assemblyLine->secondOp) != array_table.end() &&
+      (data_mem.find(assemblyLine->firstOp) != data_mem.end() || global_vars.find(assemblyLine->firstOp) != global_vars.end())
     )
     {
-      this->setValue(assemblyLine.firstOp, array_table[assemblyLine.secondOp].size());
+      this->setValue(assemblyLine->firstOp, array_table[assemblyLine->secondOp].size());
     }
     else
     {
       throw ERROR_INVALID_OP_CODE;
     }
   }
-  else if (assemblyLine.operatorLabel == "eqf")
+  else if (assemblyLine->operatorLabel == "eqf")
   {
-    if (array_table.find(assemblyLine.secondOp) != array_table.end() && array_table.find(assemblyLine.firstOp) != array_table.end())
+    if (array_table.find(assemblyLine->secondOp) != array_table.end() && array_table.find(assemblyLine->firstOp) != array_table.end())
     {
-      registers["CMPR"] = array_table[assemblyLine.firstOp] == array_table[assemblyLine.secondOp];
+      registers["CMPR"] = array_table[assemblyLine->firstOp] == array_table[assemblyLine->secondOp];
     }
     else
     {
       throw ERROR_INVALID_OP_CODE;
     }
   }
-  else if (assemblyLine.operatorLabel == "scan")
+  else if (assemblyLine->operatorLabel == "scan")
   {
     string target;
     getline(cin, target);
     if (atoi(target.c_str()))
-      this->setValue(assemblyLine.firstOp, stoi(target));
+      this->setValue(assemblyLine->firstOp, stoi(target));
     else
     {
       vector<int> param;
@@ -280,17 +280,17 @@ void Processor::readALUop(AssemblyEntry assemblyLine)
       {
         param.push_back((int)target[i]);
       }
-      array_table[assemblyLine.firstOp] = param;
+      array_table[assemblyLine->firstOp] = param;
     }
   }
-  else if (assemblyLine.operatorLabel == "print")
+  else if (assemblyLine->operatorLabel == "print")
   {
-    if (!this->isArrayVariable(assemblyLine.firstOp) || assemblyLine.firstOp == "RET_V")
+    if (!this->isArrayVariable(assemblyLine->firstOp) || assemblyLine->firstOp == "RET_V")
     {
-      left = this->getValue(assemblyLine.firstOp);
+      left = this->getValue(assemblyLine->firstOp);
     }
-    left = this->getValue(assemblyLine.firstOp);
-    right = this->getValue(assemblyLine.secondOp);
+    left = this->getValue(assemblyLine->firstOp);
+    right = this->getValue(assemblyLine->secondOp);
     char tmp = (char) left;
     switch (right)
     {
@@ -307,66 +307,66 @@ void Processor::readALUop(AssemblyEntry assemblyLine)
         cout << tmp;
         break;
       case 4:
-        cout << this->printArray(array_table[assemblyLine.firstOp]) << endl;
+        cout << this->printArray(array_table[assemblyLine->firstOp]) << endl;
         break;
       case 5:
-        cout << this->printArray(array_table[assemblyLine.firstOp]) << endl;
+        cout << this->printArray(array_table[assemblyLine->firstOp]) << endl;
         break;
       case 6:
-        cout << this->printString(array_table[assemblyLine.firstOp]);
+        cout << this->printString(array_table[assemblyLine->firstOp]);
         break;
       case 7:
-        cout << this->printString(array_table[assemblyLine.firstOp]) << endl;
+        cout << this->printString(array_table[assemblyLine->firstOp]) << endl;
         break;
       default:
         throw ERROR_INVALID_OP_CODE;
     }
   }
-  else if (assemblyLine.operatorLabel == "eq")
+  else if (assemblyLine->operatorLabel == "eq")
   {
-    left = getValue(assemblyLine.firstOp);
-    right = getValue(assemblyLine.secondOp);
+    left = getValue(assemblyLine->firstOp);
+    right = getValue(assemblyLine->secondOp);
     registers["CMPR"] = left == right;
   }
-  else if (assemblyLine.operatorLabel == "neq")
+  else if (assemblyLine->operatorLabel == "neq")
   {
-    left = getValue(assemblyLine.firstOp);
-    right = getValue(assemblyLine.secondOp);
+    left = getValue(assemblyLine->firstOp);
+    right = getValue(assemblyLine->secondOp);
     registers["CMPR"] = left != right;
   }
-  else if (assemblyLine.operatorLabel == "lt")
+  else if (assemblyLine->operatorLabel == "lt")
   {
-    left = getValue(assemblyLine.firstOp);
-    right = getValue(assemblyLine.secondOp);
+    left = getValue(assemblyLine->firstOp);
+    right = getValue(assemblyLine->secondOp);
     registers["CMPR"] = left < right;
   }
-  else if (assemblyLine.operatorLabel == "gt")
+  else if (assemblyLine->operatorLabel == "gt")
   {
-    left = getValue(assemblyLine.firstOp);
-    right = getValue(assemblyLine.secondOp);
+    left = getValue(assemblyLine->firstOp);
+    right = getValue(assemblyLine->secondOp);
     registers["CMPR"] = left > right;
   }
-  else if (assemblyLine.operatorLabel == "lte")
+  else if (assemblyLine->operatorLabel == "lte")
   {
-    left = getValue(assemblyLine.firstOp);
-    right = getValue(assemblyLine.secondOp);
+    left = getValue(assemblyLine->firstOp);
+    right = getValue(assemblyLine->secondOp);
     registers["CMPR"] = left <= right;
   }
-  else if (assemblyLine.operatorLabel == "gte")
+  else if (assemblyLine->operatorLabel == "gte")
   {
-    left = getValue(assemblyLine.firstOp);
-    right = getValue(assemblyLine.secondOp);
+    left = getValue(assemblyLine->firstOp);
+    right = getValue(assemblyLine->secondOp);
     registers["CMPR"] = left >= right;
   }
-  else if (assemblyLine.operatorLabel == "delete")
+  else if (assemblyLine->operatorLabel == "delete")
   {
-    if (this->isArrayVariable(assemblyLine.firstOp))
+    if (this->isArrayVariable(assemblyLine->firstOp))
     {
-      array_table.erase(assemblyLine.firstOp);
+      array_table.erase(assemblyLine->firstOp);
     }
-    else if (this->isDataMem(assemblyLine.firstOp))
+    else if (this->isDataMem(assemblyLine->firstOp))
     {
-      data_mem.erase(assemblyLine.firstOp);
+      data_mem.erase(assemblyLine->firstOp);
     }
     else
     {

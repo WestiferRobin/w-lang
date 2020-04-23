@@ -1,0 +1,8 @@
+backend.o
+frontend.o
+ll_init.o
+main.o
+processor.o
+stdinit.o
+wlang
+.vscode/settings.json

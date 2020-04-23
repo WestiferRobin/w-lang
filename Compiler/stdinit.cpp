@@ -47,7 +47,7 @@ void StdInit::initStdConsts()
 {
     for (auto it = limit_sym.begin(); it != limit_sym.end(); it++)
     {
-        stdInitAssembly.push_back(*(new AssemblyEntry(ALU_OPP, programCounter++, "", "load", get<0>(*it), get<1>(*it))));
+        stdInitAssembly.push_back(new AssemblyEntry(ALU_OPP, programCounter++, "", "load", get<0>(*it), get<1>(*it)));
     }
 }
 

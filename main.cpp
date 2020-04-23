@@ -39,14 +39,14 @@ int start(int argc, char * argv[])
   // Do the compiler
   compiler = new Compiler();
   compiler->parse(file_name);
-  vector<AssemblyEntry> assembly = compiler->getAssembly();
+  vector<AssemblyEntry*> assembly = compiler->getAssembly();
 
   if (isDisplayingAssembly)
   {
     cout << "----- RUNNING ASSMEBLY -----" << endl;
-    for (AssemblyEntry asdf : assembly)
+    for (auto asdf : assembly)
     {
-      cout << asdf.toString() << endl;
+      cout << asdf->toString() << endl;
     }
     cout << "----------------------------" << endl;
   }
@@ -56,6 +56,7 @@ int start(int argc, char * argv[])
   processor = new Processor(assembly);
   processor->run();
 
+  assembly.clear();
   delete processor;
   delete compiler;
 

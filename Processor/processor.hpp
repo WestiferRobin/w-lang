@@ -24,11 +24,11 @@ private:
   stack<int> return_addresses;
   queue<int> params;
   queue<vector<int>> params_array;
-  vector<AssemblyEntry> assembly;
+  vector<AssemblyEntry*> assembly;
   unsigned long long programCounter = 0;
   bool isGettingGlobal = true;
   void init();
-  void readALUop(AssemblyEntry);
+  void readALUop(AssemblyEntry *);
   bool isNumber(string);
   bool isRegister(string);
   bool isDataMem(string);
@@ -41,8 +41,8 @@ private:
   string printArray(vector<int>);
   string printString(vector<int>);
 public:
-  Processor(vector<AssemblyEntry> newCode) : assembly(newCode) { }
-  ~Processor() {}
+  Processor(vector<AssemblyEntry*> newCode) : assembly(newCode) { }
+  ~Processor() {assembly.clear();}
   void run();
 };
 

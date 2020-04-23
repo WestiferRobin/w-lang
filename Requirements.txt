@@ -74,12 +74,7 @@ Finished:
 
 In Progress:
     - Writing Draft of Git README.md
-    - Write cross file communication as classes
-        - Able to compile other files when specified and use the dot 
-            - ex.) import file => file.w gets frontended and added to AST => DO_SOME_FUNCTION() => "Hello, I'm from FileA" AND PRINT(value, pintn); => 123 
-
-TODO:
-    - Clean up draft.
+    - Clean repo.
         - organize all of the general functions into seperate cpp files.
         - Implement HUGE ammount of functions into other classes.
         - pull out functions used in both Processor and Compiler in W_Source folder.
@@ -92,6 +87,11 @@ TODO:
         - Fix Switch bug with able to have multiple cases and sometimes no breaks and some times no defaults
         - Fix multiline comment when there is a multiplier opperator
         - Fix spaces with chars and strings being allowed
+
+TODO:
+    - Write cross file communication as classes
+        - Able to compile other W files
+            - ex.) import file => file.w gets frontended and added to AST => DO_SOME_FUNCTION() => "Hello, I'm from FileA" AND PRINT(value, pintn); => 123 
     - CLEAN AND DOCUMENT!
         - Document you want it to work as a practical compiler with specific archetecutre, suport OOP, list arrays, and multi arrays
     - Make builds for Linux, macos, and Window versions

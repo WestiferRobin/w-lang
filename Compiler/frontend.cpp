@@ -98,13 +98,11 @@ void FrontEnd::scanner(void)
       {
         temp = new TokenEntry(T_KEYWORD, hold);
         tokens.push_back(*temp);
-        hold = "";
       }
       else if (!(tolower(the_code[i+1]) <= 'z' && tolower(the_code[i+1]) >= 'a') && !(the_code[i+1] <= '9' && the_code[i+1] >= '0') && hold != "" && the_code[i+1] != '_')
       {
         temp = new TokenEntry(isdigit(hold[0]) ? T_NUMBER : T_VARIABLE, hold);
         tokens.push_back(*temp);
-        hold = "";
       }
     }
     else if (isdigit(the_code[i]))
@@ -125,7 +123,6 @@ void FrontEnd::scanner(void)
       temp = new TokenEntry(isNumber ? T_NUMBER : T_VARIABLE, hold);
       tokens.push_back(*temp);
       i = j - 1;
-      hold = "";
     }
     else
     {
@@ -158,13 +155,13 @@ void FrontEnd::scanner(void)
           i = startIndex;
           temp = new TokenEntry(T_SYMBOL, "\"");
           tokens.push_back(*temp);
-          hold = "";
+          
           break;
         case '\'':
           temp = new TokenEntry(T_CHAR, to_string(the_code[++i]));
           tokens.push_back(*temp);
           i++;
-          hold = "";
+          
           break;
         case '+':
         case '^':

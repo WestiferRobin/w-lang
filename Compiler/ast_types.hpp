@@ -127,7 +127,9 @@ public:
  
    ~ASTNode()
    {
-
+      delete left;
+      delete right;
+      key.clear();
    }
 };
 
