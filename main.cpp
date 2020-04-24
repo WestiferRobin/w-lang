@@ -6,13 +6,12 @@
 
 using namespace std;
 
-// global variables for the application
-Compiler * compiler;
-Processor * processor;
 const string debugFlag = "-d";
 
 int start(int argc, char * argv[])
 {
+  Compiler * compiler;
+  Processor * processor;
   if (argc <= 1)
   {
     cout << "Error: there is no valid arguments" << endl;
@@ -39,7 +38,7 @@ int start(int argc, char * argv[])
   // Do the compiler
   compiler = new Compiler();
   compiler->parse(file_name);
-  vector<AssemblyEntry*> assembly = compiler->getAssembly();
+  vector<AssemblyEntry*> assembly(compiler->getAssembly());
 
   if (isDisplayingAssembly)
   {

@@ -9,6 +9,8 @@
         "ostream": "cpp",
         "ios": "cpp",
         "stack": "cpp",
-        "queue": "cpp"
+        "queue": "cpp",
+        "new": "cpp",
+        "map": "cpp"
     }
 }

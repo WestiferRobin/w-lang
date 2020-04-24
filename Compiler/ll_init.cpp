@@ -6,13 +6,10 @@ void LLParser::validToken(TokenType param1, string param2)
     currToken++;
 }
 
-ASTNode * LLParser::initGrammar(TokenEntry * token_instance) 
+void LLParser::initGrammar(TokenEntry * token_instance, ASTNode *& the_ast) 
 {
     currToken = token_instance;
-    StdInit * std = new StdInit();
-    std->addSymbolsToTable(global_symbol_table);
-    delete std;
-    return Start();
+    Start(the_ast);
 }
 
 ASTNode * LLParser::createASTNullNode()
@@ -144,22 +141,22 @@ ASTNode * LLParser::Main()
 }
 
 // THIS IS THE START OF THE GRAMMAR
-ASTNode * LLParser::Start()
+void LLParser::Start(ASTNode *& root)
 {
     try
     {
-        ASTNode * root = createASTNode(UNKNOWN, NULL, NULL);
+        root = createASTNode(UNKNOWN, createASTNullNode(), createASTNullNode());
         Dependencies(root);
-        return createASTNode(START, root, Main());
+        root = createASTNode(START, root, Main());
     }
     catch(int e)
     {
         ErrorReader::readError(e, currToken->entry);
-        return NULL;
+        root =  NULL;
     }
 }
 
-void LLParser::Dependencies(ASTNode * root)
+void LLParser::Dependencies(ASTNode *& root)
 {
     ASTNode * globalNode = createASTNode(DEPENDENCY_GLOBAL, NULL, NULL);
     ASTNode * functionNode = createASTNode(DEPENDENCY_FUNC, globalNode, NULL);
@@ -188,7 +185,7 @@ void LLParser::Dependencies(ASTNode * root)
         {
             validToken(T_KEYWORD, currToken->entry);
 
-            ASTNode * importLib = ImportFile();
+            ASTNode * importLib = ImportFile(root);
             
             validToken(T_SYMBOL, ";");
             
@@ -197,14 +194,13 @@ void LLParser::Dependencies(ASTNode * root)
     }
 }
 
-ASTNode * LLParser::ImportFile()
+ASTNode * LLParser::ImportFile(ASTNode * root)
 {
-    FrontEnd * importFrontEnd = new FrontEnd();
-    importFrontEnd->run(currToken->entry + ".w");
-    ASTNode * results = importFrontEnd->getAST();
+    FrontEnd * importFrontEnd = new FrontEnd(symbol_table);
+    //importFrontEnd->run(currToken->entry + ".w", root);
     delete importFrontEnd;
     currToken++;
-    return results;
+    return root;
 }
 
 ASTNode * LLParser::Function()

@@ -1,53 +1,42 @@
 #include "compiler_comp.hpp"
 
-/*
-  Public Function: run
-  - runs the operation of FrontEnd.
-*/
-void FrontEnd::run(string file_text)
+void FrontEnd::run(string file_text, ASTNode *& the_ast)
 {
-  // local variables
   string line = "";
   ifstream myfile(file_text);
 
-  // if file is able to be opened then proceed with operations.
   if (myfile.is_open())
   {
-    // iterate through line
     while (getline(myfile,line))
     {
-      // check for single line comments before operations
       int size = line.find("//");
       if (size == string::npos)
       {
         size = line.length();
       }
 
-      // remove all white spaces before operations
       for (int i = 0; i < size; i++)
       {
         if (line[i] != ' ')
           the_code += line[i];
       }
     }
-    // do private operations for front end.
-    FrontEnd::scanner();
 
-    FrontEnd::parse();
-
-    // close file after operations
+    scanner();
+    // for (auto asdf = tokens.begin(); asdf != tokens.end(); asdf++)
+    // {
+    //   cout << asdf->entry << " " << to_string(asdf->tType) << endl;
+    // }
+    LLParser * parser = new LLParser(fe_symbol_table);
+    parser->initGrammar(tokens.data(), the_ast);
+    //delete parser;
     myfile.close();
   }
 }
 
-/*
-  Private Function: assignVariables
-  - This assigns private datamembers for class.
-*/
-void FrontEnd::assignVariables()
+FrontEnd::FrontEnd(map<string, bool> symbol_table) : fe_symbol_table(symbol_table) 
 {
-  // assign key words to list for keyword_list 
-  keyword_list = {
+   keyword_list = {
     "return",
     "const",
     "function",
@@ -68,23 +57,141 @@ void FrontEnd::assignVariables()
     "break",
     "delete"
   };
-
-  // assign the ast to be null
-  the_ast = NULL;
 }
 
-/*
-  Private Function: scanner
-  - creates all the needed tokens for the FrontEnd.
-*/
+bool FrontEnd::handleVariablesAndKeywords(int * index, string * token)
+{
+  if (find(keyword_list.begin(), keyword_list.end(), *token) != keyword_list.end())
+  {
+    tokens.push_back(TokenEntry(T_KEYWORD, *token));
+    return true;
+  }
+  else if (!(tolower(the_code[*(index)+1]) <= 'z' && tolower(the_code[*(index)+1]) >= 'a') 
+    && !(the_code[*(index)+1] <= '9' && the_code[*(index)+1] >= '0') 
+    && *token != "" && the_code[*(index)+1] != '_')
+  {
+    tokens.push_back(TokenEntry(isdigit((*token)[0]) ? T_NUMBER : T_VARIABLE, *token));
+    return true;
+  }
+  return false;
+}
+
+void FrontEnd::handleNumbersAndVariables(int * index, string * token)
+{
+  int tempIndex = *(index) + 1;
+  bool isNumber = true;
+  while (isdigit(the_code[tempIndex])) { *token += the_code[tempIndex++];}
+
+  for (int charIndex = 0; charIndex < (*token).length(); charIndex++) 
+  {
+    if (isdigit((*token)[charIndex])) continue;
+    isNumber = false; 
+    break;
+  }
+  tokens.push_back(TokenEntry(isNumber ? T_NUMBER : T_VARIABLE, *token));
+  *index = tempIndex - 1;
+}
+
+void FrontEnd::handleCharactersAndStrings(int * index, string * token)
+{
+  if (the_code[*index] == '\'')
+  {
+    tokens.push_back(TokenEntry(T_CHAR, to_string(the_code[++(*index)])));
+    (*index)++;
+  }
+
+  *token += the_code[*index];
+  tokens.push_back(TokenEntry(T_SYMBOL, "\""));
+  int startIndex = *(index) + 1;
+
+  while (the_code[startIndex] != the_code[*index]) 
+  {
+    tokens.push_back(TokenEntry(T_CHAR, to_string(the_code[startIndex++])));
+  }
+
+  *index = startIndex;
+  tokens.push_back(TokenEntry(T_SYMBOL, "\""));
+}
+
+void FrontEnd::handleOperatorsTypeOne(int * index, string * token)
+{
+  switch (the_code[*(index) + 1])
+  {
+    case '=':
+      tokens.push_back(TokenEntry(T_SYMBOL, *token + the_code[*(index) + 1]));
+      *(index) += 1;
+      break;
+    default:
+      if (isdigit(the_code[*(index) + 1]) && the_code[*(index) - 1] == '-' && the_code[*index] == '-')
+      {
+        int digitIndex = *(index) + 1;
+        while (isdigit(the_code[digitIndex])) { *token += the_code[digitIndex++];}
+        tokens.push_back(TokenEntry(T_NUMBER, *token));
+        *index = digitIndex - 1;
+      }
+      else
+      {
+        tokens.push_back(TokenEntry(T_SYMBOL, *token));
+      }
+      break;
+  }
+}
+
+void FrontEnd::handleOperatorsTypeTwo(int * index, string * token, bool * isMultiLine)
+{
+  switch (the_code[*(index)+1])
+  {
+    case '*':
+    case '/':
+      *isMultiLine = the_code[*(index)+1] == '/' && the_code[*(index)+1] == '*';
+      *index += 1;
+      break;
+    case '=':
+      tokens.push_back(TokenEntry(T_SYMBOL, *token + the_code[*(index)+1]));
+      *index += 1;
+      break;
+    default:
+      tokens.push_back(TokenEntry(T_SYMBOL, *token));
+  }
+}
+
+void FrontEnd::handleOperatorsTypeThree(int * index, string * token)
+{
+  switch (the_code[*(index)+1])
+  {
+    case '&':
+    case '|':
+    case '=':
+      tokens.push_back(TokenEntry(T_SYMBOL, *token + the_code[*(index)+1]));
+      *(index) += 1;
+      break;
+    default:
+      tokens.push_back(TokenEntry(T_SYMBOL, *token));
+      break;
+  }
+}
+
+void FrontEnd::handleOperatorsTypeFour(int * index, string * token)
+{
+  string buildInstance = "";
+  switch (the_code[*(index)+1])
+  {
+    case '=':
+    case '<':
+    case '>':
+      buildInstance = *token + the_code[*(index)+1] + the_code[*(index)+2];
+      tokens.push_back(TokenEntry(T_SYMBOL, buildInstance == "<<=" || buildInstance == ">>="  ? buildInstance : *token + the_code[*(index)+1]));
+      *(index) += buildInstance == "<<=" || buildInstance == ">>=" ? 2 : 1;
+      break;
+    default:
+      tokens.push_back(TokenEntry(T_SYMBOL, *token));
+  }
+}
+
 void FrontEnd::scanner(void)
 {
   string hold = "";
-  string buildInstance = "";
-  int startIndex = INT_MIN;
-  int stopIndex = INT_MAX;
   bool isMultiLine = false;
-  TokenEntry * temp;
 
   for (int i = 0; i < the_code.length(); i++)
   {
@@ -94,35 +201,11 @@ void FrontEnd::scanner(void)
 
     if ((tolower(the_code[i]) <= 'z' && tolower(the_code[i]) >= 'a') || the_code[i] == '_')
     {
-      if (find(keyword_list.begin(), keyword_list.end(), hold) != keyword_list.end())
-      {
-        temp = new TokenEntry(T_KEYWORD, hold);
-        tokens.push_back(*temp);
-      }
-      else if (!(tolower(the_code[i+1]) <= 'z' && tolower(the_code[i+1]) >= 'a') && !(the_code[i+1] <= '9' && the_code[i+1] >= '0') && hold != "" && the_code[i+1] != '_')
-      {
-        temp = new TokenEntry(isdigit(hold[0]) ? T_NUMBER : T_VARIABLE, hold);
-        tokens.push_back(*temp);
-      }
+      if (!handleVariablesAndKeywords(&i, &hold)) continue;
     }
     else if (isdigit(the_code[i]))
     {
-      int j = i + 1;
-      bool isNumber = true;
-      while (isdigit(the_code[j])) { hold += the_code[j]; j++;}
-
-      for (int k = 0; k < hold.length(); k++) 
-      {
-        if (isdigit(hold[k]) == false) 
-        {
-          isNumber = false; 
-          break;
-        }
-      }
-
-      temp = new TokenEntry(isNumber ? T_NUMBER : T_VARIABLE, hold);
-      tokens.push_back(*temp);
-      i = j - 1;
+      handleNumbersAndVariables(&i, &hold);
     }
     else
     {
@@ -139,29 +222,11 @@ void FrontEnd::scanner(void)
         case ';':
         case ',':
         case ':':
-          temp = new TokenEntry(T_SYMBOL, hold);
-          tokens.push_back(*temp);
+          tokens.push_back(TokenEntry(T_SYMBOL, hold));
           break;
         case '\"':
-          hold += the_code[i];
-          temp = new TokenEntry(T_SYMBOL, "\"");
-          tokens.push_back(*temp);
-          startIndex = i + 1;
-          while (the_code[startIndex] != the_code[i]) 
-          {
-            temp = new TokenEntry(T_CHAR, to_string(the_code[startIndex++]));
-            tokens.push_back(*temp);
-          }
-          i = startIndex;
-          temp = new TokenEntry(T_SYMBOL, "\"");
-          tokens.push_back(*temp);
-          
-          break;
         case '\'':
-          temp = new TokenEntry(T_CHAR, to_string(the_code[++i]));
-          tokens.push_back(*temp);
-          i++;
-          
+          handleCharactersAndStrings(&i, &hold);
           break;
         case '+':
         case '^':
@@ -169,102 +234,26 @@ void FrontEnd::scanner(void)
         case '-':
         case '!':
         case '=':
-          switch (the_code[i+1])
-          {
-            case '=':
-              temp = new TokenEntry(T_SYMBOL, hold + the_code[i+1]);
-              tokens.push_back(*temp);
-              i += 1;
-              break;
-            default:
-              if (isdigit(the_code[i+1]) && the_code[i-1] == '-' && the_code[i] == '-')
-              {
-                int j = i + 1;
-                while (isdigit(the_code[j])) { hold += the_code[j]; j++;}
-                temp = new TokenEntry(T_NUMBER, hold);
-                tokens.push_back(*temp);
-                i = j - 1;
-              }
-              else
-              {
-                temp = new TokenEntry(T_SYMBOL, hold);
-                tokens.push_back(*temp);
-              }
-              break;
-          }
+          handleOperatorsTypeOne(&i, &hold);
           break;
         case '*':
         case '/':
-          switch (the_code[i+1])
-          {
-            case '*':
-            case '/':
-              isMultiLine = the_code[i] == '/' && the_code[i+1] == '*';
-              i += 1;
-              break;
-            case '=':
-              temp = new TokenEntry(T_SYMBOL, hold + the_code[i+1]);
-              tokens.push_back(*temp);
-              i += 1;
-              break;
-            default:
-              temp = new TokenEntry(T_SYMBOL, hold);
-              tokens.push_back(*temp);
-          }
+          handleOperatorsTypeTwo(&i, &hold, &isMultiLine);
           break;
         case '&':
         case '|':
-          switch (the_code[i+1])
-          {
-            case '&':
-            case '|':
-            case '=':
-              temp = new TokenEntry(T_SYMBOL, hold + the_code[i+1]);
-              tokens.push_back(*temp);
-              i += 1;
-              break;
-            default:
-              temp = new TokenEntry(T_SYMBOL, hold);
-              tokens.push_back(*temp);
-          }
+          handleOperatorsTypeThree(&i, &hold);
           break;
         case '<':
         case '>':
-          switch (the_code[i+1])
-          {
-            case '=':
-            case '<':
-            case '>':
-              buildInstance = hold + the_code[i+1] + the_code[i+2];
-              temp = new TokenEntry(T_SYMBOL, buildInstance == "<<=" || buildInstance == ">>="  ? buildInstance : hold + the_code[i+1]);
-              tokens.push_back(*temp);
-              i += buildInstance == "<<=" || buildInstance == ">>=" ? 2 : 1;
-              break;
-            default:
-              temp = new TokenEntry(T_SYMBOL, hold);
-              tokens.push_back(*temp);
-          }
+          handleOperatorsTypeFour(&i, &hold);
           break;
         default:
-          ErrorReader::readError(ERROR_INVALID_SYMBOL, to_string(the_code[i]));
+          //ErrorReader::readError(ERROR_INVALID_SYMBOL, to_string(the_code[i]));
           break;
       }
-      hold = "";
     }
+    hold = "";
   }
-  temp = new TokenEntry(T_ENDOFFILE, "");
-  tokens.push_back(*temp);
-  delete temp;
+  tokens.push_back(TokenEntry(T_ENDOFFILE, ""));
 }
-
-/*
-  Private Function: parser
-  - generates the AST for the backend.
-*/
-void FrontEnd::parse()
-{
-  the_ast = parser.initGrammar(tokens.data());
-}
-
-
-

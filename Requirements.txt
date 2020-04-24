@@ -81,18 +81,19 @@ In Progress:
         - Have a new folder to do build of the object files in the Makefile
         - write actual errors and have a better working error system. DOES NOT HAVE TO BE PERFECT BUT IT HAS TO MAKE SENSE!
     - BUGS!!!!
+        - Fix the deletion of AST (memory leak issue)
         - Add REVERSE string/array builtin function
         - Clean up the double load registers
         - Clean up char and strings having '\' to work
         - Fix Switch bug with able to have multiple cases and sometimes no breaks and some times no defaults
-        - Fix multiline comment when there is a multiplier opperator
+        - Fix multiline comment not working
         - Fix spaces with chars and strings being allowed
 
 TODO:
     - Write cross file communication as classes
         - Able to compile other W files
             - ex.) import file => file.w gets frontended and added to AST => DO_SOME_FUNCTION() => "Hello, I'm from FileA" AND PRINT(value, pintn); => 123 
-    - CLEAN AND DOCUMENT!
+    - DOCUMENT! (READEME.md final draft)
         - Document you want it to work as a practical compiler with specific archetecutre, suport OOP, list arrays, and multi arrays
     - Make builds for Linux, macos, and Window versions
         - Final step and publish on github

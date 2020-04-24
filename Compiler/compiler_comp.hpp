@@ -46,8 +46,8 @@ private:
   set<string> arr_table;
   set<string> case_set;
   set<string> function_table;
-  ASTNode * Start();
-  void Dependencies(ASTNode *);
+  void Start(ASTNode *&);
+  void Dependencies(ASTNode *&);
   ASTNode * Main();
 
   // private functions
@@ -61,7 +61,7 @@ private:
   ASTNode * createASTCharNode(TokenEntry);
   ASTNode * createASTWholeArrayNode(TokenEntry);
 
-  ASTNode * ImportFile();
+  ASTNode * ImportFile(ASTNode *);
   ASTNode * ReturnCall();
   ASTNode * Function();
   ASTNode * FunctionCall();
@@ -100,32 +100,33 @@ private:
   ASTNode * Factor();
 
 public:
-  ASTNode * initGrammar(TokenEntry * );
-  map<string, bool> getSymbolTable() { return symbol_table; } 
-  LLParser() {}
+  void initGrammar(TokenEntry *, ASTNode *& );
+  LLParser(map<string, bool> targ_symbol_table) : symbol_table(targ_symbol_table) {}
   ~LLParser() {delete currToken;}
 };
 
 class FrontEnd
 {
 private:
-  // private data members
-  ASTNode* the_ast;
-  LLParser parser;
   string the_code;
   vector<string> keyword_list;
   vector<TokenEntry> tokens;
+  map<string, bool> fe_symbol_table;
 
-  // private functions 
-  void assignVariables();
   void scanner(void);
-  void parse(void);
+
+  // TODO: place in different file fe_handle_utils.cpp
+  bool handleVariablesAndKeywords(int *, string *);
+  void handleNumbersAndVariables(int *, string *);
+  void handleCharactersAndStrings(int *, string *);
+  void handleOperatorsTypeOne(int *, string *);
+  void handleOperatorsTypeTwo(int *, string *, bool *);
+  void handleOperatorsTypeThree(int *, string *);
+  void handleOperatorsTypeFour(int *, string *);
 public:
-  FrontEnd() { FrontEnd::assignVariables(); }
-  ~FrontEnd() { delete the_ast; }
-  void run(string);
-  ASTNode* getAST() { return the_ast; }
-  map<string, bool> getSymbolTable() { return parser.getSymbolTable();}
+  FrontEnd(map<string, bool> symbol_table);
+  ~FrontEnd() { }
+  void run(string, ASTNode *&);
 };
 
 class BackEnd
@@ -134,8 +135,8 @@ private:
   bool isLast = false;
   bool isOneNumber = false;
   unsigned long long programCounter = 0;
-  // TODO: Make this into a vector of some struct
   unsigned int regIndex = 0;
+  // TODO: Make this into a vector of some struct
     unsigned int whileLoopInstance = 0;
     stack<unsigned int> whileInstances;
     unsigned int forLoopInstance = 0;
@@ -153,16 +154,15 @@ private:
     unsigned int defaultStatementInstance = 0;
     stack<unsigned int> defaultInstance;
   ///////////////////////////////////////////////////
-  map<string, bool> symbol_table;
+  map<string, bool> be_symbol_table;
   vector<AssemblyEntry*> assembly;
-  void createAssembly(ASTNode*);
-  void loadDependentLocals(ASTNode*);
+  void createAssembly(ASTNode*&);
+  void loadDependentLocals(ASTNode*&);
   void initStandardLib();
 public:
-  BackEnd() { }
+  BackEnd(map<string, bool> symbol_table) : be_symbol_table(symbol_table) { }
   ~BackEnd() { assembly.erase(assembly.begin(), assembly.end()); }
-  void addSymbolTable(map<string, bool> tmp) { symbol_table = tmp;}
-  void run(ASTNode*);
+  void run(ASTNode*&);
   vector<AssemblyEntry*> getAssembly() { return assembly; }
 };
 

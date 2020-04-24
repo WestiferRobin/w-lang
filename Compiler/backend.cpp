@@ -1,11 +1,7 @@
 #include "compiler_comp.hpp"
 #include "ast_types.hpp"
 
-/*
-    Public Function: run
-    - runs the operation of BackEnd.
-*/
-void BackEnd::run(ASTNode* ast)
+void BackEnd::run(ASTNode*& ast)
 {
     if (ast != NULL)
     {
@@ -14,12 +10,12 @@ void BackEnd::run(ASTNode* ast)
     }
 }
 
-void BackEnd::createAssembly(ASTNode * root)
+void BackEnd::createAssembly(ASTNode *& root)
 {
     if (root == NULL) {return;}
 
     createAssembly(root->left);
-    
+
     switch (root->type)
     {
         case MAIN:
@@ -121,7 +117,6 @@ void BackEnd::createAssembly(ASTNode * root)
     createAssembly(root->right);
 
     ASTNode * elementPtr;
-    auto functionCallCounter = 0;
     switch (root->type)
     {
         case IMPORT:
@@ -197,8 +192,8 @@ void BackEnd::createAssembly(ASTNode * root)
             assembly.push_back(new AssemblyEntry(JUMP_OPP, programCounter++, "", "jmp", "RET_A", ""));
             break;
         case FUNCTION_CALL:
-            functionCallCounter = ++programCounter;
-            assembly.push_back(new AssemblyEntry(ALU_OPP, programCounter, "", "push", "RET_A", to_string(functionCallCounter)));
+            assembly.push_back(new AssemblyEntry(ALU_OPP, programCounter, "", "push", "RET_A", to_string(programCounter+1)));
+            programCounter++;
             assembly.push_back(new AssemblyEntry(JUMP_OPP, programCounter++, "", "jmp", root->key, ""));
             assembly.push_back(new AssemblyEntry(ALU_OPP, programCounter++, "", "pop", "RET_A", ""));
             root->key = "RET_V";
@@ -362,15 +357,14 @@ void BackEnd::initStandardLib()
     delete stdInit;
 }
 
-
-void BackEnd::loadDependentLocals(ASTNode * root)
+void BackEnd::loadDependentLocals(ASTNode *& root)
 {
-    if (symbol_table.find(root->left->key) == symbol_table.end())
+    if (be_symbol_table.find(root->left->key) == be_symbol_table.end())
     {
         assembly.push_back(new AssemblyEntry(ALU_OPP, programCounter++, "", "load",  "r" + to_string(++regIndex), root->left->key));
         root->left->key = "r" + to_string(regIndex);
     }
-    if (symbol_table.find(root->right->key) == symbol_table.end())
+    if (be_symbol_table.find(root->right->key) == be_symbol_table.end())
     {
         assembly.push_back(new AssemblyEntry(ALU_OPP, programCounter++, "", "load",  "r" + to_string(++regIndex), root->right->key));
         root->right->key = "r" + to_string(regIndex);
