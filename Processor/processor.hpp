@@ -20,10 +20,10 @@ private:
   map<string, int> data_mem;
   map<string, int> jump_labels;
   map<string, int> global_vars;
-  map<string, vector<int>> array_table;
+  map<string, vector<int> > array_table;
   stack<int> return_addresses;
   queue<int> params;
-  queue<vector<int>> params_array;
+  queue<vector<int> > params_array;
   vector<AssemblyEntry*> assembly;
   unsigned long long programCounter = 0;
   bool isGettingGlobal = true;

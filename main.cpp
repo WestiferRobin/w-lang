@@ -43,7 +43,7 @@ int start(int argc, char * argv[])
   if (isDisplayingAssembly)
   {
     cout << "----- RUNNING ASSMEBLY -----" << endl;
-    for (auto asdf : assembly)
+    for (AssemblyEntry* asdf : assembly)
     {
       cout << asdf->toString() << endl;
     }

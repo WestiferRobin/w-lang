@@ -18,15 +18,25 @@ void FrontEnd::run(string file_text, ASTNode *& the_ast)
       for (int i = 0; i < size; i++)
       {
         if (line[i] != ' ')
+        {
+          if (line[i] == '\"')
+          {
+            the_code += line[i++];
+            while (line[i] != '\"')
+            {
+              the_code += line[i++];
+            }
+          }
           the_code += line[i];
+        }
       }
     }
 
     scanner();
-    // for (auto asdf = tokens.begin(); asdf != tokens.end(); asdf++)
-    // {
-    //   cout << asdf->entry << " " << to_string(asdf->tType) << endl;
-    // }
+    for (auto asdf = tokens.begin(); asdf != tokens.end(); asdf++)
+    {
+      cout << asdf->entry << " " << to_string(asdf->tType) << endl;
+    }
     LLParser * parser = new LLParser(fe_symbol_table);
     parser->initGrammar(tokens.data(), the_ast);
     //delete parser;
@@ -96,21 +106,28 @@ void FrontEnd::handleCharactersAndStrings(int * index, string * token)
 {
   if (the_code[*index] == '\'')
   {
-    tokens.push_back(TokenEntry(T_CHAR, to_string(the_code[++(*index)])));
     (*index)++;
+    cout << the_code[*(index)] << endl;
+    string message = to_string(the_code[*(index)]);
+    tokens.push_back(TokenEntry(T_CHAR, message));
+    (*index)++;
+    return;
   }
-
-  *token += the_code[*index];
-  tokens.push_back(TokenEntry(T_SYMBOL, "\""));
-  int startIndex = *(index) + 1;
-
-  while (the_code[startIndex] != the_code[*index]) 
+  else
   {
-    tokens.push_back(TokenEntry(T_CHAR, to_string(the_code[startIndex++])));
-  }
+    *token += the_code[*index];
+    cout << *token << endl;
+    tokens.push_back(TokenEntry(T_SYMBOL, "\""));
+    int startIndex = *(index) + 1;
 
-  *index = startIndex;
-  tokens.push_back(TokenEntry(T_SYMBOL, "\""));
+    while (the_code[startIndex] != the_code[*index]) 
+    {
+      tokens.push_back(TokenEntry(T_CHAR, to_string(the_code[startIndex++])));
+    }
+
+    *index = startIndex;
+    tokens.push_back(TokenEntry(T_SYMBOL, "\""));
+  }
 }
 
 void FrontEnd::handleOperatorsTypeOne(int * index, string * token)
@@ -143,7 +160,7 @@ void FrontEnd::handleOperatorsTypeTwo(int * index, string * token, bool * isMult
   {
     case '*':
     case '/':
-      *isMultiLine = the_code[*(index)+1] == '/' && the_code[*(index)+1] == '*';
+      *isMultiLine = the_code[*(index)] == '/' && the_code[*(index)+1] == '*';
       *index += 1;
       break;
     case '=':
@@ -249,7 +266,7 @@ void FrontEnd::scanner(void)
           handleOperatorsTypeFour(&i, &hold);
           break;
         default:
-          //ErrorReader::readError(ERROR_INVALID_SYMBOL, to_string(the_code[i]));
+          ErrorReader::readError(ERROR_INVALID_SYMBOL, to_string(the_code[i]));
           break;
       }
     }
