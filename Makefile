@@ -1,41 +1,41 @@
-default: main.o frontend.o backend.o processor.o ll_init.o ll_expression.o ll_stmtlist.o general_util.o stdinit.o
+default: bin/main.o bin/frontend.o bin/backend.o bin/processor.o bin/ll_init.o bin/ll_expression.o bin/ll_stmtlist.o bin/general_util.o bin/stdinit.o
 	g++ -std=c++17 *.o -o wlang
 
-general_util.o: general_util.hpp
-	g++ -std=c++17 -c general_util.cpp
+bin/general_util.o: src/general_util.hpp
+	g++ -std=c++17 -c src/general_util.cpp
 
-processor.o: Processor/processor.hpp general_types.hpp general_util.hpp
-	g++ -std=c++17 -c Processor/processor.cpp
+bin/processor.o: src/processor.hpp src/general_types.hpp src/general_util.hpp
+	g++ -std=c++17 -c src/processor.cpp
 
-backend.o: Compiler/compiler_comp.hpp Compiler/token_types.hpp Compiler/ast_types.hpp general_types.hpp general_util.hpp
-	g++ -std=c++17 -c Compiler/backend.cpp
+bin/backend.o: src/compiler_comp.hpp src/token_types.hpp src/ast_types.hpp src/general_types.hpp src/general_util.hpp
+	g++ -std=c++17 -c src/backend.cpp
 
-frontend.o: Compiler/compiler_comp.hpp Compiler/token_types.hpp Compiler/ast_types.hpp
-	g++ -std=c++17 -c Compiler/frontend.cpp
+bin/frontend.o: src/compiler_comp.hpp src/token_types.hpp src/ast_types.hpp
+	g++ -std=c++17 -c src/frontend.cpp
 
-ll_init.o: Compiler/compiler_comp.hpp Compiler/token_types.hpp Compiler/ast_types.hpp
-	g++ -std=c++17 -c Compiler/ll_init.cpp
+bin/ll_init.o: src/compiler_comp.hpp src/token_types.hpp src/ast_types.hpp
+	g++ -std=c++17 -c src/ll_init.cpp
 
-ll_expression.o: Compiler/compiler_comp.hpp Compiler/token_types.hpp Compiler/ast_types.hpp
-	g++ -std=c++17 -c Compiler/ll_expression.cpp
+bin/ll_expression.o: src/compiler_comp.hpp src/token_types.hpp src/ast_types.hpp
+	g++ -std=c++17 -c src/ll_expression.cpp
 
-ll_stmtlist.o: Compiler/compiler_comp.hpp Compiler/token_types.hpp Compiler/ast_types.hpp
-	g++ -std=c++17 -c Compiler/ll_stmtlist.cpp
+bin/ll_stmtlist.o: src/compiler_comp.hpp src/token_types.hpp src/ast_types.hpp
+	g++ -std=c++17 -c src/ll_stmtlist.cpp
 
-stdinit.o: Compiler/compiler_comp.hpp Compiler/token_types.hpp Compiler/ast_types.hpp general_types.hpp general_util.hpp
-	g++ -std=c++17 -c Compiler/stdinit.cpp
+bin/stdinit.o: src/compiler_comp.hpp src/token_types.hpp src/ast_types.hpp src/general_types.hpp src/general_util.hpp
+	g++ -std=c++17 -c src/stdinit.cpp
 
-main.o: main.cpp
+bin/main.o: src/main.cpp
 	clear
-	g++ -std=c++17 -c main.cpp
+	g++ -std=c++17 -c src/main.cpp
 
-test:
+testN:
 	clear
-	./wlang test_space.w
+	./wlang test/test_space.w
 
 testD:
 	clear
-	./wlang test_space.w -d
+	./wlang test/test_space.w -d
 
 clean:
 	clear
@@ -45,4 +45,4 @@ rebuild:
 	clear
 	rm *.o wlang
 	make
-	./wlang test_space.w -d
+	./wlang test/test_space.w -d
