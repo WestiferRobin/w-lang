@@ -724,19 +724,21 @@ ASTNode * LLParser::WhileLoop()
 {
     ASTNode * conditionalResults;
     ASTNode * conditionalResults_P;
-    ASTNode * stmtResults = createASTNode(WHILE_LOOP_STATEMENT, NULL, createASTNode(UNKNOWN, NULL, NULL));
+    ASTNode * expressionResult;
+    ASTNode * stmtResults = createASTNode(WHILE_LOOP_STATEMENT, createASTNullNode(), createASTNullNode());
     map<string, bool> placeholder_symbol_table = symbol_table;
     set<string> placeholder_array_table = arr_table;
 
     validToken(T_KEYWORD, "while");
     validToken(T_SYMBOL, "(");
-    conditionalResults = createASTNode(WHILE_LOOP_COND, Expression(), NULL);
+    expressionResult = Expression();
     validToken(T_SYMBOL, ")");
     validToken(T_SYMBOL, "{");
     StmtList(stmtResults->right);
     validToken(T_SYMBOL, "}");
 
-    conditionalResults_P = createASTNode(WHILE_LOOP_COND_P, conditionalResults->left, NULL);
+    conditionalResults = createASTNode(WHILE_LOOP_COND, expressionResult, createASTNullNode());
+    conditionalResults_P = createASTNode(WHILE_LOOP_COND_P, cloneASTNode(expressionResult), createASTNullNode());
     arr_table.clear();
     symbol_table.clear();
     symbol_table = placeholder_symbol_table;
@@ -764,7 +766,7 @@ ASTNode * LLParser::ForLoop()
     validToken(T_SYMBOL, "}");
     conditionalResults = createASTNode(FOR_LOOP_COND, assignmentResult, tempConditionResult);
 
-    conditionalResults_P = createASTNode(FOR_LOOP_COND_P, updateResult, tempConditionResult);
+    conditionalResults_P = createASTNode(FOR_LOOP_COND_P, updateResult, cloneASTNode(tempConditionResult));
     symbol_table.clear();
     symbol_table = placeholder_symbol_table;
 

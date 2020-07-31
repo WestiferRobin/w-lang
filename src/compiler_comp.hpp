@@ -60,6 +60,7 @@ private:
   ASTNode * createASTNullNode();
   ASTNode * createASTCharNode(TokenEntry);
   ASTNode * createASTWholeArrayNode(TokenEntry);
+  ASTNode * cloneASTNode(ASTNode * );
 
   ASTNode * ImportFile(ASTNode *);
   ASTNode * ReturnCall();

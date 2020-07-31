@@ -130,6 +130,7 @@ public:
       delete left;
       delete right;
       key.clear();
+      
    }
 };
 

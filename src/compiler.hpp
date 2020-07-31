@@ -21,9 +21,9 @@ public:
   ~Compiler() 
   {
     delete be; 
-    cout << "WORKS BE" << endl;
     delete fe;
-    cout << "WORKS FE" << endl;
+    delete the_ast;
+    
   }
   void parse(string file_name)
   {

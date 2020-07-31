@@ -12,6 +12,18 @@ void LLParser::initGrammar(TokenEntry * token_instance, ASTNode *& the_ast)
     Start(the_ast);
 }
 
+ASTNode * LLParser::cloneASTNode(ASTNode * clone)
+{
+    if (clone == NULL) return createASTNullNode();
+    ASTNode * ans = new ASTNode();
+    ans->type = clone->type;
+    ans->value = clone->value;
+    ans->key = clone->key;
+    ans->left = cloneASTNode(clone->left);
+    ans->right = cloneASTNode(clone->right);
+    return ans;
+}
+
 ASTNode * LLParser::createASTNullNode()
 {
     ASTNode * ans = new ASTNode();

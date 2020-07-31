@@ -1,37 +1,23 @@
-//import next_step;
 
-/*
-- Clean up char and strings having '\' to work
-- Fix multiline comment not working
-- Fix spaces with chars and strings being allowed
-*/
 
-const asdf = 3;
-const fdsa = 'A';
-
-function MATH_RAND()
+function P_STATE(let times)
 {
-    // this is looping
-    for (let i = 0; i < 25; i += 1)
+    let i = 0;
+    while (i < times)
     {
-        if ((i % asdf) == 0)
+        for (let j = i; j < (times); j+=1)
         {
-            PRINT(i, pintn);
+            PRINT(j, pint);
+            PRINT(32, pchar);
         }
+        PRINT(32, pcharn);
+        i += 1;
     }
-    let ans[] = [65, 321, 321];
-    return ans;
 }
-
 
 function MAIN()
 {
-    let fdsa123[] = MATH_RAND();
-    PRINT(fdsa123, parrn);
-    PRINT(fdsa123[0], pcharn);
-    let wes[] = "Wesley Weeb";
-    PRINT(wes, pstrn);
     let a = 'W' - 2;
+    P_STATE(5);
     PRINT(a, pcharn);
-    PRINT(fdsa, pcharn);
 }
