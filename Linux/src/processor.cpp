@@ -236,7 +236,11 @@ void Processor::readALUop(AssemblyEntry * assemblyLine)
       array_table.find(assemblyLine->secondOp) != array_table.end()
     ) 
     {
-      array_table[assemblyLine->firstOp] = array_table[assemblyLine->secondOp];
+      int minSize = min(array_table[assemblyLine->firstOp].size(), array_table[assemblyLine->secondOp].size());
+      for (int i = 0; i < minSize; i++)
+      {
+        array_table[assemblyLine->firstOp][i] = array_table[assemblyLine->secondOp][i];
+      }
     }
     else
     {

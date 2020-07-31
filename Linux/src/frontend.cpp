@@ -27,6 +27,14 @@ void FrontEnd::run(string file_text, ASTNode *& the_ast)
               the_code += line[i++];
             }
           }
+          else if (line[i] == '\'')
+          {
+            the_code += line[i++];
+            while (line[i] != '\'')
+            {
+              the_code += line[i++];
+            }
+          }
           the_code += line[i];
         }
       }

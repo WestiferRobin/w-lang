@@ -1,4 +1,5 @@
 
+let message[2];
 
 function P_STATE(let times)
 {
@@ -8,16 +9,25 @@ function P_STATE(let times)
         for (let j = i; j < (times); j+=1)
         {
             PRINT(j, pint);
-            PRINT(32, pchar);
+            PRINT(' ', pchar);
         }
-        PRINT(32, pcharn);
+        PRINT(' ', pcharn);
         i += 1;
     }
+}
+
+function P_MESSAGE(let asdf[])
+{
+    PRINT(asdf, pstrn);
 }
 
 function MAIN()
 {
     let a = 'W' - 2;
+    let asdf[] = "asdfasdf";
+    COPY(message, asdf);
+    delete asdf;
     P_STATE(5);
-    PRINT(a, pcharn);
+    P_MESSAGE(message);
+    PRINT('W', pcharn);
 }

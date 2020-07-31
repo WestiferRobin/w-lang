@@ -321,11 +321,82 @@ ASTNode * LLParser::GlobalAssignment()
             currToken++;
             if (currToken->entry == "[")
             {
+                if (isConstant)
+                    throw ERROR_VAR_UNKNOWN;
                 validToken(T_SYMBOL, "[");
-                resultNode = createASTArrayNode(*currToken);
+                if (currToken->entry != "]")
+                {
+                    resultNode = createASTArrayNode(*currToken);
+                    currToken++;
+                    arr_table.insert(varAssign->key);
+                    validToken(T_SYMBOL, "]");
+                    validToken(T_SYMBOL, ";");
+                    return createASTNode(ARRAY_INIT_SIZE, varAssign, resultNode);
+                }
+                else
+                {
+                    validToken(T_SYMBOL, "]");
+                    validToken(T_SYMBOL, "=");
+                    if (currToken->entry == "[")
+                    {
+                        validToken(T_SYMBOL, "[");
+                        resultNode = createASTNode(ARRAY_INIT_PRE_ELM, createASTNullNode(), createASTNullNode());
+                        ASTNode * array_elements = resultNode->right;
+                        while (currToken->entry != "]")
+                        {
+                            if (currToken->entry != ",")
+                            {
+                                array_elements->right = createASTNumberNode(*currToken);
+                                array_elements = array_elements->right;
+                            }
+                            currToken++;
+                        }
+                        TokenEntry te(T_NUMBER, "0");
+                        resultNode->left = createASTNumberNode(te);
+                        arr_table.insert(varAssign->key);
+                        validToken(T_SYMBOL, "]");
+                        validToken(T_SYMBOL, ";");
+                        return createASTNode(ARRAY_INIT, varAssign, resultNode);
+                    }
+                    else if (currToken->entry == "\"")
+                    {
+                        validToken(T_SYMBOL, "\"");
+                        resultNode = createASTNode(ARRAY_INIT_PRE_ELM, createASTNullNode(), createASTNullNode());
+                        ASTNode * char_elements = resultNode->right;
+                        while (currToken->entry != "\"")
+                        {
+                            char_elements->right = createASTNumberNode(*currToken);
+                            char_elements = char_elements->right;
+                            currToken++;
+                        }
+                        TokenEntry te(T_NUMBER, "0");
+                        resultNode->left = createASTNumberNode(te);
+                        arr_table.insert(varAssign->key);
+                        validToken(T_SYMBOL, "\"");
+                        validToken(T_SYMBOL, ";");
+                        return createASTNode(ARRAY_INIT, varAssign, resultNode);
+                    }
+                    else if (this->IsValidFunction())
+                    {
+                        resultNode = FunctionCall();
+                        arr_table.insert(varAssign->key);
+                        return createASTNode(ARRAY_INIT, varAssign, resultNode);
+                    }
+                    else if (arr_table.find(currToken->entry) != arr_table.end())
+                    {
+                        resultNode = createASTWholeArrayNode(*currToken);
+                        arr_table.insert(varAssign->key);
+                        currToken++;
+                        validToken(T_SYMBOL, ";");
+                        return createASTNode(ARRAY_EXCH, varAssign, resultNode);
+                    }
+                    else
+                    {
+                        cout << "line 294" << endl;
+                        throw ERROR_INVALID_SYMBOL;
+                    }
+                }
                 arr_table.insert(varAssign->key);
-                inst = ARRAY_INIT;
-                currToken++;
                 validToken(T_SYMBOL, "]");
                 validToken(T_SYMBOL, ";");
                 return createASTNode(inst, varAssign, resultNode);
@@ -383,6 +454,8 @@ ASTNode * LLParser::Assignment(bool isUsingSemi)
             currToken++;
             if (currToken->entry == "[")
             {
+                if (isConstant)
+                    throw ERROR_VAR_UNKNOWN;
                 validToken(T_SYMBOL, "[");
                 if (currToken->entry != "]")
                 {

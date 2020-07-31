@@ -32,6 +32,8 @@ W_Lang - Outline
         - arrays and strings are nightmares 
         - forced to implement weak types and create byte code instead of machine assembly
     - Deciding what features should be included on the fly based on limitations
+- Broken Stuff with Explination
+    - passing Raw string as param is broken. Unsure why it keeps failing.
 - Future Features
     - I will take a long break or leave It
     - Include a file reading system
