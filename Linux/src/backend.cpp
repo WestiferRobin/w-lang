@@ -1,7 +1,6 @@
 #include "compiler_comp.hpp"
-#include "ast_types.hpp"
 
-void BackEnd::run(ASTNode*& ast)
+void BackEnd::run(ASTNode *& ast)
 {
     if (ast != NULL)
     {
@@ -27,22 +26,24 @@ void BackEnd::createAssembly(ASTNode *& root)
         case WHILE_LOOP:
         case FOR_LOOP:
         case SWITCH_END:
-            assembly.push_back(new AssemblyEntry(JUMP_OPP, programCounter++, "", "jmp", "END" + to_string(++endStatementInstance), ""));
-            endInstances.push(endStatementInstance);
+            endInstance->incAmmount();
+            assembly.push_back(new AssemblyEntry(JUMP_OPP, programCounter++, "", "jmp", "END" + to_string(endInstance->getAmmount()), ""));
+            endInstance->push();
             break;
         case WHILE_LOOP_COND:
-            assembly.push_back(new AssemblyEntry(JUMP_OPP, programCounter++, "", "jc", "WL" + to_string(++whileLoopInstance), ""));
-            whileInstances.push(whileLoopInstance);
+            whileInstance->incAmmount();
+            assembly.push_back(new AssemblyEntry(JUMP_OPP, programCounter++, "", "jc", "WL" + to_string(whileInstance->getAmmount()), ""));
+            whileInstance->push();
             break;
         case WHILE_LOOP_COND_P:
-            assembly.push_back(new AssemblyEntry(JUMP_OPP, programCounter++, "", "jc", "WL" + to_string(whileInstances.top()), ""));
-            whileInstances.pop();
+            assembly.push_back(new AssemblyEntry(JUMP_OPP, programCounter++, "", "jc", "WL" + to_string(whileInstance->peek()), ""));
+            whileInstance->pop();
             break;
         case WHILE_LOOP_STATEMENT:
-            assembly.push_back(new AssemblyEntry(JUMP_LABEL, programCounter++, "WL" + to_string(whileInstances.top()), "", "", ""));
+            assembly.push_back(new AssemblyEntry(JUMP_LABEL, programCounter++, "WL" + to_string(whileInstance->peek()), "", "", ""));
             break;
         case FOR_LOOP_STATEMENT:
-            assembly.push_back(new AssemblyEntry(JUMP_LABEL, programCounter++, "FL" + to_string(forInstances.top()), "", "", ""));
+            assembly.push_back(new AssemblyEntry(JUMP_LABEL, programCounter++, "FL" + to_string(forInstance->peek()), "", "", ""));
             break;
         case ASSIGN:
         case ASSIGN_ADD:
@@ -56,8 +57,9 @@ void BackEnd::createAssembly(ASTNode *& root)
         case COND_CMPR:
             if (!isLast) 
             {
-                assembly.push_back(new AssemblyEntry(JUMP_OPP, programCounter++, "", "jmp", "END" + to_string(++endStatementInstance), ""));
-                endInstances.push(endStatementInstance);
+                endInstance->incAmmount();
+                assembly.push_back(new AssemblyEntry(JUMP_OPP, programCounter++, "", "jmp", "END" + to_string(endInstance->getAmmount()), ""));
+                endInstance->push();
             }
             isLast = false;
             break;
@@ -67,48 +69,54 @@ void BackEnd::createAssembly(ASTNode *& root)
             break;
         case CASE_COND:
             assembly.push_back(new AssemblyEntry(ALU_OPP, programCounter++, "", "eq", "r" + to_string(regIndex), root->left->key));
-            assembly.push_back(new AssemblyEntry(JUMP_OPP, programCounter++, "", "jc", "CS" + to_string(++caseStatementInstance), ""));
-            caseInstance.push(caseStatementInstance);
+            caseInstance->incAmmount();
+            assembly.push_back(new AssemblyEntry(JUMP_OPP, programCounter++, "", "jc", "CS" + to_string(caseInstance->getAmmount()), ""));
+            caseInstance->pop();
             break;
         case CASE_STMT:
-            assembly.push_back(new AssemblyEntry(JUMP_LABEL, programCounter++, "CS" + to_string(caseInstance.front()), "", "", ""));
-            caseInstance.pop();
+            assembly.push_back(new AssemblyEntry(JUMP_LABEL, programCounter++, "CS" + to_string(caseInstance->peek()), "", "", ""));
+            caseInstance->pop();
             break;
         case DEFAULT_STMT:
-            assembly.push_back(new AssemblyEntry(JUMP_LABEL, programCounter++, "DF" + to_string(defaultInstance.top()), "", "", ""));
-            defaultInstance.pop();
+            assembly.push_back(new AssemblyEntry(JUMP_LABEL, programCounter++, "DF" + to_string(defaultInstance->peek()), "", "", ""));
+            defaultInstance->pop();
             break;
         case DEFAULT_COND:
             isLast = true;
-            assembly.push_back(new AssemblyEntry(JUMP_OPP, programCounter++, "", "jmp", "DF" + to_string(++defaultStatementInstance), ""));
-            defaultInstance.push(defaultStatementInstance);
+            defaultInstance->incAmmount();
+            assembly.push_back(new AssemblyEntry(JUMP_OPP, programCounter++, "", "jmp", "DF" + to_string(defaultInstance->getAmmount()), ""));
+            defaultInstance->push();
             break;
         case IF_COND:
-            assembly.push_back(new AssemblyEntry(JUMP_OPP, programCounter++, "", "jc", "IFC" + to_string(++ifStatmentInstance), ""));
-            ifInstances.push(ifStatmentInstance);
+            ifInstance->incAmmount();
+            assembly.push_back(new AssemblyEntry(JUMP_OPP, programCounter++, "", "jc", "IFC" + to_string(ifInstance->getAmmount()), ""));
+            ifInstance->push();
             regIndex = 0;
             break;
         case IF_STMT:
-            assembly.push_back(new AssemblyEntry(JUMP_LABEL, programCounter++, "IFC" + to_string(ifInstances.top()), "", "", ""));
-            ifInstances.pop();
+            assembly.push_back(new AssemblyEntry(JUMP_LABEL, programCounter++, "IFC" + to_string(ifInstance->peek()), "", "", ""));
+            ifInstance->pop();
             break;
         case ELIF_COND:
-            assembly.push_back(new AssemblyEntry(JUMP_OPP, programCounter++, "", "jc", "EIC" + to_string(++elifStatementInstance), ""));
-            elifInstances.push(elifStatementInstance);
+            elifInstance->incAmmount();
+            assembly.push_back(new AssemblyEntry(JUMP_OPP, programCounter++, "", "jc", "EIC" + to_string(elifInstance->getAmmount()), ""));
+            elifInstance->push();
             break;
         case ELIF_STMT:
-            assembly.push_back(new AssemblyEntry(JUMP_LABEL, programCounter++, "EIC" + to_string(elifInstances.front()), "", "", ""));
-            elifInstances.pop();
+            assembly.push_back(new AssemblyEntry(JUMP_LABEL, programCounter++, "EIC" + to_string(elifInstance->peek()), "", "", ""));
+            elifInstance->pop();
             break;
         case ELSE_COND:
             isLast = true;
-            assembly.push_back(new AssemblyEntry(JUMP_OPP, programCounter++, "", "jmp", "EC" + to_string(++elseStatementInstance), ""));
-            endInstances.push(++endStatementInstance);
-            elseInstances.push(elseStatementInstance);
+            elseInstance->incAmmount();
+            assembly.push_back(new AssemblyEntry(JUMP_OPP, programCounter++, "", "jmp", "EC" + to_string(elseInstance->getAmmount()), ""));
+            endInstance->incAmmount();
+            endInstance->push();
+            elseInstance->push();
             break;
         case ELSE_STMT:
-            assembly.push_back(new AssemblyEntry(JUMP_LABEL, programCounter++, "EC" + to_string(elseInstances.top()), "", "", ""));
-            elseInstances.pop();
+            assembly.push_back(new AssemblyEntry(JUMP_LABEL, programCounter++, "EC" + to_string(elseInstance->peek()), "", "", ""));
+            elseInstance->pop();
             break;
         default:
             break;
@@ -157,19 +165,20 @@ void BackEnd::createAssembly(ASTNode *& root)
             assembly.push_back(new AssemblyEntry(JUMP_OPP, programCounter++, "", "jmp", "MAIN", ""));
             break;
         case FOR_LOOP_COND:
-            assembly.push_back(new AssemblyEntry(JUMP_OPP, programCounter++, "", "jc", "FL" + to_string(++forLoopInstance), ""));
-            forInstances.push(forLoopInstance);
+            forInstance->incAmmount();
+            assembly.push_back(new AssemblyEntry(JUMP_OPP, programCounter++, "", "jc", "FL" + to_string(forInstance->getAmmount()), ""));
+            forInstance->push();
             break;
         case FOR_LOOP_COND_P:
-            assembly.push_back(new AssemblyEntry(JUMP_OPP, programCounter++, "", "jc", "FL" + to_string(forInstances.top()), ""));
-            forInstances.pop();
+            assembly.push_back(new AssemblyEntry(JUMP_OPP, programCounter++, "", "jc", "FL" + to_string(forInstance->peek()), ""));
+            forInstance->pop();
             break;
         case COND_CMPR:
         case WHILE_LOOP:
         case FOR_LOOP:
         case SWITCH_CMPR:
-            assembly.push_back(new AssemblyEntry(JUMP_LABEL, programCounter++, "END" + to_string(endInstances.top()), "", "", ""));
-            endInstances.pop();
+            assembly.push_back(new AssemblyEntry(JUMP_LABEL, programCounter++, "END" + to_string(endInstance->peek()), "", "", ""));
+            endInstance->pop();
             break;
         case WHILE_LOOP_EXIT:
         case FOR_LOOP_EXIT:
@@ -178,7 +187,7 @@ void BackEnd::createAssembly(ASTNode *& root)
         case ELSE_STMT:
         case CASE_STMT:
         case DEFAULT_STMT:
-            assembly.push_back(new AssemblyEntry(JUMP_OPP, programCounter++, "", "jmp", "END" + to_string(endInstances.top()), ""));
+            assembly.push_back(new AssemblyEntry(JUMP_OPP, programCounter++, "", "jmp", "END" + to_string(endInstance->peek()), ""));
             break;
         case DELETE:
             assembly.push_back(new AssemblyEntry(ALU_OPP, programCounter++, "", "delete", root->left->key, ""));

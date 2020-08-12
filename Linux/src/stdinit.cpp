@@ -1,4 +1,4 @@
-#include "compiler_comp.hpp"
+#include "parser_comp.hpp"
 
 StdInit::StdInit(unsigned long long currCount) : programCounter(currCount) 
 { 

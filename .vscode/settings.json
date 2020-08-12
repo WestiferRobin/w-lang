@@ -11,6 +11,10 @@
         "stack": "cpp",
         "queue": "cpp",
         "new": "cpp",
-        "map": "cpp"
+        "map": "cpp",
+        "filesystem": "cpp",
+        "algorithm": "cpp",
+        "locale": "cpp",
+        "functional": "cpp"
     }
 }

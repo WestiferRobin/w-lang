@@ -1,11 +1,10 @@
 #include <iostream>
 #include <fstream>
-#include "compiler.hpp"
-#include "processor.hpp"
-#include "general_types.hpp"
+#include "main_comp.hpp"
 
 using namespace std;
 
+// flag_handler.cpp
 const string debugFlag = "-d";
 
 int start(int argc, char * argv[])
@@ -43,14 +42,12 @@ int start(int argc, char * argv[])
   if (isDisplayingAssembly)
   {
     cout << "----- RUNNING ASSMEBLY -----" << endl;
-    for (AssemblyEntry* asdf : assembly)
+    for (int index = 0; index < assembly.size(); index++)
     {
-      cout << asdf->toString() << endl;
+      cout << assembly[index]->toString() << endl;
     }
     cout << "----------------------------" << endl;
   }
-
-  //cout << "Before the processor" << endl;
 
   processor = new Processor(assembly);
   processor->run();

@@ -42,7 +42,7 @@ void FrontEnd::run(string file_text, ASTNode *& the_ast)
 
     myfile.close();
     scanner();
-    LLParser * parser = new LLParser(fe_symbol_table);
+    Parser * parser = new Parser(fe_symbol_table);
     parser->initGrammar(tokens.data(), the_ast);
   }
 }

@@ -1,33 +1,50 @@
-default: bin/main.o bin/frontend.o bin/backend.o bin/processor.o bin/ll_init.o bin/ll_expression.o bin/ll_stmtlist.o bin/general_util.o bin/stdinit.o
+default: bin/main.o bin/ast_utils.o bin/stdinit.o bin/processor.o bin/loop.o bin/cond.o bin/scope.o bin/assign.o bin/system_op.o bin/expression.o bin/frontend.o bin/error_reader.o bin/backend.o bin/start.o
 	g++ -std=c++17 bin/*.o -o wlang
 
-bin/general_util.o: src/general_util.hpp
-	g++ -std=c++17 -c src/general_util.cpp && mv general_util.o bin/general_util.o
+bin/ast_utils.o: src/general_util.hpp
+	g++ -std=c++17 -c src/ast_utils.cpp && mv ast_utils.o bin/ast_utils.o
 
-bin/processor.o: src/processor.hpp src/general_types.hpp src/general_util.hpp
-	g++ -std=c++17 -c src/processor.cpp && mv processor.o bin/processor.o
-
-bin/backend.o: src/compiler_comp.hpp src/token_types.hpp src/ast_types.hpp src/general_types.hpp src/general_util.hpp
+bin/backend.o: src/main_comp.hpp
 	g++ -std=c++17 -c src/backend.cpp && mv backend.o bin/backend.o
 
-bin/frontend.o: src/compiler_comp.hpp src/token_types.hpp src/ast_types.hpp
+bin/error_reader.o: src/general_util.hpp
+	g++ -std=c++17 -c src/error_reader.cpp && mv error_reader.o bin/error_reader.o
+
+bin/frontend.o: src/main_comp.hpp
 	g++ -std=c++17 -c src/frontend.cpp && mv frontend.o bin/frontend.o
 
-bin/ll_init.o: src/compiler_comp.hpp src/token_types.hpp src/ast_types.hpp
-	g++ -std=c++17 -c src/ll_init.cpp && mv ll_init.o bin/ll_init.o
+bin/expression.o: src/parser_comp.hpp
+	g++ -std=c++17 -c src/expression.cpp && mv expression.o bin/expression.o
 
-bin/ll_expression.o: src/compiler_comp.hpp src/token_types.hpp src/ast_types.hpp
-	g++ -std=c++17 -c src/ll_expression.cpp && mv ll_expression.o bin/ll_expression.o
+bin/processor.o: src/main_comp.hpp
+	g++ -std=c++17 -c src/processor.cpp && mv processor.o bin/processor.o
 
-bin/ll_stmtlist.o: src/compiler_comp.hpp src/token_types.hpp src/ast_types.hpp
-	g++ -std=c++17 -c src/ll_stmtlist.cpp && mv ll_stmtlist.o bin/ll_stmtlist.o
-
-bin/stdinit.o: src/compiler_comp.hpp src/token_types.hpp src/ast_types.hpp src/general_types.hpp src/general_util.hpp
+bin/stdinit.o: src/general_util.hpp
 	g++ -std=c++17 -c src/stdinit.cpp && mv stdinit.o bin/stdinit.o
+
+bin/loop.o: src/parser_comp.hpp
+	g++ -std=c++17 -c src/loop.cpp && mv loop.o bin/loop.o
+
+bin/cond.o: src/parser_comp.hpp
+	g++ -std=c++17 -c src/cond.cpp && mv cond.o bin/cond.o
+
+bin/assign.o: src/parser_comp.hpp
+	g++ -std=c++17 -c src/assign.cpp && mv assign.o bin/assign.o
+
+bin/system_op.o: src/parser_comp.hpp
+	g++ -std=c++17 -c src/system_op.cpp && mv system_op.o bin/system_op.o
+
+bin/scope.o: src/parser_comp.hpp
+	g++ -std=c++17 -c src/scope.cpp && mv scope.o bin/scope.o
+
+bin/start.o: src/parser_comp.hpp
+	g++ -std=c++17 -c src/start.cpp && mv start.o bin/start.o
 
 bin/main.o: src/main.cpp
 	clear
 	g++ -std=c++17 -c src/main.cpp && mv main.o bin/main.o
+
+# Developer flags for makefile. Remove when ready to publish
 
 testN:
 	clear
