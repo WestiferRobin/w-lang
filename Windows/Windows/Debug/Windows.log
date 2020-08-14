@@ -1,0 +1,29 @@
+﻿  assign.cpp
+  ast_utils.cpp
+D:\ProgramProjects\W_Project\Main\src\ast_utils.cpp(52,23): warning C4018: '<': signed/unsigned mismatch
+  backend.cpp
+D:\ProgramProjects\W_Project\Main\src\backend.cpp(361,41): warning C4244: '=': conversion from 'unsigned __int64' to 'int', possible loss of data
+  cond.cpp
+  error_reader.cpp
+  expression.cpp
+  frontend.cpp
+D:\ProgramProjects\W_Project\Main\src\frontend.cpp(98,37): warning C4018: '<': signed/unsigned mismatch
+D:\ProgramProjects\W_Project\Main\src\frontend.cpp(214,21): warning C4018: '<': signed/unsigned mismatch
+  loop.cpp
+  main.cpp
+D:\ProgramProjects\W_Project\Main\src\main.cpp(45,31): warning C4018: '<': signed/unsigned mismatch
+  processor.cpp
+D:\ProgramProjects\W_Project\Main\src\processor.cpp(14,21): warning C4018: '<': signed/unsigned mismatch
+D:\ProgramProjects\W_Project\Main\src\processor.cpp(30,43): warning C4244: 'argument': conversion from 'unsigned __int64' to 'const unsigned int', possible loss of data
+D:\ProgramProjects\W_Project\Main\src\processor.cpp(283,25): warning C4018: '<': signed/unsigned mismatch
+D:\ProgramProjects\W_Project\Main\src\processor.cpp(456,21): warning C4018: '<': signed/unsigned mismatch
+D:\ProgramProjects\W_Project\Main\src\processor.cpp(499,41): warning C4018: '<=': signed/unsigned mismatch
+D:\ProgramProjects\W_Project\Main\src\processor.cpp(525,41): warning C4018: '<=': signed/unsigned mismatch
+  scope.cpp
+D:\ProgramProjects\W_Project\Main\src\scope.cpp(109,23): warning C4018: '<': signed/unsigned mismatch
+  start.cpp
+  stdinit.cpp
+D:\ProgramProjects\W_Project\Main\src\stdinit.cpp(50,76): warning C4244: 'argument': conversion from 'unsigned __int64' to 'int', possible loss of data
+  system_op.cpp
+  Generating Code...
+  Windows.vcxproj -> D:\ProgramProjects\W_Project\Windows\Debug\Windows.exe
