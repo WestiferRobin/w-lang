@@ -1,31 +1,36 @@
 #include "general_util.h"
 
-void ErrorReader::readError(int errorCode, string token)
+void ErrorReader::readError(ErrorCode errorCode, string token)
 {
     string errorMessage = "ERROR: ";
     switch (errorCode)
     {
-        case ERROR_INVALID_BOOL_OP:
+        case ErrorInvalidBoolOp:
             errorMessage += "Expected to see a boolean operator and not \'" + token + "\'.";
             break;
-        case ERROR_INVALID_SYMBOL:
-            errorMessage += "This symbol \'" + token + "\' does not exist and/or make sense in this current implementation.";
+        case ErrorInvalidSymbol:
+            errorMessage += "This symbol \'" + token + "\' does not exist and/or make sense in this current implementation. please check your code.";
             break;
-        case ERROR_INVALID_ARITH_OP:
-            errorMessage += "Expected to see an arithmetic operator and not \'" + token + "\'";
+        case ErrorInvalidArithOp:
+            errorMessage += "Expected to see an arithmetic operator and not \'" + token + "\'. please check your code.";
             break;
-        case ERROR_INVALID_KEYWORD:
-            errorMessage += "Expected to see a keyword and not \'" + token + "\'";
+        case ErrorInvalidKeyword:
+            errorMessage += "Expected to see a keyword and not \'" + token + "\'. please check your code.";
             break;
-        case ERROR_VAR_UNKNOWN:
-            errorMessage += "this variable \'" + token + "\' hasn't been initalize or not in scope.";
+        case ErrorVariableUnknown:
+            errorMessage += "this variable \'" + token + "\' hasn't been initalize or not in scope. please check your code.";
             break;
-        case ERROR_INVALID_LOAD:
-            errorMessage += "Was unable to load to register and/or data memeory";
+        case ErrorInvalidLoad:
+            errorMessage += "Was unable to load to register and/or data memeory. please check your code.";
             break;
-        case ERROR_INVALID_OP_CODE:
-            errorMessage += "This is an invalid op code to execute.";
+        case ErrorInvalidOpCode:
+            errorMessage += "This is an invalid op code to execute. please check your code.";
             break;
+        case ErrorInvalidConstant:
+            errorMessage += "You cannot assign or delete a constant. please check your code.";
+            break;
+        case ErrorNoRawString:
+            errorMessage += "You cannot pass in raw strings into system operators at this time. Please assign a string variable and proceed";
         default:
             errorMessage = "Current error is UNKNOWN. " + to_string(errorCode);
             break;

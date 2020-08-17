@@ -70,7 +70,7 @@ void Parser::start(ASTNode *& root)
     }
     catch(int e)
     {
-        ErrorReader::readError(e, currToken->entry);
+        ErrorReader::readError((ErrorCode)e, currToken->entry);
         root =  NULL;
     }
 }

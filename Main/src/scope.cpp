@@ -5,11 +5,12 @@ ASTNode * Parser::function()
     ASTNode * functionInner = ASTUtility::createASTNode(FUNCTION, NULL, ASTUtility::createASTNode(UNKNOWN, NULL, NULL));
     ASTNode * stmtList = functionInner->right;
     map<string, bool> placeholder_symbol_table = symbol_table;
-    set<string> placeholder_array_table = arr_table;
+    map<string, bool> placeholder_array_table = arr_table;
+    map<string, string> paramAdapter;
     arr_table.clear();
     symbol_table.clear();
     ASTUtility::validToken(T_KEYWORD, "function", currToken);
-    if (this->isValidFunction() == false) {throw ERROR_INVALID_SYMBOL;}
+    if (this->isValidFunction() == false) {throw (int) ErrorInvalidSymbol;}
     functionInner->key = currToken->entry;
     function_table.insert(currToken->entry);
     ASTUtility::validToken(T_VARIABLE, currToken->entry, currToken);
@@ -21,9 +22,11 @@ ASTNode * Parser::function()
             ASTUtility::validToken(T_KEYWORD, "let", currToken);
             ASTType ast_type;
             ASTNode * parameterName = ASTUtility::createASTVariableNode(*currToken);
+            paramAdapter.insert({ parameterName->key, parameterName->key + "_PARAM" });
+            parameterName->key +=  "_PARAM";
             if ((currToken + 1)->entry == "[")
             {
-                arr_table.insert(currToken->entry);
+                arr_table.insert({ currToken->entry, false });
                 ast_type = PARAM_ARRAY_INST;
                 currToken++;
                 currToken++;
@@ -44,6 +47,7 @@ ASTNode * Parser::function()
     symbol_table = placeholder_symbol_table;
     arr_table = placeholder_array_table;
     ASTUtility::validToken(T_SYMBOL, "}", currToken);
+    ASTUtility::cleanParameter(paramAdapter, functionInner->right);
     return functionInner;
 }
 
@@ -64,6 +68,7 @@ ASTNode * Parser::functionCall()
             ASTType ast_type = arr_table.find(currToken->entry) != arr_table.end() ? PARAM_ARRAY_CALL : PARAM_CALL;
             stmtList->right = ASTUtility::createASTNode(ast_type, ASTUtility::createASTVariableNode(*currToken), NULL);
             stmtList = stmtList->right;
+            currToken++;
         }
         else if (currToken->entry == "\"")
         {
@@ -86,7 +91,6 @@ ASTNode * Parser::functionCall()
             stmtList->right = ASTUtility::createASTNode(PARAM_ARRAY_CALL, rawStringNode , ASTUtility::createASTNullNode());
             stmtList = stmtList->right;
         }
-        currToken++;
     }
     ASTUtility::validToken(T_SYMBOL, ")", currToken);
     ASTUtility::validToken(T_SYMBOL, ";", currToken);

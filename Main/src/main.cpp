@@ -4,7 +4,6 @@
 
 using namespace std;
 
-// flag_handler.cpp
 const string debugFlag = "-d";
 
 int start(int argc, char * argv[])

@@ -267,7 +267,7 @@ void FrontEnd::scanner(void)
           handleOperatorsTypeFour(&i, &hold);
           break;
         default:
-          ErrorReader::readError(ERROR_INVALID_SYMBOL, to_string(the_code[i]));
+          ErrorReader::readError(ErrorInvalidSymbol, to_string(the_code[i]));
           break;
       }
     }

@@ -20,7 +20,7 @@ ASTNode * Parser::andOrCondition()
     }
     else 
     { 
-        throw ERROR_INVALID_BOOL_OP;   
+        throw (int) ErrorInvalidBoolOp;   
     }
     currToken++;
     expRight = this->expression();
@@ -41,9 +41,9 @@ ASTNode * Parser::arithExpression()
             break;
         case T_SYMBOL:
             if (currToken->entry[0] == '(' || currToken->entry[0] == '!') {term = this->term(); break;}
-            else { throw ERROR_INVALID_SYMBOL; } 
+            else { throw (int) ErrorInvalidSymbol; } 
         default:
-            throw ERROR_INVALID_SYMBOL;
+            throw (int) ErrorInvalidSymbol;
     }
 
     switch (currToken->tType)
@@ -71,10 +71,10 @@ ASTNode * Parser::arithExpression()
                 case '&':
                     return term;
                 default:
-                    throw ERROR_INVALID_SYMBOL;
+                    throw (int) ErrorInvalidSymbol;
             }
         default:
-            throw ERROR_INVALID_SYMBOL;
+            throw (int) ErrorInvalidSymbol;
     }
 
     return NULL;
@@ -95,10 +95,10 @@ ASTNode * Parser::arithExpressionP(ASTNode* root)
                     currToken++;
                     return ASTUtility::createASTNode(MINUS, root, this->expression());
                 default:
-                    throw ERROR_INVALID_ARITH_OP;
+                    throw (int) ErrorInvalidArithOp;
             }
         default:
-            throw ERROR_INVALID_ARITH_OP;
+            throw (int) ErrorInvalidArithOp;
     }
 }
 
@@ -138,7 +138,7 @@ ASTNode * Parser::condition()
     }
     else 
     { 
-        throw ERROR_INVALID_BOOL_OP;     
+        throw (int) ErrorInvalidBoolOp;     
     }
     currToken++;
     expRight = this->arithExpression();
@@ -163,7 +163,7 @@ ASTNode * Parser::factor()
             if (symbol_table.find(currToken->entry) == symbol_table.end() &&
                 global_symbol_table.find(currToken->entry) == global_symbol_table.end() &&
                 arr_table.find(currToken->entry) == arr_table.end()
-            ) {throw ERROR_VAR_UNKNOWN;}
+            ) { throw (int) ErrorVariableUnknown; }
             tmp = ASTUtility::createASTVariableNode(*currToken);
             currToken++;
             if (currToken->entry == "[")
@@ -181,7 +181,7 @@ ASTNode * Parser::factor()
                 }
                 else
                 {
-                    throw ERROR_VAR_UNKNOWN;
+                    throw (int) ErrorVariableUnknown;
                 }
                 currToken++;
                 ASTUtility::validToken(T_SYMBOL, "]", currToken);
@@ -197,7 +197,7 @@ ASTNode * Parser::factor()
                 case '(':
                     currToken++;
                     tmp = this->expression();
-                    if (currToken->entry[0] != ')') {throw ERROR_INVALID_SYMBOL;}
+                    if (currToken->entry[0] != ')') {throw (int) ErrorInvalidSymbol;}
                     currToken++;
                     return tmp;
             }
@@ -206,7 +206,7 @@ ASTNode * Parser::factor()
             currToken++;
             return tmp;
         default:
-            throw ERROR_INVALID_SYMBOL;
+            throw (int) ErrorInvalidSymbol;
     }
     return NULL;
 }
@@ -225,9 +225,9 @@ ASTNode * Parser::term()
             break;
         case T_SYMBOL:
             if (currToken->entry[0] == '(' || currToken->entry[0] == '!') {factor = this->factor(); break;}
-            else { throw ERROR_INVALID_SYMBOL; }
+            else { throw (int) ErrorInvalidSymbol; }
         default:
-            throw ERROR_INVALID_SYMBOL;
+            throw (int) ErrorInvalidSymbol;
     }
 
     switch (currToken->tType)
@@ -267,10 +267,10 @@ ASTNode * Parser::term()
                 case '=':
                     return factor;
                 default:
-                    throw ERROR_INVALID_SYMBOL;
+                    throw (int) ErrorInvalidSymbol;
             }
         default:
-            throw ERROR_INVALID_SYMBOL;
+            throw (int) ErrorInvalidSymbol;
     }
 
     return NULL;
@@ -309,7 +309,7 @@ ASTNode * Parser::termP(ASTNode* root)
                     }
                     else
                     {
-                        throw ERROR_INVALID_SYMBOL;
+                        throw (int) ErrorInvalidArithOp;
                     }
                 case '<':
                     if (currToken->entry == "<<")
@@ -319,13 +319,13 @@ ASTNode * Parser::termP(ASTNode* root)
                     }
                     else
                     {
-                        throw ERROR_INVALID_SYMBOL;
+                        throw (int) ErrorInvalidArithOp;
                     }
                 default:
-                    throw ERROR_INVALID_ARITH_OP;
+                    throw (int) ErrorInvalidArithOp;
             }
         default:
-            throw ERROR_INVALID_ARITH_OP;
+            throw (int) ErrorInvalidArithOp;
     }
     return NULL;
 }

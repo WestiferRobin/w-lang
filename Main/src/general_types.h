@@ -178,6 +178,18 @@ public:
    }
 };
 
+enum ErrorCode
+{
+    ErrorInvalidBoolOp = 1,
+    ErrorInvalidSymbol = 2,
+    ErrorInvalidArithOp = 3,
+    ErrorInvalidKeyword = 4,
+    ErrorVariableUnknown = 5,
+    ErrorInvalidLoad = 6,
+    ErrorInvalidOpCode = 7,
+    ErrorInvalidConstant = 8,
+    ErrorNoRawString = 9
+};
 
 class Instance
 {

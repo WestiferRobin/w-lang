@@ -7,7 +7,7 @@ ASTNode * Parser::whileLoop()
     ASTNode * expressionResult;
     ASTNode * stmtResults = ASTUtility::createASTNode(WHILE_LOOP_STATEMENT, ASTUtility::createASTNullNode(), ASTUtility::createASTNullNode());
     map<string, bool> placeholder_symbol_table = symbol_table;
-    set<string> placeholder_array_table = arr_table;
+    map<string, bool> placeholder_array_table = arr_table;
 
     ASTUtility::validToken(T_KEYWORD, "while", currToken);
     ASTUtility::validToken(T_SYMBOL, "(", currToken);

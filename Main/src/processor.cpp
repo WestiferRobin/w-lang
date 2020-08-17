@@ -36,7 +36,7 @@ void Processor::run()
           if (jump_labels.find(instance->firstOp) == jump_labels.end() && instance->firstOp != "RET_A")
           {
             cout << instance->firstOp << " IS NOT A VALID JUMP!!!!!!!!!" << endl;
-            throw ERROR_INVALID_SYMBOL;
+            throw (int)ErrorInvalidSymbol; 
           }
           else if (instance->operatorLabel == "jc")
           {
@@ -55,14 +55,14 @@ void Processor::run()
           readALUop(instance);
           break;
         default:
-          throw ERROR_INVALID_OP_CODE;
+          throw (int)ErrorInvalidOpCode;
       }
       programCounter++;
     }
   }
   catch(int e)
   {
-    ErrorReader::readError(e, "");
+    ErrorReader::readError((ErrorCode)e, "");
   }
 }
 
@@ -83,16 +83,16 @@ void Processor::readALUop(AssemblyEntry * assemblyLine)
     }
     else
     {
-      throw ERROR_INVALID_LOAD;
+      throw (int)ErrorInvalidLoad;
     }
   }
   else if (assemblyLine->operatorLabel == "arrL")
   {
     if (array_table.find(assemblyLine->firstOp) != array_table.end())
     {
-      array_table.erase(assemblyLine->firstOp);
+        array_table[assemblyLine->firstOp].clear();
     }
-    if (array_table.find(assemblyLine->firstOp) == array_table.end() && array_table.find(assemblyLine->secondOp) != array_table.end())
+    if (array_table.find(assemblyLine->secondOp) != array_table.end())
     {
       array_table[assemblyLine->firstOp] = array_table[assemblyLine->secondOp];
     }
@@ -129,7 +129,7 @@ void Processor::readALUop(AssemblyEntry * assemblyLine)
     }
     else
     {
-      throw ERROR_VAR_UNKNOWN;
+      throw (int)ErrorVariableUnknown;
     }
   }
   else if (assemblyLine->operatorLabel == "push")
@@ -244,7 +244,7 @@ void Processor::readALUop(AssemblyEntry * assemblyLine)
     }
     else
     {
-      throw ERROR_INVALID_OP_CODE;
+      throw (int)ErrorInvalidOpCode;
     }
   }
   else if (assemblyLine->operatorLabel == "len")
@@ -257,7 +257,7 @@ void Processor::readALUop(AssemblyEntry * assemblyLine)
     }
     else
     {
-      throw ERROR_INVALID_OP_CODE;
+      throw (int)ErrorInvalidOpCode;
     }
   }
   else if (assemblyLine->operatorLabel == "eqf")
@@ -268,7 +268,7 @@ void Processor::readALUop(AssemblyEntry * assemblyLine)
     }
     else
     {
-      throw ERROR_INVALID_OP_CODE;
+      throw (int)ErrorInvalidOpCode;
     }
   }
   else if (assemblyLine->operatorLabel == "scan")
@@ -323,7 +323,7 @@ void Processor::readALUop(AssemblyEntry * assemblyLine)
         cout << this->printString(array_table[assemblyLine->firstOp]) << endl;
         break;
       default:
-        throw ERROR_INVALID_OP_CODE;
+        throw (int)ErrorInvalidOpCode;
     }
   }
   else if (assemblyLine->operatorLabel == "eq")
@@ -374,7 +374,7 @@ void Processor::readALUop(AssemblyEntry * assemblyLine)
     }
     else
     {
-      throw ERROR_VAR_UNKNOWN;
+      throw (int)ErrorVariableUnknown;
     }
   }
 }
@@ -496,7 +496,7 @@ int Processor::getValue(string target)
   {
     string array_label = target.substr(0, target.find("["));
     int index = this->getValue(target.substr(target.find("[") + 1, target.find("]") - target.find("[") - 1));
-    if (array_table[array_label].size() <= index || index < 0) { throw ERROR_VAR_UNKNOWN; }
+    if (array_table[array_label].size() <= index || index < 0) { throw (int)ErrorVariableUnknown; }
     ans = array_table[array_label][index];
   }
   else if (this->isArrayVariable(target))
@@ -510,8 +510,7 @@ int Processor::getValue(string target)
   }
   else
   {
-    cout << target << " isn\'t working. 457" << endl;
-    throw ERROR_INVALID_ARITH_OP;
+    throw (int)ErrorInvalidArithOp;
   }
   return ans;
 }
@@ -522,7 +521,7 @@ void Processor::setValue(string target, int value)
   {
     string array_label = target.substr(0, target.find("["));
     int index = this->getValue(target.substr(target.find("[") + 1, target.find("]") - target.find("[") - 1));
-    if (array_table[array_label].size() <= index || index < 0) { throw ERROR_VAR_UNKNOWN; }
+    if (array_table[array_label].size() <= index || index < 0) { throw (int)ErrorVariableUnknown; }
     array_table[array_label][index] = value;
   }
   else if (this->isDataMem(target))
@@ -539,8 +538,7 @@ void Processor::setValue(string target, int value)
   }
   else
   {
-    cout << target << " isn\'t working. 462" << endl;
-    throw ERROR_INVALID_ARITH_OP;
+    throw (int)ErrorInvalidArithOp;
   }
 }
 

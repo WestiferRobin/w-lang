@@ -3,11 +3,11 @@ d:\programprojects\w_project\windows\windows\debug\vc142.idb
 d:\programprojects\w_project\windows\windows\debug\system_op.obj
 d:\programprojects\w_project\windows\windows\debug\stdinit.obj
 d:\programprojects\w_project\windows\windows\debug\start.obj
-d:\programprojects\w_project\windows\windows\debug\scope.obj
 d:\programprojects\w_project\windows\windows\debug\processor.obj
 d:\programprojects\w_project\windows\windows\debug\main.obj
 d:\programprojects\w_project\windows\windows\debug\loop.obj
 d:\programprojects\w_project\windows\windows\debug\frontend.obj
+d:\programprojects\w_project\windows\windows\debug\expression.obj
 d:\programprojects\w_project\windows\windows\debug\error_reader.obj
 d:\programprojects\w_project\windows\windows\debug\cond.obj
 d:\programprojects\w_project\windows\windows\debug\backend.obj

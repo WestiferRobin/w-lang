@@ -1,4 +1,5 @@
 
+
 let message[2];
 
 function P_STATE(let times)
@@ -16,18 +17,17 @@ function P_STATE(let times)
     }
 }
 
-function P_MESSAGE(let asdf[])
-{
-    PRINT(asdf, pstrn);
-}
-
 function MAIN()
 {
-    let a = 'W' - 2;
+    const d = 234;
+    const f[] = "Wesley Webb";
     let asdf[] = "asdfasdf";
-    COPY(message, asdf);
-    delete asdf;
+    let fdsa = 432;
+    asdf[] = "fdsa";
+    PRINT(asdf, pstrn);
+    let a = 'W' - 2;
+    COPY(message, "Just a Copy");
+    PRINT(message, pstrn);
     P_STATE(5);
-    P_MESSAGE(message);
-    PRINT('W', pcharn);
+    PRINT(a, pcharn);
 }

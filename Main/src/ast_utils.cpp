@@ -45,7 +45,6 @@ ASTNode * ASTUtility::createASTNode(ASTType type, ASTNode* left, ASTNode* right)
     return ans;
 }
 
-// ASTNode * createASTNumberNode(TokenEntry);
 ASTNode * ASTUtility::createASTNumberNode(TokenEntry entry)
 {
     bool isDigit = true;
@@ -58,7 +57,7 @@ ASTNode * ASTUtility::createASTNumberNode(TokenEntry entry)
     }
     if (isDigit == false)
     {
-        throw ERROR_INVALID_SYMBOL;
+        throw (int) ErrorInvalidSymbol;
     }
     ASTNode * ans = new ASTNode();
     ans->value = stoi(entry.entry);
@@ -67,7 +66,6 @@ ASTNode * ASTUtility::createASTNumberNode(TokenEntry entry)
     return ans;
 }
 
-// ASTNode * createASTVariableNode(TokenEntry);
 ASTNode * ASTUtility::createASTVariableNode(TokenEntry entry)
 {
     ASTNode * ans = new ASTNode();
@@ -128,6 +126,19 @@ ASTNode * ASTUtility::cloneASTNode(ASTNode * clone)
 
 void ASTUtility::validToken(TokenType param1, string param2, TokenEntry *& currToken)
 {
-    if (currToken->tType != param1 && currToken->entry != param2) { throw ERROR_INVALID_SYMBOL;}
+    if (currToken->tType != param1 && currToken->entry != param2) { throw (int) ErrorInvalidSymbol; }
     currToken++;
+}
+
+void ASTUtility::cleanParameter(map<string, string> paramAdapter, ASTNode*& functionContent)
+{
+    if (functionContent == NULL) return;
+
+    if (paramAdapter.find(functionContent->key) != paramAdapter.end())
+    {
+        functionContent->key = paramAdapter[functionContent->key];
+    }
+
+    cleanParameter(paramAdapter, functionContent->left);
+    cleanParameter(paramAdapter, functionContent->right);
 }

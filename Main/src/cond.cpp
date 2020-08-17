@@ -14,8 +14,7 @@ void Parser::caseStatemnt(ASTNode *& conditionalResults, ASTNode *& stmtResults)
         }
         else
         {
-            cout << "line 447" << endl;
-            throw ERROR_INVALID_SYMBOL;
+            throw (int) ErrorInvalidSymbol;
         }
         ASTUtility::validToken(T_SYMBOL, ":", currToken);
         stmtResults = ASTUtility::createASTNode(CASE_STMT, previousStmt, ASTUtility::createASTNode(UNKNOWN, NULL, NULL));
@@ -52,8 +51,7 @@ void Parser::caseStatemnt(ASTNode *& conditionalResults, ASTNode *& stmtResults)
         }
         else
         {
-            cout << "line 485" << endl;
-            throw ERROR_INVALID_SYMBOL;
+            throw (int) ErrorInvalidSymbol;
         }
         ASTUtility::validToken(T_SYMBOL, ":", currToken);
         if (currToken->entry == "case")
@@ -68,7 +66,7 @@ void Parser::elseOrElseIfStatemnt(ASTNode *& conditionalResults, ASTNode *& stmt
 {
     ASTNode * previousStmt = stmtResults;
     map<string, bool> placeholder_symbol_table = symbol_table;
-    set<string> placeholder_arr_table = arr_table;
+    map<string, bool> placeholder_arr_table = arr_table;
 
     if (currToken->entry == "elif")
     {
@@ -108,7 +106,7 @@ ASTNode * Parser::ifStatemnt()
     ASTNode * conditionalResults;
     ASTNode * stmtResults = ASTUtility::createASTNode(IF_STMT, NULL, ASTUtility::createASTNode(UNKNOWN, NULL, NULL));
     map<string, bool> placeholder_symbol_table = symbol_table;
-    set<string> placeholder_array_table = arr_table;
+    map<string, bool> placeholder_array_table = arr_table;
 
     ASTUtility::validToken(T_KEYWORD, "if", currToken);
     ASTUtility::validToken(T_SYMBOL, "(", currToken);
@@ -138,7 +136,7 @@ ASTNode * Parser::switchStatement()
     ASTUtility::validToken(T_SYMBOL, "(", currToken);
     if (symbol_table.find(currToken->entry) == symbol_table.end() && 
         global_symbol_table.find(currToken->entry) == global_symbol_table.end()
-    ) {throw ERROR_VAR_UNKNOWN;}
+        ) { throw (int) ErrorVariableUnknown; }
     conditionalResults = ASTUtility::createASTNode(SWITCH_COND, ASTUtility::createASTVariableNode(*currToken), NULL);
     currToken++;
     ASTUtility::validToken(T_SYMBOL, ")", currToken);

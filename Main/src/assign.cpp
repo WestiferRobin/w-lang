@@ -16,26 +16,24 @@ ASTNode * Parser::assignment(bool isUsingSemi)
     switch(currToken->tType)
     {
         case T_KEYWORD:
-            if (currToken->entry != "let" && currToken->entry != "const") {throw ERROR_INVALID_KEYWORD;}
+            if (currToken->entry != "let" && currToken->entry != "const") {throw (int) ErrorInvalidKeyword;}
             isConstant = currToken->entry == "const";
             currToken++;
             if (symbol_table.find(currToken->entry) != symbol_table.end() ||
                 global_symbol_table.find(currToken->entry) != global_symbol_table.end() || 
                 arr_table.find(currToken->entry) != arr_table.end()
-            ) {throw ERROR_VAR_UNKNOWN;}
-            else if (currToken->tType != T_VARIABLE) { cout << "line 243" << endl; throw ERROR_INVALID_SYMBOL; } 
+            ) {throw (int) ErrorVariableUnknown;}
+            else if (currToken->tType != T_VARIABLE) { throw (int) ErrorInvalidSymbol; } 
             varAssign = ASTUtility::createASTVariableNode(*currToken);
             currToken++;
             if (currToken->entry == "[")
             {
-                if (isConstant)
-                    throw ERROR_VAR_UNKNOWN;
                 ASTUtility::validToken(T_SYMBOL, "[", currToken);
                 if (currToken->entry != "]")
                 {
                     resultNode = ASTUtility::createASTArrayNode(*currToken);
                     currToken++;
-                    arr_table.insert(varAssign->key);
+                    arr_table.insert({ varAssign->key, isConstant });
                     ASTUtility::validToken(T_SYMBOL, "]", currToken);
                     if (isUsingSemi) {ASTUtility::validToken(T_SYMBOL, ";", currToken);}
                     return ASTUtility::createASTNode(ARRAY_INIT_SIZE, varAssign, resultNode);
@@ -60,7 +58,7 @@ ASTNode * Parser::assignment(bool isUsingSemi)
                         }
                         TokenEntry te(T_NUMBER, "0");
                         resultNode->left = ASTUtility::createASTNumberNode(te);
-                        arr_table.insert(varAssign->key);
+                        arr_table.insert({ varAssign->key, isConstant });
                         ASTUtility::validToken(T_SYMBOL, "]", currToken);;
                         if (isUsingSemi) {ASTUtility::validToken(T_SYMBOL, ";", currToken);;}
                         return ASTUtility::createASTNode(ARRAY_INIT, varAssign, resultNode);
@@ -78,7 +76,7 @@ ASTNode * Parser::assignment(bool isUsingSemi)
                         }
                         TokenEntry te(T_NUMBER, "0");
                         resultNode->left = ASTUtility::createASTNumberNode(te);
-                        arr_table.insert(varAssign->key);
+                        arr_table.insert({ varAssign->key, isConstant });
                         ASTUtility::validToken(T_SYMBOL, "\"", currToken);
                         if (isUsingSemi) {ASTUtility::validToken(T_SYMBOL, ";", currToken);}
                         return ASTUtility::createASTNode(ARRAY_INIT, varAssign, resultNode);
@@ -86,24 +84,23 @@ ASTNode * Parser::assignment(bool isUsingSemi)
                     else if (this->isValidFunction())
                     {
                         resultNode = this->functionCall();
-                        arr_table.insert(varAssign->key);
+                        arr_table.insert({ varAssign->key, isConstant });
                         return ASTUtility::createASTNode(ARRAY_INIT, varAssign, resultNode);
                     }
                     else if (arr_table.find(currToken->entry) != arr_table.end())
                     {
                         resultNode = ASTUtility::createASTWholeArrayNode(*currToken);
-                        arr_table.insert(varAssign->key);
+                        arr_table.insert({ varAssign->key, isConstant });
                         currToken++;
                         if (isUsingSemi) {ASTUtility::validToken(T_SYMBOL, ";", currToken);}
                         return ASTUtility::createASTNode(ARRAY_EXCH, varAssign, resultNode);
                     }
                     else
                     {
-                        cout << "line 294" << endl;
-                        throw ERROR_INVALID_SYMBOL;
+                        throw (int) ErrorInvalidSymbol;
                     }
                 }
-                arr_table.insert(varAssign->key);
+                arr_table.insert({ varAssign->key, isConstant });
                 ASTUtility::validToken(T_SYMBOL, "]", currToken);
                 if (isUsingSemi) {ASTUtility::validToken(T_SYMBOL, ";", currToken);}
                 return ASTUtility::createASTNode(inst, varAssign, resultNode);
@@ -117,10 +114,11 @@ ASTNode * Parser::assignment(bool isUsingSemi)
             if (symbol_table.find(currToken->entry) == symbol_table.end() &&
                 global_symbol_table.find(currToken->entry) == global_symbol_table.end() && 
                 arr_table.find(currToken->entry) == arr_table.end()
-            ) {throw ERROR_VAR_UNKNOWN;}
+            ) {throw (int) ErrorVariableUnknown;}
             if (arr_table.find(currToken->entry) != arr_table.end())
             {
                 varAssign = ASTUtility::createASTArrayNode(*currToken);
+                if (arr_table[currToken->entry]) { throw (int)ErrorInvalidConstant; }
                 currToken++;
                 ASTUtility::validToken(T_SYMBOL, "[", currToken);
                 if (symbol_table.find(currToken->entry) != symbol_table.end() && 
@@ -128,27 +126,93 @@ ASTNode * Parser::assignment(bool isUsingSemi)
                 )
                 {
                     varAssign->key += "[" + currToken->entry + "]";
+                    currToken++;
+                }
+                else if (!isdigit(currToken->entry[0]))
+                {
+                    ASTUtility::validToken(T_SYMBOL, "]", currToken);
+                    ASTUtility::validToken(T_SYMBOL, "=", currToken);
+                    if (currToken->entry == "[")
+                    {
+                        ASTUtility::validToken(T_SYMBOL, "[", currToken);
+                        resultNode = ASTUtility::createASTNode(ARRAY_INIT_PRE_ELM, ASTUtility::createASTNullNode(), ASTUtility::createASTNullNode());
+                        ASTNode* array_elements = resultNode->right;
+                        while (currToken->entry != "]")
+                        {
+                            if (currToken->entry != ",")
+                            {
+                                array_elements->right = ASTUtility::createASTNumberNode(*currToken);
+                                array_elements = array_elements->right;
+                            }
+                            currToken++;
+                        }
+                        TokenEntry te(T_NUMBER, "0");
+                        resultNode->left = ASTUtility::createASTNumberNode(te);
+                        arr_table.insert({ varAssign->key, isConstant });
+                        ASTUtility::validToken(T_SYMBOL, "]", currToken);;
+                        if (isUsingSemi) { ASTUtility::validToken(T_SYMBOL, ";", currToken);; }
+                        return ASTUtility::createASTNode(ARRAY_INIT, varAssign, resultNode);
+                    }
+                    else if (currToken->entry == "\"")
+                    {
+                        ASTUtility::validToken(T_SYMBOL, "\"", currToken);;
+                        resultNode = ASTUtility::createASTNode(ARRAY_INIT_PRE_ELM, ASTUtility::createASTNullNode(), ASTUtility::createASTNullNode());
+                        ASTNode* char_elements = resultNode->right;
+                        while (currToken->entry != "\"")
+                        {
+                            char_elements->right = ASTUtility::createASTNumberNode(*currToken);
+                            char_elements = char_elements->right;
+                            currToken++;
+                        }
+                        TokenEntry te(T_NUMBER, "0");
+                        resultNode->left = ASTUtility::createASTNumberNode(te);
+                        arr_table.insert({ varAssign->key, isConstant });
+                        ASTUtility::validToken(T_SYMBOL, "\"", currToken);
+                        if (isUsingSemi) { ASTUtility::validToken(T_SYMBOL, ";", currToken); }
+                        return ASTUtility::createASTNode(ARRAY_INIT, varAssign, resultNode);
+                    }
+                    else if (this->isValidFunction())
+                    {
+                        resultNode = this->functionCall();
+                        arr_table.insert({ varAssign->key, isConstant });
+                        return ASTUtility::createASTNode(ARRAY_INIT, varAssign, resultNode);
+                    }
+                    else if (arr_table.find(currToken->entry) != arr_table.end())
+                    {
+                        resultNode = ASTUtility::createASTWholeArrayNode(*currToken);
+                        arr_table.insert({ varAssign->key, isConstant });
+                        currToken++;
+                        if (isUsingSemi) { ASTUtility::validToken(T_SYMBOL, ";", currToken); }
+                        return ASTUtility::createASTNode(ARRAY_EXCH, varAssign, resultNode);
+                    }
+                    else
+                    {
+                        throw (int)ErrorInvalidSymbol;
+                    }
+                    ASTUtility::validToken(T_SYMBOL, "]", currToken);
+                    if (isUsingSemi) { ASTUtility::validToken(T_SYMBOL, ";", currToken); }
+                    return ASTUtility::createASTNode(inst, varAssign, resultNode);
                 }
                 else if (stoi(currToken->entry) >= 0)
                 {
                     varAssign->key += "[" + currToken->entry + "]";
+                    currToken++;
                 }
                 else
                 {
-                    throw ERROR_VAR_UNKNOWN;
+                    throw (int) ErrorVariableUnknown;
                 }
-                currToken++;
                 ASTUtility::validToken(T_SYMBOL, "]", currToken);
                 break;
             }
-            if (symbol_table[currToken->entry]) {throw ERROR_VAR_UNKNOWN;}
-            else if (global_symbol_table[currToken->entry]) {throw ERROR_VAR_UNKNOWN;}
+            if (symbol_table[currToken->entry]) {throw (int) ErrorInvalidConstant;}
+            else if (global_symbol_table[currToken->entry]) {throw (int)ErrorInvalidConstant;}
+           
             varAssign = ASTUtility::createASTVariableNode(*currToken);
             currToken++;
             break;
         default:
-            cout << "Line 342" << endl;
-            throw ERROR_INVALID_SYMBOL;
+            throw (int) ErrorInvalidSymbol;
     }
     
     switch (currToken->entry[0])
@@ -186,16 +250,15 @@ ASTNode * Parser::assignment(bool isUsingSemi)
             inst = ASSIGN_MODULUS;
             break;
         case '<':
-            if (currToken->entry != "<<=") {throw ERROR_VAR_UNKNOWN;}
+            if (currToken->entry != "<<=") {throw (int) ErrorVariableUnknown;}
             inst = ASSIGN_SHIFT_LEFT;
             break;
         case '>':
-            if (currToken->entry != ">>=") {throw ERROR_VAR_UNKNOWN;}
+            if (currToken->entry != ">>=") {throw (int) ErrorVariableUnknown;}
             inst = ASSIGN_SHIFT_RIGHT;
             break;
         default:
-            cout << "Line 389" << endl;
-            throw ERROR_INVALID_SYMBOL; 
+            throw (int) ErrorInvalidSymbol; 
     }
 
     currToken++;
@@ -226,25 +289,25 @@ ASTNode * Parser::globalAssignment()
     switch (currToken->tType)
     {
         case T_KEYWORD:
-            if (currToken->entry != "let" && currToken->entry != "const") {throw ERROR_INVALID_KEYWORD;}
+            if (currToken->entry != "let" && currToken->entry != "const") {throw (int) ErrorInvalidKeyword;}
             isConstant = currToken->entry == "const";
             currToken++;
             if (global_symbol_table.find(currToken->entry) != global_symbol_table.end() || 
                 arr_table.find(currToken->entry) != arr_table.end()) 
-            {throw ERROR_VAR_UNKNOWN;}
-            if (currToken->tType != T_VARIABLE) { cout << "line 176" << endl; throw ERROR_INVALID_SYMBOL;}
+            {throw (int) ErrorVariableUnknown;}
+            if (currToken->tType != T_VARIABLE) { throw (int) ErrorInvalidSymbol;}
             varAssign = ASTUtility::createASTVariableNode(*currToken);
             currToken++;
             if (currToken->entry == "[")
             {
                 if (isConstant)
-                    throw ERROR_VAR_UNKNOWN;
+                    throw (int) ErrorVariableUnknown;
                 ASTUtility::validToken(T_SYMBOL, "[", currToken);
                 if (currToken->entry != "]")
                 {
                     resultNode = ASTUtility::createASTArrayNode(*currToken);
                     currToken++;
-                    arr_table.insert(varAssign->key);
+                    arr_table.insert({ varAssign->key, isConstant });
                     ASTUtility::validToken(T_SYMBOL, "]", currToken);
                     ASTUtility::validToken(T_SYMBOL, ";", currToken);
                     return ASTUtility::createASTNode(ARRAY_INIT_SIZE, varAssign, resultNode);
@@ -269,7 +332,7 @@ ASTNode * Parser::globalAssignment()
                         }
                         TokenEntry te(T_NUMBER, "0");
                         resultNode->left = ASTUtility::createASTNumberNode(te);
-                        arr_table.insert(varAssign->key);
+                        arr_table.insert({ varAssign->key, isConstant });
                         ASTUtility::validToken(T_SYMBOL, "]", currToken);
                         ASTUtility::validToken(T_SYMBOL, ";", currToken);
                         return ASTUtility::createASTNode(ARRAY_INIT, varAssign, resultNode);
@@ -287,7 +350,7 @@ ASTNode * Parser::globalAssignment()
                         }
                         TokenEntry te(T_NUMBER, "0");
                         resultNode->left = ASTUtility::createASTNumberNode(te);
-                        arr_table.insert(varAssign->key);
+                        arr_table.insert({ varAssign->key, isConstant });
                         ASTUtility::validToken(T_SYMBOL, "\"", currToken);
                         ASTUtility::validToken(T_SYMBOL, ";", currToken);
                         return ASTUtility::createASTNode(ARRAY_INIT, varAssign, resultNode);
@@ -295,24 +358,23 @@ ASTNode * Parser::globalAssignment()
                     else if (this->isValidFunction())
                     {
                         resultNode = this->functionCall();
-                        arr_table.insert(varAssign->key);
+                        arr_table.insert({ varAssign->key, isConstant });
                         return ASTUtility::createASTNode(ARRAY_INIT, varAssign, resultNode);
                     }
                     else if (arr_table.find(currToken->entry) != arr_table.end())
                     {
                         resultNode = ASTUtility::createASTWholeArrayNode(*currToken);
-                        arr_table.insert(varAssign->key);
+                        arr_table.insert({ varAssign->key, isConstant });
                         currToken++;
                         ASTUtility::validToken(T_SYMBOL, ";", currToken);
                         return ASTUtility::createASTNode(ARRAY_EXCH, varAssign, resultNode);
                     }
                     else
                     {
-                        cout << "line 294" << endl;
-                        throw ERROR_INVALID_SYMBOL;
+                        throw (int) ErrorInvalidSymbol;
                     }
                 }
-                arr_table.insert(varAssign->key);
+                arr_table.insert({ varAssign->key, isConstant });
                 ASTUtility::validToken(T_SYMBOL, "]", currToken);
                 ASTUtility::validToken(T_SYMBOL, ";", currToken);
                 return ASTUtility::createASTNode(inst, varAssign, resultNode);
@@ -323,8 +385,7 @@ ASTNode * Parser::globalAssignment()
             }
             break;
         default:
-            cout << "line 196" << endl;
-            throw ERROR_INVALID_SYMBOL;
+            throw (int) ErrorInvalidSymbol;
     }
 
     ASTUtility::validToken(T_SYMBOL, "=", currToken);
@@ -407,7 +468,7 @@ void Parser::stmtList(ASTNode * root)
         }
         else
         {
-            throw ERROR_INVALID_KEYWORD;
+            throw (int) ErrorInvalidKeyword;
         }
         
         stmtList->right = ASTUtility::createASTNode(STMTLIST, stmt, NULL);

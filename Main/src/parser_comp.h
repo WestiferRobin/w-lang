@@ -42,7 +42,7 @@ private:
   TokenEntry * currToken;
   map<string, bool> symbol_table;
   map<string, bool> global_symbol_table;
-  set<string> arr_table;
+  map<string, bool> arr_table;
   set<string> case_set;
   set<string> function_table;
 

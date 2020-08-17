@@ -119,6 +119,7 @@ void BackEnd::createAssembly(ASTNode *& root)
             elseInstance->pop();
             break;
         default:
+            // ERROR_CODE
             break;
     }
   
@@ -350,6 +351,7 @@ void BackEnd::createAssembly(ASTNode *& root)
             root->key = "r" + to_string(regIndex);
             break;
         default:
+            // ERROR_CODE
             return;
     }
 }
