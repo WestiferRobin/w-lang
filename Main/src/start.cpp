@@ -4,7 +4,9 @@ void Parser::dependencies(ASTNode *& root)
 {
     ASTNode * globalNode = ASTUtility::createASTNode(DEPENDENCY_GLOBAL, NULL, NULL);
     ASTNode * functionNode = ASTUtility::createASTNode(DEPENDENCY_FUNC, globalNode, NULL);
+
     root->right = functionNode;
+
     while (currToken->tType == T_KEYWORD)
     {
         if (currToken->entry == "function")
@@ -54,9 +56,13 @@ ASTNode * Parser::main()
     ASTUtility::validToken(T_SYMBOL, "(", currToken);
     ASTUtility::validToken(T_SYMBOL, ")", currToken);
     ASTUtility::validToken(T_SYMBOL, "{", currToken);
+
     this->stmtList(mainNode);
+
     symbol_table.clear();
+
     ASTUtility::validToken(T_SYMBOL, "}", currToken);
+    
     return mainNode;
 }
 

@@ -22,6 +22,7 @@ void FrontEnd::run(string file_text, ASTNode *& the_ast)
           if (line[i] == '\"')
           {
             the_code += line[i++];
+            
             while (line[i] != '\"')
             {
               the_code += line[i++];
@@ -30,11 +31,13 @@ void FrontEnd::run(string file_text, ASTNode *& the_ast)
           else if (line[i] == '\'')
           {
             the_code += line[i++];
+            
             while (line[i] != '\'')
             {
               the_code += line[i++];
             }
           }
+          
           the_code += line[i];
         }
       }
@@ -42,7 +45,9 @@ void FrontEnd::run(string file_text, ASTNode *& the_ast)
 
     myfile.close();
     scanner();
+    
     Parser * parser = new Parser(fe_symbol_table);
+    
     parser->initGrammar(tokens.data(), the_ast);
   }
 }
@@ -93,7 +98,11 @@ void FrontEnd::handleNumbersAndVariables(int * index, string * token)
 {
   int tempIndex = *(index) + 1;
   bool isNumber = true;
-  while (isdigit(the_code[tempIndex])) { *token += the_code[tempIndex++];}
+  
+  while (isdigit(the_code[tempIndex])) 
+  { 
+    *token += the_code[tempIndex++];
+  }
 
   for (int charIndex = 0; charIndex < (*token).length(); charIndex++) 
   {
@@ -101,6 +110,7 @@ void FrontEnd::handleNumbersAndVariables(int * index, string * token)
     isNumber = false; 
     break;
   }
+  
   tokens.push_back(TokenEntry(isNumber ? T_NUMBER : T_VARIABLE, *token));
   *index = tempIndex - 1;
 }
@@ -143,7 +153,9 @@ void FrontEnd::handleOperatorsTypeOne(int * index, string * token)
       if (isdigit(the_code[*(index) + 1]) && the_code[*(index) - 1] == '-' && the_code[*index] == '-')
       {
         int digitIndex = *(index) + 1;
+
         while (isdigit(the_code[digitIndex])) { *token += the_code[digitIndex++];}
+
         tokens.push_back(TokenEntry(T_NUMBER, *token));
         *index = digitIndex - 1;
       }
@@ -198,7 +210,9 @@ void FrontEnd::handleOperatorsTypeFour(int * index, string * token)
     case '<':
     case '>':
       buildInstance = *token + the_code[*(index)+1] + the_code[*(index)+2];
+
       tokens.push_back(TokenEntry(T_SYMBOL, buildInstance == "<<=" || buildInstance == ">>="  ? buildInstance : *token + the_code[*(index)+1]));
+      
       *(index) += buildInstance == "<<=" || buildInstance == ">>=" ? 2 : 1;
       break;
     default:

@@ -11,7 +11,7 @@ void BackEnd::run(ASTNode *& ast)
 
 void BackEnd::createAssembly(ASTNode *& root)
 {
-    if (root == NULL) {return;}
+    if (root == NULL) return;
 
     createAssembly(root->left);
 
@@ -119,13 +119,13 @@ void BackEnd::createAssembly(ASTNode *& root)
             elseInstance->pop();
             break;
         default:
-            // ERROR_CODE
             break;
     }
   
     createAssembly(root->right);
 
     ASTNode * elementPtr;
+    
     switch (root->type)
     {
         case IMPORT:
@@ -351,8 +351,7 @@ void BackEnd::createAssembly(ASTNode *& root)
             root->key = "r" + to_string(regIndex);
             break;
         default:
-            // ERROR_CODE
-            return;
+            break;
     }
 }
 
@@ -361,10 +360,12 @@ void BackEnd::initStandardLib()
     StdInit * stdInit = new StdInit(programCounter);
     vector<AssemblyEntry*> ans = stdInit->getAssembly();
     programCounter = stdInit->getCounter();
+
     for (auto i = ans.begin(); i != ans.end(); i++)
     {
         assembly.push_back(*i);
     }
+
     delete stdInit;
 }
 

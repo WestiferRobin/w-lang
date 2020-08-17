@@ -6,6 +6,7 @@ ASTNode * ASTUtility::createASTNode(ASTType type, ASTNode* left, ASTNode* right)
     ans->type = type;
     ans->left = left;
     ans->right = right;
+
     switch(type)
     {
         case BOOL_AND:
@@ -39,15 +40,17 @@ ASTNode * ASTUtility::createASTNode(ASTType type, ASTNode* left, ASTNode* right)
             ans->key = "NUM";
             break;
         default:
-            ans->key = "UNKNOWN";
+            ans->key = "OTHER";
             break;
     }
+
     return ans;
 }
 
 ASTNode * ASTUtility::createASTNumberNode(TokenEntry entry)
 {
     bool isDigit = true;
+
     for (int i = 0; i < entry.entry.length(); i++)
     {
         if (!isdigit(entry.entry[i]))
@@ -55,14 +58,17 @@ ASTNode * ASTUtility::createASTNumberNode(TokenEntry entry)
             isDigit = false;
         }
     }
+
     if (isDigit == false)
     {
         throw (int) ErrorInvalidSymbol;
     }
+
     ASTNode * ans = new ASTNode();
     ans->value = stoi(entry.entry);
     ans->type = NUM;
     ans->key = entry.entry;
+
     return ans;
 }
 
@@ -71,6 +77,7 @@ ASTNode * ASTUtility::createASTVariableNode(TokenEntry entry)
     ASTNode * ans = new ASTNode();
     ans->key = entry.entry;
     ans->type = VAR;
+
     return ans;
 }
 
@@ -80,6 +87,7 @@ ASTNode * ASTUtility::createASTArrayNode(TokenEntry entry)
     ans->value = -1;
     ans->type = ARRAY_ACCESS;
     ans->key = entry.entry;
+
     return ans;
 }
 
@@ -91,6 +99,7 @@ ASTNode * ASTUtility::createASTNullNode()
     ans->right = NULL;
     ans->value = INT_MIN;
     ans->key = "0";
+
     return ans;
 }
 
@@ -100,6 +109,7 @@ ASTNode * ASTUtility::createASTCharNode(TokenEntry entry)
     ans->value = (int) (entry.entry == "\' \'" ? ' ' : stoi(entry.entry));
     ans->type = CHAR;
     ans->key = to_string(ans->value);
+
     return ans;
 }
 
@@ -109,6 +119,7 @@ ASTNode * ASTUtility::createASTWholeArrayNode(TokenEntry entry)
     ans->value = 0;
     ans->type = ARRAY_WHOLE;
     ans->key = entry.entry;
+
     return ans;
 }
 
@@ -121,12 +132,17 @@ ASTNode * ASTUtility::cloneASTNode(ASTNode * clone)
     ans->key = clone->key;
     ans->left = cloneASTNode(clone->left);
     ans->right = cloneASTNode(clone->right);
+
     return ans;
 }
 
 void ASTUtility::validToken(TokenType param1, string param2, TokenEntry *& currToken)
 {
-    if (currToken->tType != param1 && currToken->entry != param2) { throw (int) ErrorInvalidSymbol; }
+    if (currToken->tType != param1 || currToken->entry != param2) 
+    { 
+        throw (int) ErrorInvalidSymbol; 
+    }
+    
     currToken++;
 }
 

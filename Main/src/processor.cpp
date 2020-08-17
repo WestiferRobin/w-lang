@@ -2,7 +2,6 @@
 
 void Processor::init()
 {
-  // setups registers and initalizes its value
   for (int i = 1; i <= MAX_NUM_REGISTERS; i++)
   {
     registers.insert({"r" + to_string(i), 0});
@@ -10,7 +9,6 @@ void Processor::init()
   registers.insert({"CMPR", 0});
   registers.insert({"RET_V", 0});
   
-  // setups the labels needed for the program
   for (int i = 0; i < assembly.size(); i++)
   {
     if (assembly[i]->type == JUMP_LABEL)
@@ -25,9 +23,11 @@ void Processor::run()
   try
   {
     init();
+
     while (programCounter < assembly.size())
     {
       AssemblyEntry * instance = assembly[programCounter];
+      
       switch (instance->type)
       {
         case JUMP_LABEL:
@@ -70,9 +70,15 @@ void Processor::readALUop(AssemblyEntry * assemblyLine)
 {
   int left = 0;
   int right = 0;
+
   if (assemblyLine->operatorLabel == "load")
   {
-    if (isGettingGlobal) { global_vars.insert({assemblyLine->firstOp, stoi(assemblyLine->secondOp)}); return;}
+    if (isGettingGlobal) 
+    { 
+      global_vars.insert({assemblyLine->firstOp, stoi(assemblyLine->secondOp)}); 
+      return;
+    }
+    
     if (this->isLoadValid(assemblyLine->firstOp))
     {
       this->setValue(assemblyLine->firstOp, this->getValue(assemblyLine->secondOp));
@@ -274,7 +280,9 @@ void Processor::readALUop(AssemblyEntry * assemblyLine)
   else if (assemblyLine->operatorLabel == "scan")
   {
     string target;
+
     getline(cin, target);
+
     if (atoi(target.c_str()))
       this->setValue(assemblyLine->firstOp, stoi(target));
     else
@@ -293,9 +301,12 @@ void Processor::readALUop(AssemblyEntry * assemblyLine)
     {
       left = this->getValue(assemblyLine->firstOp);
     }
+
     left = this->getValue(assemblyLine->firstOp);
     right = this->getValue(assemblyLine->secondOp);
+    
     char tmp = (char) left;
+    
     switch (right)
     {
       case 0:
@@ -390,8 +401,10 @@ bool Processor::isLoadValid(string target)
 bool Processor::isNumber(string target)
 {
   bool isNumber = true;
+
   for(string::const_iterator k = target.begin(); k != target.end(); ++k)
       isNumber = isdigit(*k) && isNumber;
+
   return isNumber;
 }
 
@@ -453,29 +466,35 @@ bool Processor::isArrayVariable(string target)
 string Processor::printArray(vector<int> targ_array)
 {
   string ans = "[";
+
   for (int i = 0; i < targ_array.size() - 1; i++)
   {
     ans += to_string(targ_array[i]) + ", ";
   }
+
   ans += to_string(targ_array[targ_array.size() - 1]);
   ans += "]";
+  
   return ans;
 }
 
 string Processor::printString(vector<int> targ_string)
 {
   string ans = "";
+
   for (auto i = targ_string.begin(); i != targ_string.end(); i++)
   {
     char inst = (char) *i;
     ans += inst;
   }
+
   return ans;
 }
 
 int Processor::getValue(string target)
 {
   int ans = INT_MIN;
+
   if (this->isDataMem(target))
   {
     ans = data_mem[target];
@@ -496,7 +515,12 @@ int Processor::getValue(string target)
   {
     string array_label = target.substr(0, target.find("["));
     int index = this->getValue(target.substr(target.find("[") + 1, target.find("]") - target.find("[") - 1));
-    if (array_table[array_label].size() <= index || index < 0) { throw (int)ErrorVariableUnknown; }
+
+    if (array_table[array_label].size() <= index || index < 0) 
+    { 
+      throw (int)ErrorVariableUnknown; 
+    }
+    
     ans = array_table[array_label][index];
   }
   else if (this->isArrayVariable(target))

@@ -4,13 +4,16 @@ ASTNode * Parser::copy()
 {
     ASTNode * copyTarget = NULL;
     ASTNode * copySource = NULL;
-    ASTUtility::validToken(T_SYMBOL, "COPY", currToken);
+    ASTUtility::validToken(T_KEYWORD, "COPY", currToken);
     ASTUtility::validToken(T_SYMBOL, "(", currToken);
+
     if (currToken->tType == T_VARIABLE && arr_table.find(currToken->entry) != arr_table.end())
     {
         copyTarget = ASTUtility::createASTWholeArrayNode(*currToken++);
     }
+
     ASTUtility::validToken(T_SYMBOL, ",", currToken);
+
     if (currToken->tType == T_VARIABLE && arr_table.find(currToken->entry) != arr_table.end())
     {
         copySource = ASTUtility::createASTWholeArrayNode(*currToken++);
@@ -19,6 +22,7 @@ ASTNode * Parser::copy()
     {
         throw (int) ErrorNoRawString;
     }
+
     ASTUtility::validToken(T_SYMBOL, ")", currToken);
     ASTUtility::validToken(T_SYMBOL, ";", currToken);
 
@@ -28,15 +32,20 @@ ASTNode * Parser::copy()
 ASTNode * Parser::deleteStatement()
 {
     ASTNode * delVariable;
-    ASTUtility::validToken(T_SYMBOL, "delete", currToken);
+
+    ASTUtility::validToken(T_KEYWORD, "delete", currToken);
+
     if (symbol_table.find(currToken->entry) != symbol_table.end())
     {
         if (symbol_table[currToken->entry])
         {
             throw (int) ErrorInvalidConstant;
         }
+
         symbol_table.erase(currToken->entry);
+
         delVariable = ASTUtility::createASTVariableNode(*currToken);
+        
         currToken++;
     }
     else if (arr_table.find(currToken->entry) != arr_table.end())
@@ -45,15 +54,20 @@ ASTNode * Parser::deleteStatement()
         {
             throw (int) ErrorInvalidConstant;
         }
+
         arr_table.erase(currToken->entry);
+
         delVariable = ASTUtility::createASTVariableNode(*currToken);
+
         currToken++;
     }
     else
     {
         throw (int) ErrorVariableUnknown;
     }
+
     ASTUtility::validToken(T_SYMBOL, ";", currToken);
+
     return ASTUtility::createASTNode(DELETE, delVariable, NULL);
 }
 
@@ -61,13 +75,17 @@ ASTNode * Parser::length()
 {
     ASTNode * lenTarg = NULL;
     ASTNode * lenSource = NULL;
-    ASTUtility::validToken(T_SYMBOL, "LENGTH", currToken);
+
+    ASTUtility::validToken(T_KEYWORD, "LENGTH", currToken);
     ASTUtility::validToken(T_SYMBOL, "(", currToken);
+
     if (currToken->tType == T_VARIABLE && symbol_table.find(currToken->entry) != symbol_table.end())
     {
         lenTarg = ASTUtility::createASTVariableNode(*currToken++);
     }
+
     ASTUtility::validToken(T_SYMBOL, ",", currToken);
+    
     if (currToken->tType == T_VARIABLE && arr_table.find(currToken->entry) != arr_table.end())
     {
         lenSource = ASTUtility::createASTWholeArrayNode(*currToken++);
@@ -76,6 +94,7 @@ ASTNode * Parser::length()
     {
         throw (int) ErrorNoRawString;
     }
+
     ASTUtility::validToken(T_SYMBOL, ")", currToken);
     ASTUtility::validToken(T_SYMBOL, ";", currToken);
 
@@ -87,13 +106,17 @@ ASTNode * Parser::equal()
     ASTNode * result = NULL;
     ASTNode * leftSide = NULL;
     ASTNode * rightSide = NULL;
-    ASTUtility::validToken(T_SYMBOL, "EQUAL", currToken);
+
+    ASTUtility::validToken(T_KEYWORD, "EQUAL", currToken);
     ASTUtility::validToken(T_SYMBOL, "(", currToken);
+
     if (currToken->tType == T_VARIABLE && symbol_table.find(currToken->entry) != symbol_table.end())
     {
         result = ASTUtility::createASTVariableNode(*currToken++);
     }
+
     ASTUtility::validToken(T_SYMBOL, ",", currToken);
+
     if (currToken->tType == T_VARIABLE && arr_table.find(currToken->entry) != arr_table.end())
     {
         leftSide = ASTUtility::createASTWholeArrayNode(*currToken++);
@@ -102,7 +125,9 @@ ASTNode * Parser::equal()
     {
         throw (int) ErrorNoRawString;
     }
+
     ASTUtility::validToken(T_SYMBOL, ",", currToken);
+
     if (currToken->tType == T_VARIABLE && arr_table.find(currToken->entry) != arr_table.end())
     {
         rightSide = ASTUtility::createASTWholeArrayNode(*currToken++);
@@ -111,6 +136,7 @@ ASTNode * Parser::equal()
     {
         throw (int) ErrorNoRawString;
     }
+
     ASTUtility::validToken(T_SYMBOL, ")", currToken);
     ASTUtility::validToken(T_SYMBOL, ";", currToken);
 
@@ -121,8 +147,10 @@ ASTNode * Parser::print()
 { 
     ASTNode * printContent;
     ASTNode * printMode;
-    ASTUtility::validToken(T_SYMBOL, "PRINT", currToken);
+
+    ASTUtility::validToken(T_KEYWORD, "PRINT", currToken);
     ASTUtility::validToken(T_SYMBOL, "(", currToken);
+
     if (currToken->entry == "\"")
     {
         throw (int) ErrorNoRawString;
@@ -131,7 +159,9 @@ ASTNode * Parser::print()
     {
         printContent = this->expression();
     }
+
     ASTUtility::validToken(T_SYMBOL, ",", currToken);
+
     switch (currToken->tType)
     {
         case T_VARIABLE:
@@ -143,7 +173,9 @@ ASTNode * Parser::print()
         default:
             throw (int) ErrorInvalidSymbol;
     }
+
     currToken++;
+
     ASTUtility::validToken(T_SYMBOL, ")", currToken);
     ASTUtility::validToken(T_SYMBOL, ";", currToken);
 
@@ -153,8 +185,10 @@ ASTNode * Parser::print()
 ASTNode * Parser::scan()
 {
     ASTNode * inputVariable;
-    ASTUtility::validToken(T_SYMBOL, "SCAN", currToken);
+
+    ASTUtility::validToken(T_KEYWORD, "SCAN", currToken);
     ASTUtility::validToken(T_SYMBOL, "(", currToken);
+
     if (currToken->tType == T_VARIABLE && symbol_table.find(currToken->entry) != symbol_table.end())
     {
         inputVariable = ASTUtility::createASTVariableNode(*currToken++);
@@ -163,6 +197,7 @@ ASTNode * Parser::scan()
     {
         throw (int) ErrorInvalidSymbol;
     }
+    
     ASTUtility::validToken(T_SYMBOL, ")", currToken);
     ASTUtility::validToken(T_SYMBOL, ";", currToken);
 

@@ -5,7 +5,9 @@ ASTNode * Parser::andOrCondition()
     ASTNode * expLeft;
     ASTNode * expRight;
     ASTType type;
-    expLeft = this->condition();
+
+    expLeft = condition();
+
     if (currToken->entry == "," || currToken->entry == ";" || currToken->entry == ")") 
     { 
         return expLeft;
@@ -22,8 +24,11 @@ ASTNode * Parser::andOrCondition()
     { 
         throw (int) ErrorInvalidBoolOp;   
     }
+
     currToken++;
-    expRight = this->expression();
+
+    expRight = expression();
+
     return ASTUtility::createASTNode(type, expLeft, expRight);
 }
 
@@ -40,8 +45,13 @@ ASTNode * Parser::arithExpression()
             term = this->term();
             break;
         case T_SYMBOL:
-            if (currToken->entry[0] == '(' || currToken->entry[0] == '!') {term = this->term(); break;}
-            else { throw (int) ErrorInvalidSymbol; } 
+            if (currToken->entry[0] == '(' || currToken->entry[0] == '!') 
+            {
+                term = this->term(); 
+                break;
+            }
+            else 
+                throw (int) ErrorInvalidSymbol; 
         default:
             throw (int) ErrorInvalidSymbol;
     }
@@ -58,7 +68,7 @@ ASTNode * Parser::arithExpression()
                 case '!':
                     if (currToken->entry != "!=")
                     {
-                        expP = this->arithExpressionP(term);
+                        expP = arithExpressionP(term);
                         return expP;
                     }
                 case ')':
@@ -78,7 +88,6 @@ ASTNode * Parser::arithExpression()
     }
 
     return NULL;
-
 }
 
 ASTNode * Parser::arithExpressionP(ASTNode* root)
@@ -90,10 +99,10 @@ ASTNode * Parser::arithExpressionP(ASTNode* root)
             {
                 case '+':
                     currToken++;
-                    return ASTUtility::createASTNode(ADD, root, this->expression()); 
+                    return ASTUtility::createASTNode(ADD, root, expression()); 
                 case '-':
                     currToken++;
-                    return ASTUtility::createASTNode(MINUS, root, this->expression());
+                    return ASTUtility::createASTNode(MINUS, root, expression());
                 default:
                     throw (int) ErrorInvalidArithOp;
             }
@@ -107,8 +116,12 @@ ASTNode * Parser::condition()
     ASTNode * expLeft;
     ASTNode * expRight;
     ASTType type;
-    expLeft = this->arithExpression();
-    if (currToken->entry == "," || currToken->entry == ";" || currToken->entry == ")" || currToken->entry == "&&" || currToken->entry == "||") 
+
+    expLeft = arithExpression();
+
+    if (currToken->entry == "," || currToken->entry == ";" || 
+        currToken->entry == ")" || currToken->entry == "&&" || 
+        currToken->entry == "||") 
     { 
         return expLeft;
     }
@@ -140,14 +153,16 @@ ASTNode * Parser::condition()
     { 
         throw (int) ErrorInvalidBoolOp;     
     }
+
     currToken++;
-    expRight = this->arithExpression();
+    expRight = arithExpression();
+
     return ASTUtility::createASTNode(type, expLeft, expRight);
 }
 
 ASTNode * Parser::expression()
 {
-    return this->andOrCondition();
+    return andOrCondition();
 }
 
 ASTNode * Parser::factor()
@@ -156,22 +171,24 @@ ASTNode * Parser::factor()
     switch (currToken->tType)
     {
         case T_NUMBER:
-            tmp = ASTUtility::createASTNumberNode(*currToken);
-            currToken++;
+            tmp = ASTUtility::createASTNumberNode(*(currToken++));
             return tmp;
         case T_VARIABLE:
             if (symbol_table.find(currToken->entry) == symbol_table.end() &&
                 global_symbol_table.find(currToken->entry) == global_symbol_table.end() &&
-                arr_table.find(currToken->entry) == arr_table.end()
-            ) { throw (int) ErrorVariableUnknown; }
-            tmp = ASTUtility::createASTVariableNode(*currToken);
-            currToken++;
+                arr_table.find(currToken->entry) == arr_table.end()) 
+            { 
+                throw (int) ErrorVariableUnknown; 
+            }
+
+            tmp = ASTUtility::createASTVariableNode(*(currToken++));
+
             if (currToken->entry == "[")
             {
                 ASTUtility::validToken(T_SYMBOL, "[", currToken);
+
                 if (symbol_table.find(currToken->entry) != symbol_table.end() || 
-                global_symbol_table.find(currToken->entry) != global_symbol_table.end()
-                )
+                    global_symbol_table.find(currToken->entry) != global_symbol_table.end())
                 {
                     tmp->key += "[" + currToken->entry + "]";
                 }
@@ -183,7 +200,9 @@ ASTNode * Parser::factor()
                 {
                     throw (int) ErrorVariableUnknown;
                 }
+
                 currToken++;
+
                 ASTUtility::validToken(T_SYMBOL, "]", currToken);
             }
             return tmp;
@@ -192,18 +211,27 @@ ASTNode * Parser::factor()
             {
                 case '!':
                     currToken++;
-                    tmp = this->factor();
+                    tmp = factor();
                     return ASTUtility::createASTNode(NOT, NULL, tmp);
                 case '(':
                     currToken++;
-                    tmp = this->expression();
-                    if (currToken->entry[0] != ')') {throw (int) ErrorInvalidSymbol;}
+                    
+                    tmp = expression();
+
+                    if (currToken->entry[0] != ')') 
+                    {
+                        throw (int) ErrorInvalidSymbol;
+                    }
+                    
                     currToken++;
+                    
                     return tmp;
             }
         case T_CHAR:
             tmp = ASTUtility::createASTCharNode(*currToken);
+            
             currToken++;
+            
             return tmp;
         default:
             throw (int) ErrorInvalidSymbol;
@@ -224,8 +252,15 @@ ASTNode * Parser::term()
             factor = this->factor();
             break;
         case T_SYMBOL:
-            if (currToken->entry[0] == '(' || currToken->entry[0] == '!') {factor = this->factor(); break;}
-            else { throw (int) ErrorInvalidSymbol; }
+            if (currToken->entry[0] == '(' || currToken->entry[0] == '!') 
+            {   
+                factor = this->factor(); 
+                break;
+            }
+            else 
+            { 
+                throw (int) ErrorInvalidSymbol; 
+            }
         default:
             throw (int) ErrorInvalidSymbol;
     }
@@ -285,27 +320,27 @@ ASTNode * Parser::termP(ASTNode* root)
             {
                 case '*':
                     currToken++;
-                    return ASTUtility::createASTNode(MULTI, root, this->expression());
+                    return ASTUtility::createASTNode(MULTI, root, expression());
                 case '/':
                     currToken++;
-                    return ASTUtility::createASTNode(DIV, root, this->expression());
+                    return ASTUtility::createASTNode(DIV, root, expression());
                 case '%':
                     currToken++;
-                    return ASTUtility::createASTNode(MODULUS, root, this->expression());
+                    return ASTUtility::createASTNode(MODULUS, root, expression());
                 case '|':
                     currToken++;
-                    return ASTUtility::createASTNode(BIT_OR, root, this->expression());
+                    return ASTUtility::createASTNode(BIT_OR, root, expression());
                 case '&':
                     currToken++;
-                    return ASTUtility::createASTNode(BIT_AND, root, this->expression());
+                    return ASTUtility::createASTNode(BIT_AND, root, expression());
                 case '^':
                     currToken++;
-                    return ASTUtility::createASTNode(BIT_XOR, root, this->expression());
+                    return ASTUtility::createASTNode(BIT_XOR, root, expression());
                 case '>':
                     if (currToken->entry == ">>")
                     {
                         currToken++;
-                        return ASTUtility::createASTNode(BIT_RIGHT, root, this->expression());
+                        return ASTUtility::createASTNode(BIT_RIGHT, root, expression());
                     }
                     else
                     {
@@ -315,7 +350,7 @@ ASTNode * Parser::termP(ASTNode* root)
                     if (currToken->entry == "<<")
                     {
                         currToken++;
-                        return ASTUtility::createASTNode(BIT_LEFT, root, this->expression());
+                        return ASTUtility::createASTNode(BIT_LEFT, root, expression());
                     }
                     else
                     {

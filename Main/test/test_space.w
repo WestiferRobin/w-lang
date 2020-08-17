@@ -26,7 +26,7 @@ function MAIN()
     asdf[] = "fdsa";
     PRINT(asdf, pstrn);
     let a = 'W' - 2;
-    COPY(message, "Just a Copy");
+    COPY(message, asdf);
     PRINT(message, pstrn);
     P_STATE(5);
     PRINT(a, pcharn);
