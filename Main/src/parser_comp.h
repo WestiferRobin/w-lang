@@ -15,6 +15,7 @@
 
 using namespace std;
 
+
 class StdInit
 {
 private:
@@ -45,16 +46,19 @@ private:
   set<string> case_set;
   set<string> function_table;
 
+  // start.cpp
   void start(ASTNode *&);
   void dependencies(ASTNode *&);
   ASTNode * main();
 
+  // scope.cpp
   ASTNode * function();
   ASTNode * functionCall();
   ASTNode * importFile(ASTNode *);
   bool isValidFunction();
   ASTNode * returnCall();
   
+  // system_op.cpp
   ASTNode * copy();
   ASTNode * deleteStatement();
   ASTNode * length();
@@ -62,19 +66,23 @@ private:
   ASTNode * print();
   ASTNode * scan();
 
+  // assign.cpp
   ASTNode * assignment(void);
   ASTNode * assignment(bool);
   ASTNode * globalAssignment();
   void stmtList(ASTNode*);
 
+  // cond.cpp
   void caseStatemnt(ASTNode*&, ASTNode*&);
   void elseOrElseIfStatemnt(ASTNode*&, ASTNode*&);
   ASTNode * ifStatemnt();
   ASTNode * switchStatement();
   
+  // loop.cpp
   ASTNode * whileLoop();
   ASTNode * forLoop();
 
+  // expression.cpp
   ASTNode * andOrCondition();
   ASTNode * arithExpression();
   ASTNode * arithExpressionP(ASTNode*);

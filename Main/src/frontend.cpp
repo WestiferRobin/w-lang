@@ -9,7 +9,7 @@ void FrontEnd::run(string file_text, ASTNode *& the_ast)
   {
     while (getline(myfile,line))
     {
-      int size = line.find("//");
+      unsigned long size = line.find("//");
       if (size == string::npos)
       {
         size = line.length();

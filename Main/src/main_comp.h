@@ -63,7 +63,7 @@ private:
   bool isRegister(string);
   bool isDataMem(string);
   int getValue(string);
-  void setValue(string, int);
+  void setValue(string, unsigned long );
   bool isGlobal(string);
   bool isArrayInst(string);
   bool isArrayVariable(string);

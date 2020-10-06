@@ -134,7 +134,7 @@ ASTNode * Parser::functionCall()
 ASTNode * Parser::importFile(ASTNode * root)
 {
     FrontEnd * importFrontEnd = new FrontEnd(symbol_table);
-    //importFrontEnd->run(currToken->entry + ".w", root);
+    importFrontEnd->run(currToken->entry + ".w", root);     // TODO: try adding a bool flag to distinguish if this is Main file or a dependency file.
     delete importFrontEnd;
     currToken++;
     return root;

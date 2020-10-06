@@ -242,7 +242,7 @@ void Processor::readALUop(AssemblyEntry * assemblyLine)
       array_table.find(assemblyLine->secondOp) != array_table.end()
     ) 
     {
-      int minSize = min(array_table[assemblyLine->firstOp].size(), array_table[assemblyLine->secondOp].size());
+      unsigned long minSize = min(array_table[assemblyLine->firstOp].size(), array_table[assemblyLine->secondOp].size());
       for (int i = 0; i < minSize; i++)
       {
         array_table[assemblyLine->firstOp][i] = array_table[assemblyLine->secondOp][i];
@@ -539,26 +539,26 @@ int Processor::getValue(string target)
   return ans;
 }
 
-void Processor::setValue(string target, int value)
+void Processor::setValue(string target, unsigned long value)
 {
   if (this->isArrayInst(target))
   {
     string array_label = target.substr(0, target.find("["));
     int index = this->getValue(target.substr(target.find("[") + 1, target.find("]") - target.find("[") - 1));
     if (array_table[array_label].size() <= index || index < 0) { throw (int)ErrorVariableUnknown; }
-    array_table[array_label][index] = value;
+    array_table[array_label][index] = (int)value;
   }
   else if (this->isDataMem(target))
   {
-    data_mem[target] = value;
+    data_mem[target] = (int)value;
   }
   else if (this->isRegister(target))
   {
-    registers[target] = value;
+    registers[target] = (int)value;
   }
   else if (this->isGlobal(target))
   {
-    global_vars[target] = value;
+    global_vars[target] = (int)value;
   }
   else
   {

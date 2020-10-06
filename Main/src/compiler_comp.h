@@ -45,7 +45,7 @@ class BackEnd
 private:
   bool isLast = false;
   bool isOneNumber = false;
-  int programCounter = 0;
+  unsigned long long programCounter = 0;
   unsigned int regIndex = 0;
   Instance * whileInstance;
   Instance * forInstance;

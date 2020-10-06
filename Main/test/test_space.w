@@ -1,4 +1,4 @@
-
+import next_step;
 
 let message[2];
 

@@ -31,6 +31,9 @@ void Parser::dependencies(ASTNode *& root)
         {
             ASTUtility::validToken(T_KEYWORD, currToken->entry, currToken);
 
+            // this is a hack for using Xcode
+            currToken->entry = "/Users/wesitferrobin/Projects/workspace/W_Project/Main/test/" + currToken->entry;
+            
             ASTNode * importLib = this->importFile(root);
             
             ASTUtility::validToken(T_SYMBOL, ";", currToken);

@@ -18,13 +18,13 @@ enum AssemblyEntryType
 class AssemblyEntry
 {
 public:
-    int counter;
+    unsigned long long counter;
     string label;
     string operatorLabel;
     string firstOp;
     string secondOp;
     AssemblyEntryType type;
-    AssemblyEntry(AssemblyEntryType type, int counter, string label, string operatorLabel, string first, string second) 
+    AssemblyEntry(AssemblyEntryType type, unsigned long long counter, string label, string operatorLabel, string first, string second)
     {
         this->type = type;
         this->counter = counter;
