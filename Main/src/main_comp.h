@@ -36,7 +36,7 @@ public:
   }
   void parse(string file_name)
   {
-    fe->run(file_name, the_ast);
+    fe->run(true, file_name, the_ast);
     be->run(the_ast);
   }
   vector<AssemblyEntry*> getAssembly() { return be->getAssembly(); }

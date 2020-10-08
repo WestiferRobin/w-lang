@@ -1,5 +1,6 @@
 import next_step;
 
+
 let message[2];
 
 function P_STATE(let times)
@@ -16,6 +17,7 @@ function P_STATE(let times)
         i += 1;
     }
 }
+
 
 function MAIN()
 {

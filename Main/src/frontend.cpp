@@ -1,6 +1,6 @@
 #include "compiler_comp.h"
 
-void FrontEnd::run(string file_text, ASTNode *& the_ast)
+void FrontEnd::run(bool isMainFile, string file_text, ASTNode *& the_ast)
 {
   string line = "";
   ifstream myfile(file_text);
@@ -48,7 +48,7 @@ void FrontEnd::run(string file_text, ASTNode *& the_ast)
     
     Parser * parser = new Parser(fe_symbol_table);
     
-    parser->initGrammar(tokens.data(), the_ast);
+    parser->initGrammar(isMainFile, tokens.data(), the_ast);
   }
 }
 

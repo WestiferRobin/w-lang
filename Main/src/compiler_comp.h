@@ -36,7 +36,7 @@ private:
 public:
   FrontEnd(map<string, bool> symbol_table);
   ~FrontEnd() { }
-  void run(string, ASTNode *&);
+  void run(bool, string, ASTNode *&);
 };
 
 

@@ -2,7 +2,15 @@
 
 void Parser::dependencies(ASTNode *& root)
 {
-    ASTNode * globalNode = ASTUtility::createASTNode(DEPENDENCY_GLOBAL, NULL, NULL);
+    /*
+        TODO: 
+            - Write an exaple on paper on what this new dependency will look like
+                - Ideas: Have MAIN_GLOBAL vs IMPORT_GLOBAL
+            - Clean up the stupid ENUMs
+            - jmp MAIN is getting called everytime the DEPENCDY_GLOBAL is being iterated on.
+    */
+    ASTNode* importNode = ASTUtility::createASTNode(DEPENDENCY_IMPORT, NULL, NULL);
+    ASTNode * globalNode = ASTUtility::createASTNode(DEPENDENCY_GLOBAL, importNode, NULL);
     ASTNode * functionNode = ASTUtility::createASTNode(DEPENDENCY_FUNC, globalNode, NULL);
 
     root->right = functionNode;
@@ -32,21 +40,25 @@ void Parser::dependencies(ASTNode *& root)
             ASTUtility::validToken(T_KEYWORD, currToken->entry, currToken);
 
             // this is a hack for using Xcode
-            currToken->entry = "/Users/wesitferrobin/Projects/workspace/W_Project/Main/test/" + currToken->entry;
+            // currToken->entry = "/Users/wesitferrobin/Projects/workspace/W_Project/Main/test/" + currToken->entry;
+
+            // this is a hack for using VS
+            currToken->entry = "D:\\ProgramProjects\\W_Project\\Main\\test\\" + currToken->entry;
             
             ASTNode * importLib = this->importFile(root);
             
             ASTUtility::validToken(T_SYMBOL, ";", currToken);
             
-            globalNode->right = ASTUtility::createASTNode(IMPORT, importLib, NULL);
+            importNode->right = ASTUtility::createASTNode(IMPORT, importLib, NULL);
+            importNode = importNode->right;
         }
     }
 }
 
-void Parser::initGrammar(TokenEntry * token_instance, ASTNode *& the_ast) 
+void Parser::initGrammar(bool isMainFile, TokenEntry * token_instance, ASTNode *& the_ast) 
 {
     currToken = token_instance;
-    start(the_ast);
+    start(isMainFile, the_ast);
 }
 
 ASTNode * Parser::main()
@@ -69,13 +81,16 @@ ASTNode * Parser::main()
     return mainNode;
 }
 
-void Parser::start(ASTNode *& root)
+void Parser::start(bool isMainFile, ASTNode *& root)
 {
     try
     {
         root = ASTUtility::createASTNode(UNKNOWN, ASTUtility::createASTNullNode(), ASTUtility::createASTNullNode());
         dependencies(root);
-        root = ASTUtility::createASTNode(START, root, main());
+        if (isMainFile)
+        {
+            root = ASTUtility::createASTNode(START, root, main());
+        }
     }
     catch(int e)
     {

@@ -128,6 +128,9 @@ void BackEnd::createAssembly(ASTNode *& root)
     
     switch (root->type)
     {
+        case DEPENDENCY_IMPORT:
+            assembly.push_back(new AssemblyEntry(JUMP_OPP, programCounter++, "", "jmp", "MAIN", ""));
+            break;
         case IMPORT:
             return;
         case ARRAY_INIT_SIZE:
@@ -161,9 +164,6 @@ void BackEnd::createAssembly(ASTNode *& root)
             break;
         case PARAM_CALL:
             assembly.push_back(new AssemblyEntry(ALU_OPP, programCounter++, "", "push", "PARAM", root->left->key));
-            break;
-        case DEPENDENCY_GLOBAL:
-            assembly.push_back(new AssemblyEntry(JUMP_OPP, programCounter++, "", "jmp", "MAIN", ""));
             break;
         case FOR_LOOP_COND:
             forInstance->incAmmount();

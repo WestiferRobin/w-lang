@@ -47,7 +47,7 @@ private:
   set<string> function_table;
 
   // start.cpp
-  void start(ASTNode *&);
+  void start(bool, ASTNode *&);
   void dependencies(ASTNode *&);
   ASTNode * main();
 
@@ -95,7 +95,7 @@ private:
 public:
 	Parser(map<string, bool> targ_symbol_table) : symbol_table(targ_symbol_table) { currToken = NULL; }
 	~Parser() { delete currToken; }
-	void initGrammar(TokenEntry *, ASTNode *& );
+	void initGrammar(bool, TokenEntry *, ASTNode *& );
 };
 
 #endif
