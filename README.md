@@ -24,8 +24,6 @@ or with display
 
 ./wlang algro.w -d
 
-## How to Code in W_Lang
-
 ## Known Bugs
 1. Raw strings can't be passed as parameters. Work around is to assign a variable and then pass that variable in.
 2. In switch statements, you cannot have multiple cases stack on each other. You have to use case and then follow by a break. 
@@ -34,3 +32,15 @@ or with display
 1. Fix know bugs. I just wanted a break from the project before addressing those bugs again.
 2. Make the language object oriented.
 3. Create Frameworks for Web, Mobile, Applications, and Tools. This will need more system apis like reading files and so forth.
+
+# How To Code in W Language
+
+## Variables
+
+## Arrays and Strings
+
+## Functions
+
+## Files
+
+## System Functions
