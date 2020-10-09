@@ -37,7 +37,6 @@
 
 /* Begin PBXFileReference section */
 		68165437252BD04F0084FDE7 /* Mac */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Mac; sourceTree = BUILT_PRODUCTS_DIR; };
-		68165443252BD0710084FDE7 /* general_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = general_types.h; path = ../../Main/src/general_types.h; sourceTree = "<group>"; };
 		68165444252BD0710084FDE7 /* stdinit.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = stdinit.cpp; path = ../../Main/src/stdinit.cpp; sourceTree = "<group>"; };
 		68165445252BD0710084FDE7 /* error_reader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = error_reader.cpp; path = ../../Main/src/error_reader.cpp; sourceTree = "<group>"; };
 		68165446252BD0710084FDE7 /* assign.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = assign.cpp; path = ../../Main/src/assign.cpp; sourceTree = "<group>"; };
@@ -46,16 +45,17 @@
 		68165449252BD0710084FDE7 /* loop.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = loop.cpp; path = ../../Main/src/loop.cpp; sourceTree = "<group>"; };
 		6816544A252BD0710084FDE7 /* scope.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = scope.cpp; path = ../../Main/src/scope.cpp; sourceTree = "<group>"; };
 		6816544B252BD0710084FDE7 /* frontend.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = frontend.cpp; path = ../../Main/src/frontend.cpp; sourceTree = "<group>"; };
-		6816544C252BD0710084FDE7 /* main_comp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = main_comp.h; path = ../../Main/src/main_comp.h; sourceTree = "<group>"; };
 		6816544D252BD0710084FDE7 /* cond.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = cond.cpp; path = ../../Main/src/cond.cpp; sourceTree = "<group>"; };
 		6816544E252BD0710084FDE7 /* expression.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = expression.cpp; path = ../../Main/src/expression.cpp; sourceTree = "<group>"; };
 		6816544F252BD0720084FDE7 /* ast_utils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ast_utils.cpp; path = ../../Main/src/ast_utils.cpp; sourceTree = "<group>"; };
 		68165450252BD0720084FDE7 /* start.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = start.cpp; path = ../../Main/src/start.cpp; sourceTree = "<group>"; };
-		68165451252BD0720084FDE7 /* parser_comp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = parser_comp.h; path = ../../Main/src/parser_comp.h; sourceTree = "<group>"; };
 		68165452252BD0720084FDE7 /* system_op.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = system_op.cpp; path = ../../Main/src/system_op.cpp; sourceTree = "<group>"; };
-		68165453252BD0720084FDE7 /* general_util.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = general_util.h; path = ../../Main/src/general_util.h; sourceTree = "<group>"; };
-		68165454252BD0720084FDE7 /* compiler_comp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = compiler_comp.h; path = ../../Main/src/compiler_comp.h; sourceTree = "<group>"; };
 		68165455252BD0720084FDE7 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = ../../Main/src/main.cpp; sourceTree = "<group>"; };
+		68EB1E50253048BD003DA748 /* general_types.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = general_types.hpp; path = ../../Main/src/general_types.hpp; sourceTree = "<group>"; };
+		68EB1E51253048BD003DA748 /* parser_comp.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = parser_comp.hpp; path = ../../Main/src/parser_comp.hpp; sourceTree = "<group>"; };
+		68EB1E52253048BD003DA748 /* compiler_comp.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = compiler_comp.hpp; path = ../../Main/src/compiler_comp.hpp; sourceTree = "<group>"; };
+		68EB1E53253048BD003DA748 /* main_comp.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = main_comp.hpp; path = ../../Main/src/main_comp.hpp; sourceTree = "<group>"; };
+		68EB1E54253048BD003DA748 /* general_util.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = general_util.hpp; path = ../../Main/src/general_util.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -88,20 +88,20 @@
 		68165439252BD04F0084FDE7 /* Mac */ = {
 			isa = PBXGroup;
 			children = (
+				68EB1E52253048BD003DA748 /* compiler_comp.hpp */,
+				68EB1E50253048BD003DA748 /* general_types.hpp */,
+				68EB1E54253048BD003DA748 /* general_util.hpp */,
+				68EB1E53253048BD003DA748 /* main_comp.hpp */,
+				68EB1E51253048BD003DA748 /* parser_comp.hpp */,
 				68165446252BD0710084FDE7 /* assign.cpp */,
 				6816544F252BD0720084FDE7 /* ast_utils.cpp */,
 				68165447252BD0710084FDE7 /* backend.cpp */,
-				68165454252BD0720084FDE7 /* compiler_comp.h */,
 				6816544D252BD0710084FDE7 /* cond.cpp */,
 				68165445252BD0710084FDE7 /* error_reader.cpp */,
 				6816544E252BD0710084FDE7 /* expression.cpp */,
 				6816544B252BD0710084FDE7 /* frontend.cpp */,
-				68165443252BD0710084FDE7 /* general_types.h */,
-				68165453252BD0720084FDE7 /* general_util.h */,
 				68165449252BD0710084FDE7 /* loop.cpp */,
-				6816544C252BD0710084FDE7 /* main_comp.h */,
 				68165455252BD0720084FDE7 /* main.cpp */,
-				68165451252BD0720084FDE7 /* parser_comp.h */,
 				68165448252BD0710084FDE7 /* processor.cpp */,
 				6816544A252BD0710084FDE7 /* scope.cpp */,
 				68165450252BD0720084FDE7 /* start.cpp */,
