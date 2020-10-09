@@ -1,11 +1,5 @@
 import next_step;
 
-/*
-- Clean up char and strings having '\' to work
-- Fix multiline comment not working
-- Fix spaces with chars and strings being allowed
-*/
-
 const asdf = 3;
 const fdsa = 'A';
 

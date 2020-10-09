@@ -1,4 +1,4 @@
-#include "main_comp.h"
+#include "main_comp.hpp"
 
 void Processor::init()
 {

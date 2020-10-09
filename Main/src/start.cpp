@@ -1,16 +1,13 @@
-#include "parser_comp.h"
+#include "parser_comp.hpp"
 
 void Parser::dependencies(ASTNode *& root)
 {
     /*
         TODO: 
-            - Write an exaple on paper on what this new dependency will look like
-                - Ideas: Have MAIN_GLOBAL vs IMPORT_GLOBAL
             - Clean up the stupid ENUMs
             - jmp MAIN is getting called everytime the DEPENCDY_GLOBAL is being iterated on.
     */
-    ASTNode* importNode = ASTUtility::createASTNode(DEPENDENCY_IMPORT, NULL, NULL);
-    ASTNode * globalNode = ASTUtility::createASTNode(DEPENDENCY_GLOBAL, importNode, NULL);
+    ASTNode * globalNode = ASTUtility::createASTNode(DEPENDENCY_GLOBAL, NULL, NULL);
     ASTNode * functionNode = ASTUtility::createASTNode(DEPENDENCY_FUNC, globalNode, NULL);
 
     root->right = functionNode;
@@ -45,21 +42,67 @@ void Parser::dependencies(ASTNode *& root)
             // this is a hack for using VS
             currToken->entry = "D:\\ProgramProjects\\W_Project\\Main\\test\\" + currToken->entry;
             
-            ASTNode * importLib = this->importFile(root);
+            dependencies(globalNode, functionNode);
             
             ASTUtility::validToken(T_SYMBOL, ";", currToken);
-            
-            importNode->right = ASTUtility::createASTNode(IMPORT, importLib, NULL);
-            importNode = importNode->right;
         }
     }
 }
 
-void Parser::initGrammar(bool isMainFile, TokenEntry * token_instance, ASTNode *& the_ast) 
+void Parser::dependencies(ASTNode*& globalNode, ASTNode*& functionNode)
+{
+    FrontEnd* importFrontEnd = new FrontEnd(symbol_table);
+    importFrontEnd->run(currToken->entry + ".w", globalNode, functionNode);     // TODO: try adding a bool flag to distinguish if this is Main file or a dependency file.
+    delete importFrontEnd;
+    currToken++;
+}
+
+void Parser::initGrammar(TokenEntry * token_instance, ASTNode *& the_ast) 
 {
     currToken = token_instance;
-    start(isMainFile, the_ast);
+    start(the_ast);
 }
+
+void Parser::initGrammar(TokenEntry* token_instance, ASTNode*& globalNode, ASTNode*& functionNode)
+{
+    currToken = token_instance;
+    while (currToken->tType == T_KEYWORD)
+    {
+        if (currToken->entry == "function")
+        {
+            if ((currToken + 1)->entry == "MAIN")
+            {
+                return;
+            }
+            else
+            {
+                functionNode->right = ASTUtility::createASTNode(DEPENDENCY, this->function(), NULL);
+                functionNode = functionNode->right;
+            }
+        }
+        else if ((currToken->entry == "let") ||
+            (currToken->entry == "const"))
+        {
+            globalNode->right = ASTUtility::createASTNode(DEPENDENCY, this->globalAssignment(), NULL);
+            globalNode = globalNode->right;
+        }
+        else if (currToken->entry == "import")
+        {
+            ASTUtility::validToken(T_KEYWORD, currToken->entry, currToken);
+
+            // this is a hack for using Xcode
+            // currToken->entry = "/Users/wesitferrobin/Projects/workspace/W_Project/Main/test/" + currToken->entry;
+
+            // this is a hack for using VS
+            currToken->entry = "D:\\ProgramProjects\\W_Project\\Main\\test\\" + currToken->entry;
+
+            dependencies(globalNode, functionNode);
+
+            ASTUtility::validToken(T_SYMBOL, ";", currToken);
+        }
+    }
+}
+
 
 ASTNode * Parser::main()
 {
@@ -81,16 +124,13 @@ ASTNode * Parser::main()
     return mainNode;
 }
 
-void Parser::start(bool isMainFile, ASTNode *& root)
+void Parser::start(ASTNode *& root)
 {
     try
     {
         root = ASTUtility::createASTNode(UNKNOWN, ASTUtility::createASTNullNode(), ASTUtility::createASTNullNode());
         dependencies(root);
-        if (isMainFile)
-        {
-            root = ASTUtility::createASTNode(START, root, main());
-        }
+        root = ASTUtility::createASTNode(START, root, main());
     }
     catch(int e)
     {

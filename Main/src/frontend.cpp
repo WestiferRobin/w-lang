@@ -1,6 +1,6 @@
-#include "compiler_comp.h"
+#include "compiler_comp.hpp"
 
-void FrontEnd::run(bool isMainFile, string file_text, ASTNode *& the_ast)
+void FrontEnd::run(string file_text, ASTNode *& the_ast)
 {
   string line = "";
   ifstream myfile(file_text);
@@ -48,8 +48,60 @@ void FrontEnd::run(bool isMainFile, string file_text, ASTNode *& the_ast)
     
     Parser * parser = new Parser(fe_symbol_table);
     
-    parser->initGrammar(isMainFile, tokens.data(), the_ast);
+    parser->initGrammar(tokens.data(), the_ast);
   }
+}
+
+void FrontEnd::run(string file_text, ASTNode*& globalNode, ASTNode*& functionNode)
+{
+    string line = "";
+    ifstream myfile(file_text);
+
+    if (myfile.is_open())
+    {
+        while (getline(myfile, line))
+        {
+            unsigned long size = line.find("//");
+            if (size == string::npos)
+            {
+                size = line.length();
+            }
+
+            for (int i = 0; i < size; i++)
+            {
+                if (line[i] != ' ')
+                {
+                    if (line[i] == '\"')
+                    {
+                        the_code += line[i++];
+
+                        while (line[i] != '\"')
+                        {
+                            the_code += line[i++];
+                        }
+                    }
+                    else if (line[i] == '\'')
+                    {
+                        the_code += line[i++];
+
+                        while (line[i] != '\'')
+                        {
+                            the_code += line[i++];
+                        }
+                    }
+
+                    the_code += line[i];
+                }
+            }
+        }
+
+        myfile.close();
+        scanner();
+
+        Parser* parser = new Parser(fe_symbol_table);
+
+        parser->initGrammar(tokens.data(), globalNode, functionNode);
+    }
 }
 
 FrontEnd::FrontEnd(map<string, bool> symbol_table) : fe_symbol_table(symbol_table) 
@@ -71,6 +123,7 @@ FrontEnd::FrontEnd(map<string, bool> symbol_table) : fe_symbol_table(symbol_tabl
     "else",
     "import",
     "switch",
+    "default",
     "case",
     "break",
     "delete"

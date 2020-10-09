@@ -19,11 +19,11 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Main\src\compiler_comp.h" />
-    <ClInclude Include="..\..\Main\src\general_types.h" />
-    <ClInclude Include="..\..\Main\src\general_util.h" />
-    <ClInclude Include="..\..\Main\src\main_comp.h" />
-    <ClInclude Include="..\..\Main\src\parser_comp.h" />
+    <ClInclude Include="..\..\Main\src\compiler_comp.hpp" />
+    <ClInclude Include="..\..\Main\src\general_types.hpp" />
+    <ClInclude Include="..\..\Main\src\general_util.hpp" />
+    <ClInclude Include="..\..\Main\src\main_comp.hpp" />
+    <ClInclude Include="..\..\Main\src\parser_comp.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\Main\test\last_step.w" />

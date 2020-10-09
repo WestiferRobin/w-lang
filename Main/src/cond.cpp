@@ -1,4 +1,4 @@
-#include "parser_comp.h"
+#include "parser_comp.hpp"
 
 void Parser::caseStatemnt(ASTNode *& conditionalResults, ASTNode *& stmtResults)
 {
@@ -12,7 +12,6 @@ void Parser::caseStatemnt(ASTNode *& conditionalResults, ASTNode *& stmtResults)
         {
             case_set.insert(currToken->entry);
             conditionalResults = ASTUtility::createASTNode(CASE_COND, ASTUtility::createASTNumberNode(*(currToken++)), NULL);
-            currToken++;
         }
         else
         {

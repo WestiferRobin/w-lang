@@ -1,4 +1,4 @@
-#include "parser_comp.h"
+#include "parser_comp.hpp"
 
 ASTNode * Parser::assignment()
 {
@@ -555,7 +555,7 @@ void Parser::stmtList(ASTNode * root)
         }
         else if (currToken->entry == "switch" && currToken->tType == T_KEYWORD)
         {
-            stmt = this->switchStatement();
+             stmt = this->switchStatement();
         }
         else if (this->isValidFunction())
         {

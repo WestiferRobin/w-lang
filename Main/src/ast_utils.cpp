@@ -1,4 +1,4 @@
-#include "general_util.h"
+#include "general_util.hpp"
 
 ASTNode * ASTUtility::createASTNode(ASTType type, ASTNode* left, ASTNode* right)
 {

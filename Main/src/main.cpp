@@ -1,6 +1,6 @@
 #include <iostream>
 #include <fstream>
-#include "main_comp.h"
+#include "main_comp.hpp"
 
 using namespace std;
 

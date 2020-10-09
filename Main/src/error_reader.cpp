@@ -1,4 +1,4 @@
-#include "general_util.h"
+#include "general_util.hpp"
 
 void ErrorReader::readError(ErrorCode errorCode, string token)
 {

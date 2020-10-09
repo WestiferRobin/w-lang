@@ -1,4 +1,4 @@
-#include "compiler_comp.h"
+#include "compiler_comp.hpp"
 
 void BackEnd::run(ASTNode *& ast)
 {
@@ -71,7 +71,7 @@ void BackEnd::createAssembly(ASTNode *& root)
             assembly.push_back(new AssemblyEntry(ALU_OPP, programCounter++, "", "eq", "r" + to_string(regIndex), root->left->key));
             caseInstance->incAmmount();
             assembly.push_back(new AssemblyEntry(JUMP_OPP, programCounter++, "", "jc", "CS" + to_string(caseInstance->getAmmount()), ""));
-            caseInstance->pop();
+            caseInstance->push();
             break;
         case CASE_STMT:
             assembly.push_back(new AssemblyEntry(JUMP_LABEL, programCounter++, "CS" + to_string(caseInstance->peek()), "", "", ""));
@@ -128,11 +128,9 @@ void BackEnd::createAssembly(ASTNode *& root)
     
     switch (root->type)
     {
-        case DEPENDENCY_IMPORT:
+        case DEPENDENCY_GLOBAL:
             assembly.push_back(new AssemblyEntry(JUMP_OPP, programCounter++, "", "jmp", "MAIN", ""));
             break;
-        case IMPORT:
-            return;
         case ARRAY_INIT_SIZE:
         case ARRAY_EXCH:
             assembly.push_back(new AssemblyEntry(ALU_OPP, programCounter++, "", "arrL", root->left->key, root->right->key));

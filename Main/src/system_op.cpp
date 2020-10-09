@@ -1,4 +1,4 @@
-#include "parser_comp.h"
+#include "parser_comp.hpp"
 
 ASTNode * Parser::copy()
 {

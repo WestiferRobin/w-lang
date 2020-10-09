@@ -23,13 +23,16 @@ function MAIN()
 {
     const d = 234;
     const f[] = "Wesley Webb";
-    let asdf[] = "asdfasdf";
-    let fdsa = 432;
-    asdf[] = "fdsa";
-    PRINT(asdf, pstrn);
-    let a = 'W' - 2;
-    COPY(message, asdf);
-    PRINT(message, pstrn);
     P_STATE(5);
-    PRINT(a, pcharn);
+    PRINT(f[0], pcharn);
+
+    switch (d)
+    {
+        case 234:
+            PRINT("FUCK THIS SHIT", pstrn);
+            break;
+        default:
+            PRINT(666, pintn);
+            break;
+    }
 }

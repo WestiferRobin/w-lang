@@ -1,4 +1,4 @@
-#include "parser_comp.h"
+#include "parser_comp.hpp"
 
 ASTNode * Parser::function()
 {
@@ -134,7 +134,7 @@ ASTNode * Parser::functionCall()
 ASTNode * Parser::importFile(ASTNode * root)
 {
     FrontEnd * importFrontEnd = new FrontEnd(symbol_table);
-    importFrontEnd->run(false, currToken->entry + ".w", root);     // TODO: try adding a bool flag to distinguish if this is Main file or a dependency file.
+    importFrontEnd->run(currToken->entry + ".w", root);     // TODO: try adding a bool flag to distinguish if this is Main file or a dependency file.
     delete importFrontEnd;
     currToken++;
     return root;
