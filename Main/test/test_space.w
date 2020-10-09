@@ -29,7 +29,7 @@ function MAIN()
     switch (d)
     {
         case 234:
-            PRINT("FUCK THIS SHIT", pstrn);
+            PRINT(f, pstrn);
             break;
         default:
             PRINT(666, pintn);

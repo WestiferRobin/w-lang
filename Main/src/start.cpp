@@ -40,7 +40,7 @@ void Parser::dependencies(ASTNode *& root)
             // currToken->entry = "/Users/wesitferrobin/Projects/workspace/W_Project/Main/test/" + currToken->entry;
 
             // this is a hack for using VS
-            currToken->entry = "D:\\ProgramProjects\\W_Project\\Main\\test\\" + currToken->entry;
+            //currToken->entry = "D:\\ProgramProjects\\W_Project\\Main\\test\\" + currToken->entry;
             
             dependencies(globalNode, functionNode);
             
@@ -52,7 +52,7 @@ void Parser::dependencies(ASTNode *& root)
 void Parser::dependencies(ASTNode*& globalNode, ASTNode*& functionNode)
 {
     FrontEnd* importFrontEnd = new FrontEnd(symbol_table);
-    importFrontEnd->run(currToken->entry + ".w", globalNode, functionNode);     // TODO: try adding a bool flag to distinguish if this is Main file or a dependency file.
+    importFrontEnd->run(currToken->entry + ".w", globalNode, functionNode);
     delete importFrontEnd;
     currToken++;
 }
@@ -91,10 +91,10 @@ void Parser::initGrammar(TokenEntry* token_instance, ASTNode*& globalNode, ASTNo
             ASTUtility::validToken(T_KEYWORD, currToken->entry, currToken);
 
             // this is a hack for using Xcode
-            // currToken->entry = "/Users/wesitferrobin/Projects/workspace/W_Project/Main/test/" + currToken->entry;
+            currToken->entry = "/Users/wesitferrobin/Projects/workspace/W_Project/Main/test/" + currToken->entry;
 
             // this is a hack for using VS
-            currToken->entry = "D:\\ProgramProjects\\W_Project\\Main\\test\\" + currToken->entry;
+            //currToken->entry = "D:\\ProgramProjects\\W_Project\\Main\\test\\" + currToken->entry;
 
             dependencies(globalNode, functionNode);
 
