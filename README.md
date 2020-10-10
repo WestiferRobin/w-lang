@@ -43,16 +43,37 @@ Wanna try W lang? Here is how you code it
 
 ## Variables
 
+Variable naming convention for W Lang is very similar to languages like C#, Java, and C++. 
+```javascript
+// correct
+let alllower = 234;
+let cammelCase = 432;
+let _canUseUnderScores = 333;
+let or_be_like_python = 222;
+let useNumbers123 = 123;
+
+// WRONG
+let NOCAPS = 'N';
+let 123NumbersFirst = -234;
+let $pecialCharacters = 'n';
+```
+
 There are only two types of variables. Integers and characters.
 ```javascript
 let integer = 234;
 let character = 'W';
 ```
 
+Don't want your variables to change? Thats fine you can make constants.
+```javascript
+const theW = 'W'
+```
+
 ## Arrays and Strings
 
 ## Functions
 
+## System Functions
+
 ## Files
 
-## System Functions
