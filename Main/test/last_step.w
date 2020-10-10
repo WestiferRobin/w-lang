@@ -1,2 +1,0 @@
-
-let endMessage = 321;

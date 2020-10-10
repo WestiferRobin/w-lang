@@ -1,4 +1,3 @@
-//import last_step;
 
 const helloMessage = 123;
 let manVar = 25;
