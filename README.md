@@ -28,6 +28,7 @@ or with display
 ## Known Bugs
 1. Raw strings can't be passed as parameters. Work around is to assign a variable and then pass that variable in.
 2. In switch statements, you cannot have multiple cases stack on each other. You have to use case and then follow by a break. 
+3. Scan function only works with ints and not ascii chars (BEFORE PUBLISHING PLEASE CHECK AND FIX!!!!)
 
 ## Future Features
 1. Fix know bugs. I just wanted a break from the project before addressing those bugs again.
