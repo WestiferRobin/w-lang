@@ -24,7 +24,8 @@ function MAIN()
 
         message[] = "Do you want to exit? Enter 0: ";
         PRINT(message, pstr);
-        
+
+        character = 0;
         SCAN(character);
         PRINT(character, pintn);
 
