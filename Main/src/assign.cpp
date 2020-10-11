@@ -194,7 +194,7 @@ ASTNode * Parser::assignment(bool isUsingSemi)
                         
                         arr_table.insert({ varAssign->key, isConstant });
                         
-                        ASTUtility::validToken(T_SYMBOL, "]", currToken);;
+                        ASTUtility::validToken(T_SYMBOL, "]", currToken);
                         
                         if (isUsingSemi) 
                         { 
@@ -552,10 +552,6 @@ void Parser::stmtList(ASTNode * root)
         else if (currToken->entry == "EQUAL" && currToken->tType == T_KEYWORD)
         {
             stmt = this->equal();
-        }
-        else if (currToken->entry == "switch" && currToken->tType == T_KEYWORD)
-        {
-             stmt = this->switchStatement();
         }
         else if (this->isValidFunction())
         {

@@ -14,7 +14,6 @@ void StdInit::initStd()
 {
     initLimits();
     initStdConsts();
-    initStdFuncs();
 }
 
 void StdInit::initLimits()
@@ -49,9 +48,4 @@ void StdInit::initStdConsts()
     {
         stdInitAssembly.push_back(new AssemblyEntry(ALU_OPP, programCounter++, "", "load", get<0>(*it), get<1>(*it)));
     }
-}
-
-void StdInit::initStdFuncs()
-{
-
 }

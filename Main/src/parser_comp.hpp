@@ -15,7 +15,6 @@
 
 using namespace std;
 
-
 class StdInit
 {
 private:
@@ -23,7 +22,6 @@ private:
   vector<AssemblyEntry*> stdInitAssembly;
   unsigned long long programCounter;
   void initStdConsts();
-  void initStdFuncs();
   void initLimits();
   void initStd();
 public:
@@ -66,6 +64,9 @@ private:
   ASTNode * equal();
   ASTNode * print();
   ASTNode * scan();
+  ASTNode * append();
+  ASTNode * remove();
+  ASTNode * random();
 
   // assign.cpp
   ASTNode * assignment(void);
@@ -74,10 +75,8 @@ private:
   void stmtList(ASTNode*);
 
   // cond.cpp
-  void caseStatemnt(ASTNode*&, ASTNode*&);
   void elseOrElseIfStatemnt(ASTNode*&, ASTNode*&);
   ASTNode * ifStatemnt();
-  ASTNode * switchStatement();
   
   // loop.cpp
   ASTNode * whileLoop();

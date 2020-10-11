@@ -23,7 +23,7 @@ void FrontEnd::run(string file_text, ASTNode *& the_ast)
           {
             the_code += line[i++];
             
-            while (line[i] != '\"')
+            while (line[i] != '\"' && line[i] != ';')
             {
               the_code += line[i++];
             }
@@ -32,7 +32,7 @@ void FrontEnd::run(string file_text, ASTNode *& the_ast)
           {
             the_code += line[i++];
             
-            while (line[i] != '\'')
+            while (line[i] != '\'' && line[i] != ';')
             {
               the_code += line[i++];
             }
@@ -122,10 +122,6 @@ FrontEnd::FrontEnd(map<string, bool> symbol_table) : fe_symbol_table(symbol_tabl
     "elif",
     "else",
     "import",
-    "switch",
-    "default",
-    "case",
-    "break",
     "delete"
   };
 }
@@ -173,9 +169,12 @@ void FrontEnd::handleCharactersAndStrings(int * index, string * token)
   if (the_code[*index] == '\'')
   {
     (*index)++;
-    string message = to_string(the_code[*(index)]);
+    string message = the_code[*(index)] == '\\' ? to_string(the_code[*(index)+1]) : to_string(the_code[*(index)]);
     tokens.push_back(TokenEntry(T_CHAR, message));
-    (*index)++;
+    if (the_code[*(index)] == '\\')
+        (*index) += 2;
+    else
+        (*index) += 1;
     return;
   }
   else
@@ -186,7 +185,12 @@ void FrontEnd::handleCharactersAndStrings(int * index, string * token)
 
     while (the_code[startIndex] != the_code[*index]) 
     {
-      tokens.push_back(TokenEntry(T_CHAR, to_string(the_code[startIndex++])));
+      string message = the_code[startIndex] == '\\' ? to_string(the_code[startIndex+1]) : to_string(the_code[startIndex]);
+      tokens.push_back(TokenEntry(T_CHAR, message));
+      if (the_code[startIndex] == '\\')
+          startIndex += 2;
+      else
+          startIndex += 1;
     }
 
     *index = startIndex;
@@ -203,7 +207,7 @@ void FrontEnd::handleOperatorsTypeOne(int * index, string * token)
       *(index) += 1;
       break;
     default:
-      if (isdigit(the_code[*(index) + 1]) && the_code[*(index) - 1] == '-' && the_code[*index] == '-')
+      if (isdigit(the_code[*(index) + 1]) && the_code[*(index)] == '-')
       {
         int digitIndex = *(index) + 1;
 

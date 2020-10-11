@@ -49,21 +49,6 @@ ASTNode * ASTUtility::createASTNode(ASTType type, ASTNode* left, ASTNode* right)
 
 ASTNode * ASTUtility::createASTNumberNode(TokenEntry entry)
 {
-    bool isDigit = true;
-
-    for (int i = 0; i < entry.entry.length(); i++)
-    {
-        if (!isdigit(entry.entry[i]))
-        {
-            isDigit = false;
-        }
-    }
-
-    if (isDigit == false)
-    {
-        throw (int) ErrorInvalidSymbol;
-    }
-
     ASTNode * ans = new ASTNode();
     ans->value = stoi(entry.entry);
     ans->type = NUM;

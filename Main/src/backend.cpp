@@ -25,7 +25,6 @@ void BackEnd::createAssembly(ASTNode *& root)
             break;
         case WHILE_LOOP:
         case FOR_LOOP:
-        case SWITCH_END:
             endInstance->incAmmount();
             assembly.push_back(new AssemblyEntry(JUMP_OPP, programCounter++, "", "jmp", "END" + to_string(endInstance->getAmmount()), ""));
             endInstance->push();
@@ -62,30 +61,6 @@ void BackEnd::createAssembly(ASTNode *& root)
                 endInstance->push();
             }
             isLast = false;
-            break;
-        case SWITCH_COND:
-            assembly.push_back(new AssemblyEntry(ALU_OPP, programCounter++, "", "load",  "r" + to_string(++regIndex), root->left->key));
-            root->key = "r" + to_string(regIndex);
-            break;
-        case CASE_COND:
-            assembly.push_back(new AssemblyEntry(ALU_OPP, programCounter++, "", "eq", "r" + to_string(regIndex), root->left->key));
-            caseInstance->incAmmount();
-            assembly.push_back(new AssemblyEntry(JUMP_OPP, programCounter++, "", "jc", "CS" + to_string(caseInstance->getAmmount()), ""));
-            caseInstance->push();
-            break;
-        case CASE_STMT:
-            assembly.push_back(new AssemblyEntry(JUMP_LABEL, programCounter++, "CS" + to_string(caseInstance->peek()), "", "", ""));
-            caseInstance->pop();
-            break;
-        case DEFAULT_STMT:
-            assembly.push_back(new AssemblyEntry(JUMP_LABEL, programCounter++, "DF" + to_string(defaultInstance->peek()), "", "", ""));
-            defaultInstance->pop();
-            break;
-        case DEFAULT_COND:
-            isLast = true;
-            defaultInstance->incAmmount();
-            assembly.push_back(new AssemblyEntry(JUMP_OPP, programCounter++, "", "jmp", "DF" + to_string(defaultInstance->getAmmount()), ""));
-            defaultInstance->push();
             break;
         case IF_COND:
             ifInstance->incAmmount();
@@ -175,7 +150,6 @@ void BackEnd::createAssembly(ASTNode *& root)
         case COND_CMPR:
         case WHILE_LOOP:
         case FOR_LOOP:
-        case SWITCH_CMPR:
             assembly.push_back(new AssemblyEntry(JUMP_LABEL, programCounter++, "END" + to_string(endInstance->peek()), "", "", ""));
             endInstance->pop();
             break;
@@ -184,8 +158,6 @@ void BackEnd::createAssembly(ASTNode *& root)
         case IF_STMT:
         case ELIF_STMT:
         case ELSE_STMT:
-        case CASE_STMT:
-        case DEFAULT_STMT:
             assembly.push_back(new AssemblyEntry(JUMP_OPP, programCounter++, "", "jmp", "END" + to_string(endInstance->peek()), ""));
             break;
         case DELETE:
@@ -194,6 +166,7 @@ void BackEnd::createAssembly(ASTNode *& root)
         case RETURN_ARR:
         case RETURN:
             assembly.push_back(new AssemblyEntry(ALU_OPP, programCounter++, "", root->type == RETURN ? "load" : "arrL", "RET_V", root->left->key));
+            assembly.push_back(new AssemblyEntry(JUMP_OPP, programCounter++, "", "jmp", "RET_A", ""));
             root->key = "RET_V";
             break;
         case FUNCTION:

@@ -24,19 +24,24 @@ or with display
 
 ## Challenges
 1. Creating what the systax and type its going to be. Weak types were a better choice on parsing and then able to distinguish.  
+2. Deciding what type of Parser to use, and which one was easy to implement without a framework.
+3. Drawing up the Grammar and test cases for the compiler to work.
+4. Strings literally was a pain through the whole process.
+5. Writing an accurate error reader. I do plan to JUST focus on the error reader once I get more features out.
 
-## Known Bugs
-1. Raw strings can't be passed as parameters. Work around is to assign a variable and then pass that variable in.
-2. In switch statements, you cannot have multiple cases stack on each other. You have to use case and then follow by a break. 
-3. Scan function only works with ints and not ascii chars (BEFORE PUBLISHING PLEASE CHECK AND FIX!!!!)
+## Bugs?
+As of now I'm very content what I have released, although I am 99% positive that it is not perfect. The error log is really not helpful at all. Best thing to do is to debug throught the compiler code and your W Lang code and if there are any bugs you find just reach out to me.
 
 ## Future Features
-1. Fix know bugs. I just wanted a break from the project before addressing those bugs again.
-2. Make the language object oriented.
-3. Include floating point numbers.
-4. Add try catch.
-5. Replace LL(1) parser to LR(1)
-6. Create Frameworks for Web, Mobile, Applications, and Tools. This will need more system apis like reading files and so forth.
+1. Add switch statements.
+2. Include floating point numbers, bytes, and bool.
+3. Add default values for parameters.
+4. Add try catch functionality.
+5. Replace LL(1) parser to LR(1).
+6. More system functions like reading files, threads, and etc.
+7. Make the language object oriented with access modifiers.
+8. A more detailed error catcher.
+9. Create Frameworks for Web, Mobile, Applications, and Tools. This will need more system apis like reading files and so forth.
 
 # How To Code in W Language
 
@@ -70,11 +75,61 @@ Don't want your variables to change? Thats fine you can make constants.
 const theW = 'W'
 ```
 
+## Operators
+
+W Lang supports Arithmetic (+, -, *, /, %), Relational (==, !=, <, >, <=, >=), Logical (&&, ||, !) and Bitwise operators (&, |, ^, <<, >>). Below are a few examples.
+
+```javascript
+let add = 123 + 321;
+let thisExample = 2;
+thisExample *= 3;
+let mod = add % thisExample;
+```
+
+```javascript
+let one = 1;
+let two = 2;
+let answer = (one == 2);
+```
+
+```javascript
+let number = 5;
+let negatedNumber = !number && number == 5;
+```
+
+```javascript
+let andExample = 4 & 8;
+let orExample = 0;
+orExample |= 1;
+let xorExample = andExample ^ orExample;
+xorExample <<= 1;
+```
+
 ## Arrays and Strings
+
+Arrays are like lists in python and strings are like arrays but just chars. You can initalize an array with chars and ints, but if you print them out as an array it will display as ints. Here is some correct and wrong examples on what arrrays and strings look like in W Lang.
+
+```javascript
+// correct ways
+let array1[] = [1,2,3];
+let array2[7];
+let string[] = "Hello there";
+let mixExample[3] = [1, 'W', 3];
+
+// wrong ways
+let array3[];
+let array4[3] = [2,3,4,5,6];
+let array4 = [3,2,1];
+let array5 = "Wrong";
+```
+
+## Loops
+
+## Conditionals
 
 ## Functions
 
 ## System Functions
 
-## Files
+## Import Files
 

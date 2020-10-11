@@ -123,6 +123,10 @@ ASTNode * Parser::functionCall()
             stmtList->right = ASTUtility::createASTNode(PARAM_ARRAY_CALL, rawStringNode , ASTUtility::createASTNullNode());
             stmtList = stmtList->right;
         }
+        else
+        {
+            currToken++;
+        }
     }
     
     ASTUtility::validToken(T_SYMBOL, ")", currToken);
@@ -167,14 +171,9 @@ ASTNode * Parser::returnCall()
     {
         returnNode = functionCall();
     }
-    else if (currToken->tType == T_VARIABLE || currToken->tType == T_NUMBER)
-    {
-        returnNode = expression();
-        ASTUtility::validToken(T_SYMBOL, ";", currToken);
-    }
     else
     {
-        returnNode = ASTUtility::createASTNullNode();
+        returnNode = expression();
         ASTUtility::validToken(T_SYMBOL, ";", currToken);
     }
     

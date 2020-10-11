@@ -35,7 +35,6 @@ void Processor::run()
         case JUMP_OPP:
           if (jump_labels.find(instance->firstOp) == jump_labels.end() && instance->firstOp != "RET_A")
           {
-            cout << instance->firstOp << " IS NOT A VALID JUMP!!!!!!!!!" << endl;
             throw (int)ErrorInvalidSymbol; 
           }
           else if (instance->operatorLabel == "jc")
@@ -285,14 +284,19 @@ void Processor::readALUop(AssemblyEntry * assemblyLine)
 
     if (atoi(target.c_str()))
       this->setValue(assemblyLine->firstOp, stoi(target));
-    else
+    else if (target.length() >= 1)
     {
       vector<int> param;
+
       for (int i = 0; i < target.size(); i++)
       {
         param.push_back((int)target[i]);
       }
-      array_table[assemblyLine->firstOp] = param;
+      
+      if (array_table.find(assemblyLine->firstOp) != array_table.end())
+          array_table[assemblyLine->firstOp] = param;
+      else
+          this->setValue(assemblyLine->firstOp, param[0]);
     }
   }
   else if (assemblyLine->operatorLabel == "print")
@@ -400,12 +404,22 @@ bool Processor::isLoadValid(string target)
 
 bool Processor::isNumber(string target)
 {
-  bool isNumber = true;
+    if (target[0] == '-')
+    {
+        string oldTarget = target;
+        target = "";
+        for (int index = 1; index < oldTarget.length(); index++)
+        {
+            target += oldTarget[index];
+        }
+    }
 
-  for(string::const_iterator k = target.begin(); k != target.end(); ++k)
-      isNumber = isdigit(*k) && isNumber;
+    bool isNumber = true;
 
-  return isNumber;
+    for(string::const_iterator k = target.begin(); k != target.end(); ++k)
+        isNumber = isdigit(*k) && isNumber;
+
+    return isNumber;
 }
 
 bool Processor::isRegister(string target)

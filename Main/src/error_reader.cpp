@@ -29,9 +29,6 @@ void ErrorReader::readError(ErrorCode errorCode, string token)
         case ErrorInvalidConstant:
             errorMessage += "You cannot assign or delete a constant. Please check your code.";
             break;
-        case ErrorNoRawString:
-            errorMessage += "You cannot pass in raw strings into system operators at this time. Please assign a string variable and proceed";
-            break;
         default:
             errorMessage = "Current error is UNKNOWN. " + to_string((int)errorCode);
             break;

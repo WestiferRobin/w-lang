@@ -115,14 +115,6 @@ enum ASTType
    FOR_LOOP_STATEMENT,
    FOR_LOOP_EXIT,
 
-   SWITCH_COND,
-   SWITCH_CMPR,
-   SWITCH_END,
-   CASE_COND,
-   CASE_STMT,
-   DEFAULT_STMT,
-   DEFAULT_COND,
-
    START,
    MAIN,
    STMTLIST,
@@ -186,8 +178,7 @@ enum ErrorCode
     ErrorVariableUnknown = 5,
     ErrorInvalidLoad = 6,
     ErrorInvalidOpCode = 7,
-    ErrorInvalidConstant = 8,
-    ErrorNoRawString = 9
+    ErrorInvalidConstant = 8
 };
 
 class Instance

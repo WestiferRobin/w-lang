@@ -2,11 +2,6 @@
 
 void Parser::dependencies(ASTNode *& root)
 {
-    /*
-        TODO: 
-            - Clean up the stupid ENUMs
-            - jmp MAIN is getting called everytime the DEPENCDY_GLOBAL is being iterated on.
-    */
     ASTNode * globalNode = ASTUtility::createASTNode(DEPENDENCY_GLOBAL, NULL, NULL);
     ASTNode * functionNode = ASTUtility::createASTNode(DEPENDENCY_FUNC, globalNode, NULL);
 
@@ -36,12 +31,6 @@ void Parser::dependencies(ASTNode *& root)
         {
             ASTUtility::validToken(T_KEYWORD, currToken->entry, currToken);
 
-            // this is a hack for using Xcode
-            // currToken->entry = "/Users/wesitferrobin/Projects/workspace/W_Project/Main/test/" + currToken->entry;
-
-            // this is a hack for using VS
-            //currToken->entry = "D:\\ProgramProjects\\W_Project\\Main\\test\\" + currToken->entry;
-            
             dependencies(globalNode, functionNode);
             
             ASTUtility::validToken(T_SYMBOL, ";", currToken);
@@ -89,12 +78,6 @@ void Parser::initGrammar(TokenEntry* token_instance, ASTNode*& globalNode, ASTNo
         else if (currToken->entry == "import")
         {
             ASTUtility::validToken(T_KEYWORD, currToken->entry, currToken);
-
-            // this is a hack for using Xcode
-            currToken->entry = "/Users/wesitferrobin/Projects/workspace/W_Project/Main/test/" + currToken->entry;
-
-            // this is a hack for using VS
-            //currToken->entry = "D:\\ProgramProjects\\W_Project\\Main\\test\\" + currToken->entry;
 
             dependencies(globalNode, functionNode);
 
