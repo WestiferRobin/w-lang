@@ -282,6 +282,19 @@ void BackEnd::createAssembly(ASTNode *& root)
             assembly.push_back(new AssemblyEntry(ALU_OPP, programCounter++, "", "len", root->left->key, root->right->key));
             root->key = root->left->key;
             break;
+        case RANDOM:
+            assembly.push_back(new AssemblyEntry(ALU_OPP, programCounter++, "", "rand", root->right->left->key, root->right->right->key));
+            assembly.push_back(new AssemblyEntry(ALU_OPP, programCounter++, "", "load", root->left->key, "CMPR"));
+            root->key = root->left->key;
+            break;
+        case APPEND:
+            assembly.push_back(new AssemblyEntry(ALU_OPP, programCounter++, "", "app", root->left->key, root->right->key));
+            root->key = root->left->key;
+            break;
+        case REMOVE:
+            assembly.push_back(new AssemblyEntry(ALU_OPP, programCounter++, "", "rm", root->left->key, root->right->key));
+            root->key = root->left->key;
+            break;
         case EQUAL_FUNC:
             assembly.push_back(new AssemblyEntry(ALU_OPP, programCounter++, "", "eqf", root->right->left->key, root->right->right->key));
             assembly.push_back(new AssemblyEntry(ALU_OPP, programCounter++, "", "load", root->left->key, "CMPR"));

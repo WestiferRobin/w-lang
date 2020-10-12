@@ -1,7 +1,9 @@
 #include "main_comp.hpp"
+#include <time.h>
 
 void Processor::init()
 {
+  srand((unsigned)time(0));
   for (int i = 1; i <= MAX_NUM_REGISTERS; i++)
   {
     registers.insert({"r" + to_string(i), 0});
@@ -339,6 +341,37 @@ void Processor::readALUop(AssemblyEntry * assemblyLine)
         break;
       default:
         throw (int)ErrorInvalidOpCode;
+    }
+  }
+  else if (assemblyLine->operatorLabel == "rand")
+  {
+    int minBound = this->getValue(assemblyLine->firstOp);
+    int maxBound = this->getValue(assemblyLine->secondOp);
+    int value = (rand() % maxBound) + minBound;
+    registers["CMPR"] = value;
+  }
+  else if (assemblyLine->operatorLabel == "app")
+  {
+    if (array_table.find(assemblyLine->secondOp) != array_table.end())
+    {
+        int value = this->getValue(assemblyLine->firstOp);
+        array_table[assemblyLine->secondOp].push_back(value);
+    }
+  }
+  else if (assemblyLine->operatorLabel == "rm")
+  {
+    if (array_table.find(assemblyLine->secondOp) != array_table.end())
+    {
+        vector<int> newArray;
+        int value = this->getValue(assemblyLine->firstOp);
+
+        for (int index = 0; index < array_table[assemblyLine->secondOp].size(); index++)
+        {
+            if (array_table[assemblyLine->secondOp][index] == value) continue;
+            newArray.push_back(array_table[assemblyLine->secondOp][index]);
+        }
+
+        array_table[assemblyLine->secondOp] = newArray;
     }
   }
   else if (assemblyLine->operatorLabel == "eq")

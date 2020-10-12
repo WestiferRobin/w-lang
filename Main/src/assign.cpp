@@ -533,6 +533,18 @@ void Parser::stmtList(ASTNode * root)
         {
             stmt = this->forLoop();
         }
+        else if (currToken->entry == "RANDOM" && currToken->tType == T_KEYWORD)
+        {
+            stmt = this->random();
+        }
+        else if (currToken->entry == "APPEND" && currToken->tType == T_KEYWORD)
+        {
+            stmt = this->append();
+        }
+        else if (currToken->entry == "REMOVE" && currToken->tType == T_KEYWORD)
+        {
+            stmt = this->remove();
+        }
         else if (currToken->entry == "PRINT" && currToken->tType == T_KEYWORD)
         {
             stmt = this->print();

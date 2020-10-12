@@ -88,7 +88,7 @@ ASTNode * Parser::functionCall()
     while (currToken->entry != ")")
     {
         
-        if (currToken->entry != "," && currToken->entry != "\'" && currToken->entry != "\"")
+        if (currToken->entry != "," && currToken->entry != "\'" && currToken->entry != "\"" && currToken->entry != "[")
         {
             ASTType ast_type = arr_table.find(currToken->entry) != arr_table.end() ? PARAM_ARRAY_CALL : PARAM_CALL;
             
@@ -99,28 +99,73 @@ ASTNode * Parser::functionCall()
         }
         else if (currToken->entry == "\"")
         {
-            ASTUtility::validToken(T_SYMBOL, "\"", currToken);
-            
-            TokenEntry variableName(T_VARIABLE, paramArrayTitle + to_string(count));
-            ASTNode * varAssign = ASTUtility::createASTVariableNode(variableName);
-            ASTNode * resultNode = ASTUtility::createASTNode(ARRAY_INIT_PRE_ELM, ASTUtility::createASTNullNode(), ASTUtility::createASTNullNode());
-            ASTNode * char_elements = resultNode->right;
-            
+            ASTNode* varAssign = ASTUtility::createASTArrayNode(*(new TokenEntry(TokenType::T_VARIABLE, "RAW_STRING_" + to_string(rawStringCount++))));
+            ASTUtility::validToken(T_SYMBOL, "\"", currToken);;
+
+            ASTNode* resultNode = ASTUtility::createASTNode(ARRAY_INIT_PRE_ELM, ASTUtility::createASTNullNode(), ASTUtility::createASTNullNode());
+            ASTNode* char_elements = resultNode->right;
+
             while (currToken->entry != "\"")
             {
-                char_elements->right = ASTUtility::createASTNumberNode(*currToken);
+                char_elements->right = ASTUtility::createASTNumberNode(*(currToken++));
                 char_elements = char_elements->right;
-                currToken++;
             }
-            
+
             TokenEntry te(T_NUMBER, "0");
             resultNode->left = ASTUtility::createASTNumberNode(te);
-            
+
+            arr_table.insert({ varAssign->key, false });
+
             ASTUtility::validToken(T_SYMBOL, "\"", currToken);
+
+            ASTNode* temp = ASTUtility::createASTNode(ARRAY_INIT, varAssign, resultNode);
+            ASTType ast_type = PARAM_ARRAY_CALL;
+            temp->key = varAssign->key;
+
+            stmtList->right = ASTUtility::createASTNode(ast_type, temp, NULL);
+            stmtList = stmtList->right;
+        }
+        else if (currToken->entry == "[")
+        {
+            ASTNode* varAssign = ASTUtility::createASTArrayNode(*(new TokenEntry(TokenType::T_VARIABLE, "RAW_ARRAY_" + to_string(rawArrayCount++))));
+            ASTUtility::validToken(T_SYMBOL, "[", currToken);
             
-            ASTNode * rawStringNode = ASTUtility::createASTNode(ARRAY_INIT, varAssign, resultNode);
-            rawStringNode->key = paramArrayTitle + to_string(count++);
-            stmtList->right = ASTUtility::createASTNode(PARAM_ARRAY_CALL, rawStringNode , ASTUtility::createASTNullNode());
+            ASTNode* resultNode = ASTUtility::createASTNode(ARRAY_INIT_PRE_ELM, ASTUtility::createASTNullNode(), ASTUtility::createASTNullNode());
+            ASTNode* char_elements = resultNode->right;
+
+            while (currToken->entry != "]")
+            {
+                if (currToken->entry == ",")
+                {
+                    ASTUtility::validToken(T_SYMBOL, ",", currToken);
+                    continue;
+                }
+                else if (currToken->entry == "\'")
+                {
+                    ASTUtility::validToken(T_SYMBOL, "\'", currToken);
+                    char_elements->right = ASTUtility::createASTCharNode(*(currToken++));
+                    char_elements = char_elements->right;
+                    ASTUtility::validToken(T_SYMBOL, "\'", currToken);
+                }
+                else
+                {
+                    char_elements->right = ASTUtility::createASTNumberNode(*(currToken++));
+                    char_elements = char_elements->right;
+                }
+            }
+
+            TokenEntry te(T_NUMBER, "0");
+            resultNode->left = ASTUtility::createASTNumberNode(te);
+
+            arr_table.insert({ varAssign->key, false });
+
+            ASTUtility::validToken(T_SYMBOL, "]", currToken);
+
+            ASTNode* temp = ASTUtility::createASTNode(ARRAY_INIT, varAssign, resultNode);
+            ASTType ast_type = PARAM_ARRAY_CALL;
+            temp->key = varAssign->key;
+
+            stmtList->right = ASTUtility::createASTNode(ast_type, temp, NULL);
             stmtList = stmtList->right;
         }
         else

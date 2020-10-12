@@ -135,6 +135,9 @@ enum ASTType
    SCAN,
    COPY,
    LENGTH,
+   RANDOM,
+   APPEND,
+   REMOVE,
    EQUAL_FUNC,
    DELETE,
 

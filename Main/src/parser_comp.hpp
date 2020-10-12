@@ -43,6 +43,8 @@ private:
   map<string, bool> arr_table;
   set<string> case_set;
   set<string> function_table;
+  int rawStringCount = 0;
+  int rawArrayCount = 0;
 
   // start.cpp
   void start(ASTNode *&); 

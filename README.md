@@ -33,15 +33,16 @@ or with display
 As of now I'm very content what I have released, although I am 99% positive that it is not perfect. The error log is really not helpful at all. Best thing to do is to debug throught the compiler code and your W Lang code and if there are any bugs you find just reach out to me.
 
 ## Future Features
-1. Add switch statements.
-2. Include floating point numbers, bytes, and bool.
-3. Add default values for parameters.
+1. Write and execute unittests and an automation test suite
+2. Add switch statements.
+3. Include floating point numbers, bytes, and bool.
 4. Add try catch functionality.
-5. Replace LL(1) parser to LR(1).
-6. More system functions like reading files, threads, and etc.
-7. Make the language object oriented with access modifiers.
-8. A more detailed error catcher.
-9. Create Frameworks for Web, Mobile, Applications, and Tools. This will need more system apis like reading files and so forth.
+5. Add do while loops and foreach loops
+6. Replace LL(1) parser to LR(1).
+7. More system functions like reading files, threads, and etc.
+8. Make the language object oriented with access modifiers.
+9. A more detailed error catcher.
+10. Create Frameworks for Web, Mobile, Applications, and Tools. This will need more system apis like reading files and so forth.
 
 # How To Code in W Language
 
@@ -77,8 +78,9 @@ const theW = 'W'
 
 ## Operators
 
-W Lang supports Arithmetic (+, -, *, /, %), Relational (==, !=, <, >, <=, >=), Logical (&&, ||, !) and Bitwise operators (&, |, ^, <<, >>). Below are a few examples.
+W Lang supports Arithmetic (+, -, *, /, %), Relational (==, !=, <, >, <=, >=), Logical (&&, ||, !) and Bitwise operators (&, |, ^, <<, >>). The W Lang also supports a sepcial operator called 'delete' which removes the variable from scope. Below are a few examples.
 
+Arithmetic
 ```javascript
 let add = 123 + 321;
 let thisExample = 2;
@@ -86,23 +88,33 @@ thisExample *= 3;
 let mod = add % thisExample;
 ```
 
+ Relational
 ```javascript
 let one = 1;
 let two = 2;
 let answer = (one == 2);
 ```
 
+Logical 
 ```javascript
 let number = 5;
 let negatedNumber = !number && number == 5;
 ```
 
+Bitwise
 ```javascript
 let andExample = 4 & 8;
 let orExample = 0;
 orExample |= 1;
 let xorExample = andExample ^ orExample;
 xorExample <<= 1;
+```
+
+delete
+```javascript
+let number = 3;
+delete number;
+let number = 3;
 ```
 
 ## Arrays and Strings
@@ -113,6 +125,7 @@ Arrays are like lists in python and strings are like arrays but just chars. You 
 // correct ways
 let array1[] = [1,2,3];
 let array2[7];
+let array3[] = [];
 let string[] = "Hello there";
 let mixExample[3] = [1, 'W', 3];
 
@@ -123,13 +136,85 @@ let array4 = [3,2,1];
 let array5 = "Wrong";
 ```
 
+## Conditionals
+
+There are only if, elif, and else statements. If statements means that if the condition is met then do the operation. Elif statements means if the previous condition wasn't met and if this statement is met then do the operation. Else statements means whatever previous conditions fail then do the else statement. 
+
+```javascript
+let flag = 1;
+
+if (flag == 2)
+{
+    PRINT("WOW FIRST TRY!!!", pstrn);
+}
+elif (flag == 3 || flag == 0)
+{
+    PRINT("ITS A NUMBER!!!", pstrn);
+}
+else
+{
+    PRINT("ERROR", pstrn);
+}
+```
+
 ## Loops
 
-## Conditionals
+As of now there are only two types of loops which are for loops and while loops. For loops enables a particular set of conditions to be executed repeatedly until a condition is satisfied while the while loop is more loose and based on a conditional statement. Below are some examples of these loops.
+
+```javascript
+// for loop
+for (let index = 0; index < 5; index += 1)
+{
+    PRINT(index, pintn);
+}
+
+// while loop
+let index = 0;
+while (index < 5)
+{
+    PRINT(index, pintn);
+    index += 1;
+}
+```
 
 ## Functions
 
-## System Functions
+A function is a block of organized, reusable code that is used to perform a single, related action. In the W Language you can pass parameters, return values, and just do whatever you want to accomplish in the scope. For naming convention it has to be capitalized letter that can include underscores and not nammed after system aux functions (more on that later). Below are some examples.
+
+
+```javascript
+function P_MESSAGE(let message[], let mode)
+{
+    PRINT(message, mode);
+
+    return 0;
+}
+
+
+function MAIN()
+{
+    let result = P_MESSAGE();
+    PRINT(result, pintn);
+}
+```
+
+## System Aux Functions
+
+The W Language has some aux functions for the developer to use. RANDOM just generates a random number and its up to you as the developer to choose which interval number you want. APPEND and REMOVE just adds or remove each element from a string or array. LENGTH just get the length of array or string. EQUAL just gets the result if two arrays or strings are the same. PRINT just prints the result on screen with different limits. SCAN just gets strings or variables of information from the user.
+
+```javascript
+let ans = 0;
+RANDOM(ans, 0, 10);
+
+let array[] = [1,2,3,4];
+APPEND(5, array);
+REMOVE(1, array);
+
+LENGTH(ans, array);
+EQUAL(ans, array, [2,3,4,5]);
+PRINT("MESSAGE TIME", pstrn);
+SCAN(ans);
+```
 
 ## Import Files
 

@@ -140,6 +140,23 @@ void ASTUtility::cleanParameter(map<string, string> paramAdapter, ASTNode*& func
         functionContent->key = paramAdapter[functionContent->key];
     }
 
+    string hold = "";
+    for (int index = 0; index < functionContent->key.length(); index++)
+    {
+        if (functionContent->key[index] == '[')
+        {
+            if (paramAdapter.find(hold) != paramAdapter.end())
+            {
+                string half = "";
+                for (int otherIndex = index; otherIndex < functionContent->key.length(); otherIndex++)
+                    half += functionContent->key[otherIndex];
+                functionContent->key = paramAdapter[hold] + half;
+            }
+            break;
+        }
+        hold += functionContent->key[index];
+    }
+
     cleanParameter(paramAdapter, functionContent->left);
     cleanParameter(paramAdapter, functionContent->right);
 }

@@ -6,24 +6,20 @@ function CONFIG()
     let secondNumber = 0;
     let character;
 
-    let message[] = "Please select your first number: ";
-    PRINT(message, pstr);
+    PRINT("Please select your first number: ", pstr);
     SCAN(firstNumber);
     
-    message[] = "Please select your second number: ";
-    PRINT(message, pstr);
+    PRINT("Please select your second number: ", pstr);
     SCAN(secondNumber);
 
-    message[] = "Please select desired operator (-, +, *, /, %): ";
-    PRINT(message, pstr);
+    PRINT("Please select desired operator (-, +, *, /, %): ", pstr);
 
     SCAN(character);
 
     let ans = IS_VALID(character);
     while (ans < 0)
     {
-        message[] = "Please select desired operator (-, +, *, /, %): ";
-        PRINT(message, pstr);
+        PRINT("Please select desired operator (-, +, *, /, %): ", pstr);
 
         SCAN(character);
 
@@ -61,7 +57,7 @@ function CONFIG()
 function IS_VALID(let character)
 {
     let validOps[] = ['-', '+', '*', '/', '%'];
-    let size;
+    let size = 0;
     LENGTH(size, validOps);
 
     for (let index = 0; index < size; index += 1)
@@ -75,20 +71,22 @@ function IS_VALID(let character)
     return -1;
 }
 
+function RETURN_W()
+{
+    return ('W');
+}
 
 function MAIN()
 {
-    let character = 'N';
+    let character;
 
     while (character != 'E')
     {
-        let message[] = "Welcome To the Calculator Demo";
-        PRINT(message, pstrn);
+        PRINT("Welcome To the Calculator Demo", pstrn);
 
         CONFIG();
 
-        message[] = "Do you want to exit? Enter E: ";
-        PRINT(message, pstr);
+        PRINT("Do you want to exit? Enter E: ", pstr);
 
         SCAN(character);
     }

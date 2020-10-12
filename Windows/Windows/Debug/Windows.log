@@ -1,45 +1,28 @@
-﻿  assign.cpp
-  backend.cpp
-  cond.cpp
-  expression.cpp
-  frontend.cpp
-D:\ProgramProjects\W_Project\Main\src\frontend.cpp(18,25): warning C4018: '<': signed/unsigned mismatch
-D:\ProgramProjects\W_Project\Main\src\frontend.cpp(70,31): warning C4018: '<': signed/unsigned mismatch
-D:\ProgramProjects\W_Project\Main\src\frontend.cpp(156,37): warning C4018: '<': signed/unsigned mismatch
-D:\ProgramProjects\W_Project\Main\src\frontend.cpp(285,21): warning C4018: '<': signed/unsigned mismatch
-  loop.cpp
-  main.cpp
-D:\ProgramProjects\W_Project\Main\src\main.cpp(46,31): warning C4018: '<': signed/unsigned mismatch
-  processor.cpp
-D:\ProgramProjects\W_Project\Main\src\processor.cpp(12,21): warning C4018: '<': signed/unsigned mismatch
-D:\ProgramProjects\W_Project\Main\src\processor.cpp(29,43): warning C4244: 'argument': conversion from 'unsigned __int64' to 'const unsigned int', possible loss of data
-D:\ProgramProjects\W_Project\Main\src\processor.cpp(245,25): warning C4018: '<': signed/unsigned mismatch
-D:\ProgramProjects\W_Project\Main\src\processor.cpp(291,25): warning C4018: '<': signed/unsigned mismatch
-D:\ProgramProjects\W_Project\Main\src\processor.cpp(411,35): warning C4018: '<': signed/unsigned mismatch
-D:\ProgramProjects\W_Project\Main\src\processor.cpp(484,21): warning C4018: '<': signed/unsigned mismatch
-D:\ProgramProjects\W_Project\Main\src\processor.cpp(533,41): warning C4018: '<=': signed/unsigned mismatch
-D:\ProgramProjects\W_Project\Main\src\processor.cpp(562,41): warning C4018: '<=': signed/unsigned mismatch
+﻿  processor.cpp
+D:\ProgramProjects\W_Project\Main\src\processor.cpp(14,21): warning C4018: '<': signed/unsigned mismatch
+D:\ProgramProjects\W_Project\Main\src\processor.cpp(31,43): warning C4244: 'argument': conversion from 'unsigned __int64' to 'const unsigned int', possible loss of data
+D:\ProgramProjects\W_Project\Main\src\processor.cpp(247,25): warning C4018: '<': signed/unsigned mismatch
+D:\ProgramProjects\W_Project\Main\src\processor.cpp(293,25): warning C4018: '<': signed/unsigned mismatch
+D:\ProgramProjects\W_Project\Main\src\processor.cpp(368,35): warning C4018: '<': signed/unsigned mismatch
+D:\ProgramProjects\W_Project\Main\src\processor.cpp(444,35): warning C4018: '<': signed/unsigned mismatch
+D:\ProgramProjects\W_Project\Main\src\processor.cpp(517,21): warning C4018: '<': signed/unsigned mismatch
+D:\ProgramProjects\W_Project\Main\src\processor.cpp(566,41): warning C4018: '<=': signed/unsigned mismatch
+D:\ProgramProjects\W_Project\Main\src\processor.cpp(595,41): warning C4018: '<=': signed/unsigned mismatch
 D:\VS2019\VC\Tools\MSVC\14.27.29110\include\utility(192,1): warning C4244: 'initializing': conversion from 'unsigned __int64' to '_Ty2', possible loss of data
           with
           [
               _Ty2=int
           ]
-D:\ProgramProjects\W_Project\Main\src\processor.cpp(16): message : see reference to function template instantiation 'std::pair<const std::string,int>::pair<std::string&,unsigned __int64&,0>(_Other1,_Other2) noexcept(false)' being compiled
+D:\ProgramProjects\W_Project\Main\src\processor.cpp(18): message : see reference to function template instantiation 'std::pair<const std::string,int>::pair<std::string&,unsigned __int64&,0>(_Other1,_Other2) noexcept(false)' being compiled
           with
           [
               _Other1=std::string &,
               _Other2=unsigned __int64 &
           ]
-D:\ProgramProjects\W_Project\Main\src\processor.cpp(16): message : see reference to function template instantiation 'std::pair<const std::string,int>::pair<std::string&,unsigned __int64&,0>(_Other1,_Other2) noexcept(false)' being compiled
+D:\ProgramProjects\W_Project\Main\src\processor.cpp(18): message : see reference to function template instantiation 'std::pair<const std::string,int>::pair<std::string&,unsigned __int64&,0>(_Other1,_Other2) noexcept(false)' being compiled
           with
           [
               _Other1=std::string &,
               _Other2=unsigned __int64 &
           ]
-  scope.cpp
-D:\ProgramProjects\W_Project\Main\src\scope.cpp(152,23): warning C4018: '<': signed/unsigned mismatch
-  start.cpp
-  stdinit.cpp
-  system_op.cpp
-  Generating Code...
   Windows.vcxproj -> D:\ProgramProjects\W_Project\Windows\Debug\wlang.exe

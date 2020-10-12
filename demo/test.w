@@ -1,9 +1,17 @@
 
-
 function MAIN()
 {
-    PRINT('W', pcharn);
-    PRINT([1,2,3], parrn);
-    PRINT("GO TO BED WES!", pstrn);
-    PRINT("Ain\'t got nothing but love bby!", pstrn);
+    let ans = 1;
+    for (let i = 0; i < 10; i += 1)
+    {
+        RANDOM(ans, 'A', 'C');
+        PRINT(ans, pintn);
+    }
+
+    let array[] = [1,2,3,'W'];
+    APPEND('A', array);
+    PRINT(array, parrn);
+    REMOVE('W', array);
+    PRINT(array, parrn);
+    PRINT(array, pstrn);
 }
