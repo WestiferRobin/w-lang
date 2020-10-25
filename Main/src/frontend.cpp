@@ -45,6 +45,11 @@ void FrontEnd::run(string file_text, ASTNode *& the_ast)
 
     myfile.close();
     scanner();
+
+    /*for (int index = 0; index < tokens.size(); index++)
+    {
+        cout << tokens[index].entry << endl;
+    }*/
     
     Parser * parser = new Parser(fe_symbol_table);
     
@@ -210,14 +215,42 @@ void FrontEnd::handleOperatorsTypeOne(int * index, string * token)
       *(index) += 1;
       break;
     default:
-      if (isdigit(the_code[*(index) + 1]) && the_code[*(index)] == '-')
+      if (the_code[*(index)] == '-')
       {
-        int digitIndex = *(index) + 1;
+          if (isdigit(the_code[*(index)+1]))
+          {
+              int digitIndex;
+              switch (the_code[*(index)-1])
+              {
+                  case ',':
+                  case '+':
+                  case '^':
+                  case '%':
+                  case '-':
+                  case '!':
+                  case '=':
+                  case '*':
+                  case '/':
+                  case '&':
+                  case '|':
+                  case '<':
+                  case '>':
+                      digitIndex = *(index)+1;
 
-        while (isdigit(the_code[digitIndex])) { *token += the_code[digitIndex++];}
+                      while (isdigit(the_code[digitIndex])) { *token += the_code[digitIndex++]; }
 
-        tokens.push_back(TokenEntry(T_NUMBER, *token));
-        *index = digitIndex - 1;
+                      tokens.push_back(TokenEntry(T_NUMBER, *token));
+                      *index = digitIndex - 1;
+                      break;
+                  default:
+                      tokens.push_back(TokenEntry(T_SYMBOL, *token));
+                      break;
+              }
+          }
+          else
+          {
+              tokens.push_back(TokenEntry(T_SYMBOL, *token));
+          }
       }
       else
       {
@@ -226,6 +259,7 @@ void FrontEnd::handleOperatorsTypeOne(int * index, string * token)
       break;
   }
 }
+
 
 void FrontEnd::handleOperatorsTypeTwo(int * index, string * token, bool * isMultiLine)
 {

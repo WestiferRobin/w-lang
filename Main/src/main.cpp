@@ -37,7 +37,7 @@ int start(int argc, char * argv[])
   // Do the compiler
   compiler = new Compiler();
   compiler->parse(file_name);
-
+  
   vector<AssemblyEntry*> assembly(compiler->getAssembly());
 
   if (isDisplayingAssembly)

@@ -8,7 +8,7 @@ ASTNode * Parser::andOrCondition()
 
     expLeft = condition();
 
-    if (currToken->entry == "," || currToken->entry == ";" || currToken->entry == ")") 
+    if (currToken->entry == "," || currToken->entry == ";" || currToken->entry == ")" || currToken->entry == "]")
     { 
         return expLeft;
     }
@@ -79,6 +79,7 @@ ASTNode * Parser::arithExpression()
                 case '<':
                 case '|':
                 case '&':
+                case ']':
                     return term;
                 default:
                     throw (int) ErrorInvalidSymbol;
@@ -120,8 +121,8 @@ ASTNode * Parser::condition()
     expLeft = arithExpression();
 
     if (currToken->entry == "," || currToken->entry == ";" || 
-        currToken->entry == ")" || currToken->entry == "&&" || 
-        currToken->entry == "||") 
+        currToken->entry == "||" || currToken->entry == "&&" ||
+        currToken->entry == ")" || currToken->entry == "]")
     { 
         return expLeft;
     }
@@ -187,21 +188,8 @@ ASTNode * Parser::factor()
             {
                 ASTUtility::validToken(T_SYMBOL, "[", currToken);
 
-                if (symbol_table.find(currToken->entry) != symbol_table.end() || 
-                    global_symbol_table.find(currToken->entry) != global_symbol_table.end())
-                {
-                    tmp->key += "[" + currToken->entry + "]";
-                }
-                else if (stoi(currToken->entry) >= 0)
-                {
-                    tmp->key += "[" + currToken->entry + "]";
-                }
-                else
-                {
-                    throw (int) ErrorVariableUnknown;
-                }
-
-                currToken++;
+                tmp->type = VAR_ARRAY;
+                tmp->left = this->expression();
 
                 ASTUtility::validToken(T_SYMBOL, "]", currToken);
             }
@@ -300,6 +288,7 @@ ASTNode * Parser::term()
                 case '+':
                 case '-':
                 case '=':
+                case ']':
                     return factor;
                 default:
                     throw (int) ErrorInvalidSymbol;

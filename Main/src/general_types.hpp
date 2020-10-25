@@ -64,6 +64,7 @@ enum ASTType
 
    NUM,
    VAR,
+   VAR_ARRAY,
    CHAR,
    KEYWORD,
 

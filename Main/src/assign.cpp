@@ -162,7 +162,7 @@ ASTNode * Parser::assignment(bool isUsingSemi)
                 
                 ASTUtility::validToken(T_SYMBOL, "[", currToken);
 
-                if (symbol_table.find(currToken->entry) != symbol_table.end() && 
+                if (symbol_table.find(currToken->entry) != symbol_table.end() || 
                     global_symbol_table.find(currToken->entry) != global_symbol_table.end())
                 {
                     varAssign->key += "[" + (currToken++)->entry + "]";
@@ -270,6 +270,7 @@ ASTNode * Parser::assignment(bool isUsingSemi)
                 
                 break;
             }
+
             if (symbol_table[currToken->entry]) 
             {
                 throw (int) ErrorInvalidConstant;
