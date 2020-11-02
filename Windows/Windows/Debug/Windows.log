@@ -1,2 +1,28 @@
-﻿  assign.cpp
+﻿  processor.cpp
+D:\ProgramProjects\W_Project\Main\src\processor.cpp(14,21): warning C4018: '<': signed/unsigned mismatch
+D:\ProgramProjects\W_Project\Main\src\processor.cpp(31,43): warning C4244: 'argument': conversion from 'unsigned __int64' to 'const unsigned int', possible loss of data
+D:\ProgramProjects\W_Project\Main\src\processor.cpp(274,25): warning C4018: '<': signed/unsigned mismatch
+D:\ProgramProjects\W_Project\Main\src\processor.cpp(320,25): warning C4018: '<': signed/unsigned mismatch
+D:\ProgramProjects\W_Project\Main\src\processor.cpp(395,35): warning C4018: '<': signed/unsigned mismatch
+D:\ProgramProjects\W_Project\Main\src\processor.cpp(472,35): warning C4018: '<': signed/unsigned mismatch
+D:\ProgramProjects\W_Project\Main\src\processor.cpp(545,21): warning C4018: '<': signed/unsigned mismatch
+D:\ProgramProjects\W_Project\Main\src\processor.cpp(596,41): warning C4018: '<=': signed/unsigned mismatch
+D:\ProgramProjects\W_Project\Main\src\processor.cpp(625,41): warning C4018: '<=': signed/unsigned mismatch
+D:\VS2019\VC\Tools\MSVC\14.27.29110\include\utility(192,1): warning C4244: 'initializing': conversion from 'unsigned __int64' to '_Ty2', possible loss of data
+          with
+          [
+              _Ty2=int
+          ]
+D:\ProgramProjects\W_Project\Main\src\processor.cpp(18): message : see reference to function template instantiation 'std::pair<const std::string,int>::pair<std::string&,unsigned __int64&,0>(_Other1,_Other2) noexcept(false)' being compiled
+          with
+          [
+              _Other1=std::string &,
+              _Other2=unsigned __int64 &
+          ]
+D:\ProgramProjects\W_Project\Main\src\processor.cpp(18): message : see reference to function template instantiation 'std::pair<const std::string,int>::pair<std::string&,unsigned __int64&,0>(_Other1,_Other2) noexcept(false)' being compiled
+          with
+          [
+              _Other1=std::string &,
+              _Other2=unsigned __int64 &
+          ]
   Windows.vcxproj -> D:\ProgramProjects\W_Project\Windows\Debug\wlang.exe

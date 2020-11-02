@@ -1,5 +1,6 @@
+let holder[] = [];
 
-/*function GET_RAND_ARRAY()
+function GET_RAND_ARRAY()
 {
     let size;
     RANDOM(size, 10, 20);
@@ -13,41 +14,67 @@
     return ans;
 }
 
-function BUBBLE_SORT()
+function TEST_SORT()
 {
     let array[] = GET_RAND_ARRAY();
+    //let array[] = [5,4,3,2,1];
     PRINT(array, parrn);
 
     let size;
     LENGTH(size, array);
+    size -= 1;
     
-    for (let i = 0; i < size - 1; i += 1)
+    holder[] = array;
+
+    AUX_QUICK_SORT(0, size);
+
+    array[] = holder;
+
+    PRINT(array, parrn);
+}
+
+function AUX_QUICK_SORT(let low, let high)
+{
+    if (low < high)
     {
-        for (let j = 0; j < size - 1; j += 1)
+        let partition = PARTITION(low, high);
+        
+        // ALL PARAMETERS SHOULD BE EXPRESSIONS
+        let asdf = partition - 1;
+        let fdsa = partition + 1;
+        AUX_QUICK_SORT(low, asdf);
+        AUX_QUICK_SORT(fdsa, high);
+    }
+}
+
+function PARTITION(let l, let h)
+{
+    let pivot = holder[h];
+
+    let i = l - 1;
+
+    for (let j = l; j <= h; j += 1)
+    {
+        if (holder[j] < pivot)
         {
-            if (array[j] > array[j + 1])
-            {
-                let temp = array[j + 1];
-                array[j + 1] = array[j];
-                array[j] = temp;
-            }
+            i += 1;
+            let temp = holder[i];
+            holder[i] = holder[j];
+            holder[j] = temp;  
         }
     }
 
-    PRINT(array, parrn);
-    PRINT(' ', pcharn);
-}*/
+    let temp = holder[i + 1];
+    holder[i + 1] = holder[h];
+    holder[h] = temp; 
+
+    return (i + 1);
+}
+
 function MAIN()
 {
-    // REWORK THE FUCKN GOD DAMN ARRAY
-    let array[] = [1,2,3];
-    let var = 2;
-
-    PRINT(array, parrn);
-
-    array[0] = 123;
-    array[var] = 321;
-    array[var - 1] = 111;
-
-    PRINT(array, parrn);
+    // TODOS!!!!
+    //  1. Fix the pass array reference.
+    //  2. Fix the expression parameters bullshit.
+    TEST_SORT();
 }

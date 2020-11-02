@@ -61,7 +61,7 @@ ASTNode * Parser::append()
 
     ASTUtility::validToken(T_SYMBOL, ",", currToken);
 
-    if (currToken->tType == T_VARIABLE && arr_table.find(currToken->entry) != arr_table.end())
+    if (currToken->tType == T_VARIABLE && (arr_table.find(currToken->entry) != arr_table.end() || global_arr_table.find(currToken->entry) != global_arr_table.end()))
     {
         source = ASTUtility::createASTWholeArrayNode(*currToken++);
     }
@@ -91,7 +91,7 @@ ASTNode * Parser::remove()
 
     ASTUtility::validToken(T_SYMBOL, ",", currToken);
 
-    if (currToken->tType == T_VARIABLE && arr_table.find(currToken->entry) != arr_table.end())
+    if (currToken->tType == T_VARIABLE && (arr_table.find(currToken->entry) != arr_table.end() || global_arr_table.find(currToken->entry) != global_arr_table.end())) 
     {
         source = ASTUtility::createASTWholeArrayNode(*currToken++);
     }
@@ -109,14 +109,14 @@ ASTNode * Parser::copy()
     ASTUtility::validToken(T_KEYWORD, "COPY", currToken);
     ASTUtility::validToken(T_SYMBOL, "(", currToken);
 
-    if (currToken->tType == T_VARIABLE && arr_table.find(currToken->entry) != arr_table.end())
+    if (currToken->tType == T_VARIABLE && (arr_table.find(currToken->entry) != arr_table.end() || global_arr_table.find(currToken->entry) != global_arr_table.end()))
     {
         copyTarget = ASTUtility::createASTWholeArrayNode(*currToken++);
     }
 
     ASTUtility::validToken(T_SYMBOL, ",", currToken);
 
-    if (currToken->tType == T_VARIABLE && arr_table.find(currToken->entry) != arr_table.end())
+    if (currToken->tType == T_VARIABLE && (arr_table.find(currToken->entry) != arr_table.end() || global_arr_table.find(currToken->entry) != global_arr_table.end()))
     {
         copySource = ASTUtility::createASTWholeArrayNode(*currToken++);
     }
@@ -211,6 +211,19 @@ ASTNode * Parser::deleteStatement()
 
         currToken++;
     }
+    else if (global_arr_table.find(currToken->entry) != global_arr_table.end())
+    {
+        if (global_arr_table[currToken->entry])
+        {
+            throw (int)ErrorInvalidConstant;
+        }
+
+        global_arr_table.erase(currToken->entry);
+
+        delVariable = ASTUtility::createASTVariableNode(*currToken);
+
+        currToken++;
+    }
     else
     {
         throw (int) ErrorVariableUnknown;
@@ -236,7 +249,7 @@ ASTNode * Parser::length()
 
     ASTUtility::validToken(T_SYMBOL, ",", currToken);
     
-    if (currToken->tType == T_VARIABLE && arr_table.find(currToken->entry) != arr_table.end())
+    if (currToken->tType == T_VARIABLE && (arr_table.find(currToken->entry) != arr_table.end() || global_arr_table.find(currToken->entry) != global_arr_table.end() ))
     {
         lenSource = ASTUtility::createASTWholeArrayNode(*currToken++);
     }
@@ -315,7 +328,7 @@ ASTNode * Parser::equal()
 
     ASTUtility::validToken(T_SYMBOL, ",", currToken);
 
-    if (currToken->tType == T_VARIABLE && arr_table.find(currToken->entry) != arr_table.end())
+    if (currToken->tType == T_VARIABLE && (arr_table.find(currToken->entry) != arr_table.end() || global_arr_table.find(currToken->entry) != global_arr_table.end()))
     {
         leftSide = ASTUtility::createASTWholeArrayNode(*currToken++);
     }
@@ -374,7 +387,7 @@ ASTNode * Parser::equal()
 
     ASTUtility::validToken(T_SYMBOL, ",", currToken);
 
-    if (currToken->tType == T_VARIABLE && arr_table.find(currToken->entry) != arr_table.end())
+    if (currToken->tType == T_VARIABLE && (arr_table.find(currToken->entry) != arr_table.end() || global_arr_table.find(currToken->entry) != global_arr_table.end()))
     {
         rightSide = ASTUtility::createASTWholeArrayNode(*currToken++);
     }

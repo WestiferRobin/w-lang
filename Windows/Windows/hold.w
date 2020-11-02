@@ -22,35 +22,59 @@ function BUBBLE_SORT()
     let size;
     LENGTH(size, array);
     
-    // FIX THIS STUPID FUCKN NEGATIVE VS MINUS NUMBER!!!!!!!!!
     for (let i = 0; i < size - 1; i += 1)
     {
-        for (let j = 0; j < size - i - 1; j += 1)
+        for (let j = 0; j < size - 1; j += 1)
         {
-            let ahead = j + 1;
-            if (array[j] > array[ahead])
+            if (array[j] > array[j + 1])
             {
-                let temp = array[j];
-                array[j] = array[ahead];
-                array[ahead] = temp;
+                let temp = array[j + 1];
+                array[j + 1] = array[j];
+                array[j] = temp;
             }
         }
     }
 
-
     PRINT("BUBBLE_SORT IS SORTED", pstrn);
     PRINT(array, parrn);
-    PRINT(' ', pcharn);
 }
-/*
+
 function INSERTION_SORT()
 {
     let array[] = GET_RAND_ARRAY();
     PRINT("HERE IS INSERTION_SORT", pstrn);
     PRINT(array, parrn);
 
+    let size;
+    LENGTH(size, array);
+
+    for (let i = 1; i < size; i += 1)
+    {
+        let key = array[i];
+        let j = i - 1;
+
+        while (j >= 0 && array[j] > key)
+        {
+            array[j + 1] = array[j];
+            j -= 1;
+        }
+
+        array[j + 1] = key;
+    }
     
     PRINT("INSERTION_SORT IS SORTED", pstrn);
+    PRINT(array, parrn);
+    PRINT(' ', pcharn);
+}
+/*
+function QUICK_SORT()
+{
+    let array[] = GET_RAND_ARRAY();
+    PRINT("HERE IS QUICK_SORT", pstrn);
+    PRINT(array, parrn);
+
+
+    PRINT("QUICK_SORT IS SORTED", pstrn);
     PRINT(array, parrn);
     PRINT(' ', pcharn);
 }
@@ -63,18 +87,6 @@ function MERGE_SORT()
 
 
     PRINT("MERGE_SORT IS SORTED", pstrn);
-    PRINT(array, parrn);
-    PRINT(' ', pcharn);
-}
-
-function QUICK_SORT()
-{
-    let array[] = GET_RAND_ARRAY();
-    PRINT("HERE IS QUICK_SORT", pstrn);
-    PRINT(array, parrn);
-
-
-    PRINT("QUICK_SORT IS SORTED", pstrn);
     PRINT(array, parrn);
     PRINT(' ', pcharn);
 }

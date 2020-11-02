@@ -45,15 +45,18 @@ public:
 
 class Processor
 {
+
 private:
   map<string, int> registers;
   map<string, int> data_mem;
   map<string, int> jump_labels;
   map<string, int> global_vars;
-  map<string, vector<int> > array_table;
+  map<string, vector<int>> array_table;
   stack<int> return_addresses;
-  queue<int> params;
-  queue<vector<int> > params_array;
+  queue<tuple<string, int>> params;
+  stack<map<string, int>> prev_state;
+  queue<tuple<string, vector<int>>> params_array;
+  stack<map<string, vector<int>>> prev_state_array;
   vector<AssemblyEntry*> assembly;
   unsigned long long programCounter = 0;
   bool isGettingGlobal = true;

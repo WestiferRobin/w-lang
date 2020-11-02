@@ -29,7 +29,7 @@ void Processor::run()
     while (programCounter < assembly.size())
     {
       AssemblyEntry * instance = assembly[programCounter];
-      
+
       switch (instance->type)
       {
         case JUMP_LABEL:
@@ -105,7 +105,7 @@ void Processor::readALUop(AssemblyEntry * assemblyLine)
     }
     else if (assemblyLine->secondOp == "PARAM_ARR")
     {
-      array_table.insert({assemblyLine->firstOp, params_array.front()});
+      array_table.insert({ assemblyLine->firstOp, get<1>(params_array.front()) });
       params_array.pop();
     }
     else
@@ -143,20 +143,47 @@ void Processor::readALUop(AssemblyEntry * assemblyLine)
   {
     if (assemblyLine->firstOp == "RET_A")
     {
+      prev_state.push(data_mem);
+      prev_state_array.push(array_table);
+
       return_addresses.push(stoi(assemblyLine->secondOp));
     }
     else if (assemblyLine->firstOp == "PARAM")
     {
-      params.push(this->getValue(assemblyLine->secondOp));
+      params.push({ assemblyLine->secondOp, this->getValue(assemblyLine->secondOp) });
     }
     else if (assemblyLine->firstOp == "PARAM_ARR")
     {
-      params_array.push(array_table[assemblyLine->secondOp]);
+      params_array.push({ assemblyLine->secondOp, array_table[assemblyLine->secondOp] });
     }
   }
   else if (assemblyLine->operatorLabel == "pop")
   {
-    return_addresses.pop();
+    if (assemblyLine->firstOp == "RET_A")
+    {
+        // if params is not empty then restore the prev_state
+        return_addresses.pop();
+
+        if (!prev_state.empty())
+        {
+            auto prev = prev_state.top();
+            prev_state.pop();
+
+            data_mem = prev;
+        }
+
+        if (!prev_state_array.empty())
+        {
+            auto prev = prev_state_array.top();
+            prev_state_array.pop();
+
+            /*for (auto it = prev.begin(); it != prev.end(); it++)
+            {
+                if (it->first == "RET_V") continue;
+                array_table[it->first] = it->second;
+            }*/
+        }
+    }
   }
   else if (assemblyLine->operatorLabel == "and")
   {
@@ -439,6 +466,7 @@ bool Processor::isNumber(string target)
 {
     if (target[0] == '-')
     {
+        if (target.length() <= 1) return false;
         string oldTarget = target;
         target = "";
         for (int index = 1; index < oldTarget.length(); index++)
@@ -548,7 +576,7 @@ int Processor::getValue(string target)
   }
   else if (this->isRegister(target))
   {
-    ans = registers[target];
+      ans = registers[target];
   }
   else if (this->isNumber(target))
   {
@@ -563,9 +591,11 @@ int Processor::getValue(string target)
     string array_label = target.substr(0, target.find("["));
     int index = this->getValue(target.substr(target.find("[") + 1, target.find("]") - target.find("[") - 1));
 
-    if (array_table[array_label].size() <= index || index < 0) 
+    string debugString = target.substr(target.find("[") + 1, target.find("]") - target.find("[") - 1);
+
+    if (array_table[array_label].size() <= index|| index < 0) 
     { 
-      throw (int)ErrorVariableUnknown; 
+        index = 0;
     }
     
     ans = array_table[array_label][index];
@@ -576,7 +606,7 @@ int Processor::getValue(string target)
   }
   else if (target == "PARAM")
   {
-    ans = params.front();
+    ans = get<1>(params.front());
     params.pop();
   }
   else
@@ -592,7 +622,10 @@ void Processor::setValue(string target, unsigned long value)
   {
     string array_label = target.substr(0, target.find("["));
     int index = this->getValue(target.substr(target.find("[") + 1, target.find("]") - target.find("[") - 1));
-    if (array_table[array_label].size() <= index || index < 0) { throw (int)ErrorVariableUnknown; }
+    if (array_table[array_label].size() <= index || index < 0) 
+    { 
+        return; 
+    }
     array_table[array_label][index] = (int)value;
   }
   else if (this->isDataMem(target))
@@ -606,6 +639,10 @@ void Processor::setValue(string target, unsigned long value)
   else if (this->isGlobal(target))
   {
     global_vars[target] = (int)value;
+  }
+  else if (this->isNumber(target))
+  {
+    // do nothing
   }
   else
   {

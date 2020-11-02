@@ -190,8 +190,8 @@ void BackEnd::createAssembly(ASTNode *& root)
             else 
                 return;
         case VAR_ARRAY:
-            assembly.push_back(new AssemblyEntry(ALU_OPP, programCounter++, "", "load", "CMPR", root->left->key));
-            root->key += "[CMPR]";
+            assembly.push_back(new AssemblyEntry(ALU_OPP, programCounter++, "", "load", "r" + to_string(++regIndex), root->left->key));
+            root->key += "[r" + to_string(regIndex) + "]";
             break;
         case BOOL_AND:
             assembly.push_back(new AssemblyEntry(ALU_OPP, programCounter++, "", "and", root->left->key, root->right->key));

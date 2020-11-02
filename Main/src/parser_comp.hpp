@@ -41,6 +41,7 @@ private:
   map<string, bool> symbol_table;
   map<string, bool> global_symbol_table;
   map<string, bool> arr_table;
+  map<string, bool> global_arr_table;
   set<string> case_set;
   set<string> function_table;
   int rawStringCount = 0;

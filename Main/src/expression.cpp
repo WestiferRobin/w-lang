@@ -177,7 +177,9 @@ ASTNode * Parser::factor()
         case T_VARIABLE:
             if (symbol_table.find(currToken->entry) == symbol_table.end() &&
                 global_symbol_table.find(currToken->entry) == global_symbol_table.end() &&
-                arr_table.find(currToken->entry) == arr_table.end()) 
+                arr_table.find(currToken->entry) == arr_table.end() &&
+                global_arr_table.find(currToken->entry) == global_arr_table.end()
+            ) 
             { 
                 throw (int) ErrorVariableUnknown; 
             }

@@ -222,6 +222,7 @@ void FrontEnd::handleOperatorsTypeOne(int * index, string * token)
               int digitIndex;
               switch (the_code[*(index)-1])
               {
+                  case '[':
                   case ',':
                   case '+':
                   case '^':
