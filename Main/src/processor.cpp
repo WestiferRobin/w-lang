@@ -30,6 +30,11 @@ void Processor::run()
     {
       AssemblyEntry * instance = assembly[programCounter];
 
+      if (programCounter == 72)
+      {
+          int asdf = 123;
+      }
+
       switch (instance->type)
       {
         case JUMP_LABEL:
@@ -95,17 +100,42 @@ void Processor::readALUop(AssemblyEntry * assemblyLine)
   }
   else if (assemblyLine->operatorLabel == "arrL")
   {
-    if (array_table.find(assemblyLine->firstOp) != array_table.end())
+
+    // TODO: 
+    // - Have the PARAM_ARR be a list of strings to keep track what is being pushed.
+    // - Once it hits a return then check if that PARAM_ARR list is 
+
+    /*if (array_table.find(assemblyLine->firstOp) != array_table.end())
     {
         array_table[assemblyLine->firstOp].clear();
-    }
+    }*/
     if (array_table.find(assemblyLine->secondOp) != array_table.end())
     {
       array_table[assemblyLine->firstOp] = array_table[assemblyLine->secondOp];
     }
     else if (assemblyLine->secondOp == "PARAM_ARR")
     {
-      array_table.insert({ assemblyLine->firstOp, get<1>(params_array.front()) });
+      if (array_table.find(assemblyLine->firstOp) != array_table.end())
+      {
+          array_table[assemblyLine->firstOp] = array_table[assemblyLine->secondOp];
+      }
+      else
+      {
+          array_table.insert({ assemblyLine->firstOp, get<1>(params_array.front()) });
+      }
+
+      for (int index = 0; index < params_convert_count; index++)
+      {
+          string flag = "PARAM_ARR_" + index;
+          for (auto it = params_convert.begin(); it != params_convert.end(); it++)
+          {
+              if (it->second == flag)
+              {
+                  it->second = assemblyLine->firstOp;
+              }
+          }
+      }
+
       params_array.pop();
     }
     else
@@ -155,6 +185,7 @@ void Processor::readALUop(AssemblyEntry * assemblyLine)
     else if (assemblyLine->firstOp == "PARAM_ARR")
     {
       params_array.push({ assemblyLine->secondOp, array_table[assemblyLine->secondOp] });
+      params_convert.insert({ assemblyLine->secondOp, "PARAM_ARR_" + params_convert_count++});
     }
   }
   else if (assemblyLine->operatorLabel == "pop")
@@ -176,12 +207,19 @@ void Processor::readALUop(AssemblyEntry * assemblyLine)
         {
             auto prev = prev_state_array.top();
             prev_state_array.pop();
+            bool isChanged = false;
 
-            /*for (auto it = prev.begin(); it != prev.end(); it++)
+            for (auto it = prev.begin(); it != prev.end(); it++)
             {
-                if (it->first == "RET_V") continue;
-                array_table[it->first] = it->second;
-            }*/
+                if (params_convert.find(it->first) != params_convert.end())
+                {
+                    string key = params_convert[it->first];
+                    prev[it->first] = array_table[params_convert[it->first]];
+                    isChanged = true;
+                }
+            }
+
+            array_table = isChanged ? prev : array_table;
         }
     }
   }

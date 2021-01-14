@@ -92,10 +92,10 @@ ASTNode * Parser::functionCall()
         {
             ASTType ast_type = arr_table.find(currToken->entry) != arr_table.end() ? PARAM_ARRAY_CALL : PARAM_CALL;
             
-            stmtList->right = ASTUtility::createASTNode(ast_type, ASTUtility::createASTVariableNode(*currToken), NULL);
+            stmtList->right = ASTUtility::createASTNode(ast_type, expression(), NULL);
             stmtList = stmtList->right;
             
-            currToken++;
+            //currToken++;
         }
         else if (currToken->entry == "\"")
         {

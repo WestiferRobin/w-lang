@@ -24,57 +24,55 @@ function TEST_SORT()
     LENGTH(size, array);
     size -= 1;
     
-    holder[] = array;
+    //holder[] = array;
 
-    AUX_QUICK_SORT(0, size);
+    AUX_QUICK_SORT(array, 0, size);
 
-    array[] = holder;
+    //array[] = holder;
 
     PRINT(array, parrn);
 }
 
-function AUX_QUICK_SORT(let low, let high)
+function AUX_QUICK_SORT(let wholeArray[], let low, let high)
 {
     if (low < high)
     {
-        let partition = PARTITION(low, high);
+        let partition = PARTITION(wholeArray, low, high);
         
-        // ALL PARAMETERS SHOULD BE EXPRESSIONS
-        let asdf = partition - 1;
-        let fdsa = partition + 1;
-        AUX_QUICK_SORT(low, asdf);
-        AUX_QUICK_SORT(fdsa, high);
+        AUX_QUICK_SORT(wholeArray, low, partition - 1);
+        AUX_QUICK_SORT(wholeArray, partition + 1, high);
     }
 }
 
-function PARTITION(let l, let h)
+function PARTITION(let targetArray[], let l, let h)
 {
-    let pivot = holder[h];
+    let pivot = targetArray[h];
 
     let i = l - 1;
 
     for (let j = l; j <= h; j += 1)
     {
-        if (holder[j] < pivot)
+        if (targetArray[j] < pivot)
         {
             i += 1;
-            let temp = holder[i];
-            holder[i] = holder[j];
-            holder[j] = temp;  
+            let temp = targetArray[i];
+            targetArray[i] = targetArray[j];
+            targetArray[j] = temp;  
         }
     }
 
-    let temp = holder[i + 1];
-    holder[i + 1] = holder[h];
-    holder[h] = temp; 
+    let temp = targetArray[i + 1];
+    targetArray[i + 1] = targetArray[h];
+    targetArray[h] = temp; 
 
     return (i + 1);
 }
 
 function MAIN()
 {
+    PRINT("HELLO THERE ASSHOLE!", pstrn);
+    PRINT("I LOVE YOU BRI GOD FUCKN DAMN IT!!!!!!", pstrn);
     // TODOS!!!!
     //  1. Fix the pass array reference.
-    //  2. Fix the expression parameters bullshit.
     TEST_SORT();
 }

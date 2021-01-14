@@ -56,6 +56,8 @@ private:
   queue<tuple<string, int>> params;
   stack<map<string, int>> prev_state;
   queue<tuple<string, vector<int>>> params_array;
+  map<string, string> params_convert;
+  int params_convert_count = 0;
   stack<map<string, vector<int>>> prev_state_array;
   vector<AssemblyEntry*> assembly;
   unsigned long long programCounter = 0;
