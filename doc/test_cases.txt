@@ -1,0 +1,29 @@
+- variables_{0}_test.w: string, num, char, and array 
+    - assign in the correct format
+        - both const and let in both scope and global
+- {0}_test.w: arithmetic, relational, logical, and bitwise (include delete opp with bitwise)
+    - do all operators for arrays, strings, nums, and chars
+        - both const and let in both scope and global
+- condtionals_test.w
+    - do just an if statements
+    - do an if statement with else statement
+    - do elif statement
+    - do a nested if statement
+    - do a elif statements with nested statement
+- loops_test.w 
+    - do a for loop
+    - do a while loop 
+    - do a nested for loop 
+    - do a nested while loop
+    - nested for while loop and visa versa
+- aux_test.w 
+    - just use the "System Aux Functions" example with a bit more print statements
+        - see if you can include SCAN but not required
+- functions_{0}_test.w: array, string, num, and char 
+    - use local and global variables both const and let
+    - do recursion
+    - do one with a loop, basic elif conditional, and use aux functions
+        - aux: RANDOM and for string/array: APPEND, REMOVE, LENGTH, and EQUAL
+- import_test.w
+    - create three files math.w, constants.w and random.w
+        - these will be wrappers to do an operations of an array. Were just testing the imports and exports. 

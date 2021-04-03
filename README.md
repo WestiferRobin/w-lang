@@ -11,6 +11,7 @@
     - Keyboard Encryptor
 - Try it out/configure on mac and windows projects
 - Update the README.md for release
+    - finish the import shit....
 
 ## What is W Lang and why was it created
 
@@ -35,26 +36,26 @@ or with display
 ./wlang algro.w -d
 
 ## Challenges
-1. Creating what the systax and type its going to be. Weak types were a better choice on parsing and then able to distinguish.  
-2. Deciding what type of Parser to use, and which one was easy to implement without a framework.
-3. Drawing up the Grammar and test cases for the compiler to work.
-4. Strings literally was a pain through the whole process.
-5. Writing an accurate error reader. I do plan to JUST focus on the error reader once I get more features out.
+- Creating what the systax and type its going to be. Weak types were a better choice on parsing and then able to distinguish.  
+- Deciding what type of Parser to use, and which one was easy to implement without a framework.
+- Drawing up the Grammar and test cases for the compiler to work.
+- Strings literally was a pain through the whole process.
+- Writing an accurate error reader. I do plan to JUST focus on the error reader once I get more features out.
 
 ## Bugs?
 As of now I'm very content what I have released, although I am 99% positive that it is not perfect. The error log is really not helpful at all. Best thing to do is to debug throught the compiler code and your W Lang code and if there are any bugs you find just reach out to me.
 
 ## Future Features
-1. Write and execute unittests and an automation test suite
-2. Add switch statements.
-3. Include floating point numbers, bytes, and bool.
-4. Add try catch functionality.
-5. Add do while loops and foreach loops
-6. Replace LL(1) parser to LR(1).
-7. More system functions like reading files, threads, and etc.
-8. Make the language object oriented with access modifiers.
-9. A more detailed error catcher.
-10. Create Frameworks for Web, Mobile, Applications, and Tools. This will need more system apis like reading files and so forth.
+- Write and execute unittests and an automation test suite
+- Add switch statements.
+- Include floating point numbers, bytes, and bool.
+- Add try catch functionality.
+- Add do while loops and foreach loops
+- Replace LL(1) parser to LR(1).
+- More system functions like reading files, threads, math class, limits, and etc.
+- Make the language object oriented with access modifiers.
+- A more detailed error catcher.
+- Create Frameworks for Web, Mobile, Applications, and Tools. This will need more system apis like reading files and so forth.
 
 # How To Code in W Language
 
