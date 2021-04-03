@@ -34,4 +34,5 @@ void ErrorReader::readError(ErrorCode errorCode, string token)
             break;
     }
     cout << errorMessage << endl;
+    throw (int)errorCode;
 }

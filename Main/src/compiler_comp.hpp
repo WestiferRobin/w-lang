@@ -9,12 +9,12 @@
 #include <set>
 #include <vector>
 #include <ctype.h>
+#include <bits/stdc++.h>
 #include "general_types.hpp"
 #include "general_util.hpp"
 #include "parser_comp.hpp"
 
 using namespace std;
-
 
 class FrontEnd
 {

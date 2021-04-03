@@ -42,9 +42,14 @@ bin/start.o: src/parser_comp.hpp
 
 bin/main.o: src/main.cpp
 	clear
-	g++ -std=c++17 -c src/main.cpp && mv main.o bin/main.o
+	g++ -std=c++17 -c src/main.cpp  && mv main.o bin/main.o
 
-# Developer flags for makefile. Remove when ready to publish
+test_runner: test_runner.o
+	g++ -std=c++17 test_runner.o -o test_runner
+	./test_runner
+
+test_runner.o:
+	g++ -std=c++17 -c src/test_runner.cpp 
 
 testN:
 	clear
@@ -60,7 +65,7 @@ stress:
 
 clean:
 	clear
-	rm bin/*.o wlang
+	rm bin/*.o wlang test_runner test_runner.o
 
 rebuild:
 	clear

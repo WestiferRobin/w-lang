@@ -1,5 +1,17 @@
 # W Language
 
+## DEV TODOS
+- Write test cases for test_runner
+    - Use the manual to help shape the tests and make them atomic as possible
+- Create the needed demos
+    - All basic Algorithms
+    - Basic Calculator
+    - Text RPG Demo
+    - Rock Paper Scissors
+    - Keyboard Encryptor
+- Try it out/configure on mac and windows projects
+- Update the README.md for release
+
 ## What is W Lang and why was it created
 
 Back when I was in college I took a compiler course. The course was writing a compiler for C which generated sudo assembly using some tools like GNU Bision. I was inspired by this course and wanted to create my own programing language with a compiler without the use of a framework. I should of done this project in C since the majority of compilers are written in C generally but I wanted to create something to show my skills in C++ as a portfolio project. If this language has a purpose besides writing it for fun it would be to help teach basic concepts of programming. I don't expect this language to get picked up of the sort. 
