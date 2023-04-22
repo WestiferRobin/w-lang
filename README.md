@@ -1,4 +1,5 @@
 # W Language
+NOTE: Will be having a 2.0 version with Golang
 
 ## DEV TODOS
 - Write test cases for test_runner
